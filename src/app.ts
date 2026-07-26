@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import userRoutes from './routes/userRoutes';
 import walletRoutes from './routes/walletRoutes';
 import vtuRoutes from './routes/vtuRoutes';
+import { BaseWalletError } from './errors/walletErrors';
 
 const app: Express = express();
 
@@ -35,7 +36,17 @@ app.use((req: Request, res: Response) => {
 // Global Error Middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error('[Error Middleware]:', err);
-  res.status(500).json({
+
+  if (err instanceof BaseWalletError) {
+    return res.status(err.statusCode).json({
+      success: false,
+      error_code: err.errorCode,
+      message: err.message,
+      details: err.details,
+    });
+  }
+
+  return res.status(500).json({
     success: false,
     message: err.message || 'Internal Server Error',
   });

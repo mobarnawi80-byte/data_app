@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { WalletService } from '../services/walletService';
+import { BaseWalletError } from '../errors/walletErrors';
 
 export class WalletController {
   static async getBalance(req: Request, res: Response) {
@@ -8,6 +9,14 @@ export class WalletController {
       const wallet = await WalletService.getWalletByUserId(userId);
       return res.status(200).json({ success: true, data: wallet });
     } catch (error: any) {
+      if (error instanceof BaseWalletError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          error_code: error.errorCode,
+          message: error.message,
+          details: error.details,
+        });
+      }
       return res.status(404).json({ success: false, message: error.message });
     }
   }
@@ -17,7 +26,11 @@ export class WalletController {
       const { user_id, amount, reference, description } = req.body;
 
       if (!user_id || !amount || !reference) {
-        return res.status(400).json({ success: false, message: 'Missing user_id, amount, or reference.' });
+        return res.status(400).json({
+          success: false,
+          error_code: 'INVALID_INPUT',
+          message: 'Missing user_id, amount, or reference.',
+        });
       }
 
       const result = await WalletService.creditWallet({
@@ -33,6 +46,14 @@ export class WalletController {
         data: result,
       });
     } catch (error: any) {
+      if (error instanceof BaseWalletError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          error_code: error.errorCode,
+          message: error.message,
+          details: error.details,
+        });
+      }
       return res.status(400).json({ success: false, message: error.message });
     }
   }
@@ -46,6 +67,14 @@ export class WalletController {
       const history = await WalletService.getLedgerHistory(userId, limit, page);
       return res.status(200).json({ success: true, data: history });
     } catch (error: any) {
+      if (error instanceof BaseWalletError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          error_code: error.errorCode,
+          message: error.message,
+          details: error.details,
+        });
+      }
       return res.status(400).json({ success: false, message: error.message });
     }
   }

@@ -1,39 +1,57 @@
-import { Prisma, PrismaClient, LedgerType } from '@prisma/client';
+import { Prisma, LedgerType } from '@prisma/client';
 import { prisma } from '../config/prisma';
 import { CreditWalletDTO, DebitWalletDTO } from '../types/vtu';
+import {
+  InsufficientFundsError,
+  DuplicateTransactionError,
+  WalletNotFoundError,
+} from '../errors/walletErrors';
+
+export interface WalletRecord {
+  id: string;
+  user_id: string;
+  balance: Prisma.Decimal;
+  virtual_account_number: string | null;
+  virtual_bank_name: string | null;
+  virtual_account_name: string | null;
+  created_at: Date;
+  updated_at: Date;
+}
 
 export class WalletService {
   /**
-   * Credit user's wallet atomically with ledger entry.
-   * Ensures idempotency via unique reference.
+   * Credit user's wallet atomically inside a Database Transaction with Row-Level Locking (`FOR UPDATE`).
+   * Creates double-entry immutable LedgerEntry.
    */
   static async creditWallet(dto: CreditWalletDTO, externalTx?: Prisma.TransactionClient) {
-    const db = externalTx || prisma;
-
-    return await db.$transaction(async (tx) => {
-      // 1. Check idempotency: Ensure reference has not been processed
+    const executeInTransaction = async (tx: Prisma.TransactionClient) => {
+      // 1. Idempotency Check: Verify reference has not been processed previously
       const existingLedger = await tx.ledgerEntry.findUnique({
         where: { reference: dto.reference },
       });
 
       if (existingLedger) {
-        throw new Error(`Duplicate ledger transaction reference: ${dto.reference}`);
+        throw new DuplicateTransactionError(dto.reference);
       }
 
-      // 2. Fetch target wallet
-      const wallet = await tx.wallet.findUnique({
-        where: { user_id: dto.user_id },
-      });
+      // 2. Row-Level Locking (FOR UPDATE): Lock target wallet row exclusively
+      const wallets = await tx.$queryRaw<WalletRecord[]>`
+        SELECT id, user_id, balance, virtual_account_number, virtual_bank_name, virtual_account_name, created_at, updated_at
+        FROM "wallets"
+        WHERE "user_id" = ${dto.user_id}
+        FOR UPDATE
+      `;
 
-      if (!wallet) {
-        throw new Error(`Wallet not found for user ID: ${dto.user_id}`);
+      if (!wallets || wallets.length === 0) {
+        throw new WalletNotFoundError(dto.user_id);
       }
 
+      const wallet = wallets[0];
       const amountDecimal = new Prisma.Decimal(dto.amount);
       const balanceBefore = new Prisma.Decimal(wallet.balance);
       const balanceAfter = balanceBefore.add(amountDecimal);
 
-      // 3. Update wallet balance
+      // 3. Update Wallet balance
       const updatedWallet = await tx.wallet.update({
         where: { id: wallet.id },
         data: {
@@ -41,7 +59,7 @@ export class WalletService {
         },
       });
 
-      // 4. Create immutable LedgerEntry
+      // 4. Create immutable Double-Entry Ledger record
       const ledgerEntry = await tx.ledgerEntry.create({
         data: {
           wallet_id: wallet.id,
@@ -58,63 +76,68 @@ export class WalletService {
         wallet: updatedWallet,
         ledger: ledgerEntry,
       };
-    });
+    };
+
+    if (externalTx) {
+      return await executeInTransaction(externalTx);
+    } else {
+      return await prisma.$transaction(async (tx) => {
+        return await executeInTransaction(tx);
+      });
+    }
   }
 
   /**
-   * Debit user's wallet atomically with ledger entry.
-   * Includes strict balance verification & atomic concurrency checks.
+   * Debit user's wallet atomically inside a Database Transaction with Row-Level Locking (`FOR UPDATE`).
+   * Enforces strict structured balance check (balance < amount) and creates double-entry immutable LedgerEntry.
    */
   static async debitWallet(dto: DebitWalletDTO, externalTx?: Prisma.TransactionClient) {
-    const db = externalTx || prisma;
-
-    return await db.$transaction(async (tx) => {
-      // 1. Check idempotency: Ensure reference has not been processed
+    const executeInTransaction = async (tx: Prisma.TransactionClient) => {
+      // 1. Idempotency Check: Verify reference has not been processed previously
       const existingLedger = await tx.ledgerEntry.findUnique({
         where: { reference: dto.reference },
       });
 
       if (existingLedger) {
-        throw new Error(`Duplicate ledger transaction reference: ${dto.reference}`);
+        throw new DuplicateTransactionError(dto.reference);
       }
 
-      // 2. Fetch target wallet
-      const wallet = await tx.wallet.findUnique({
-        where: { user_id: dto.user_id },
-      });
+      // 2. Row-Level Locking (FOR UPDATE): Acquire exclusive lock on target wallet row
+      const wallets = await tx.$queryRaw<WalletRecord[]>`
+        SELECT id, user_id, balance, virtual_account_number, virtual_bank_name, virtual_account_name, created_at, updated_at
+        FROM "wallets"
+        WHERE "user_id" = ${dto.user_id}
+        FOR UPDATE
+      `;
 
-      if (!wallet) {
-        throw new Error(`Wallet not found for user ID: ${dto.user_id}`);
+      if (!wallets || wallets.length === 0) {
+        throw new WalletNotFoundError(dto.user_id);
       }
 
+      const wallet = wallets[0];
       const amountDecimal = new Prisma.Decimal(dto.amount);
       const balanceBefore = new Prisma.Decimal(wallet.balance);
 
-      // Check sufficient funds
+      // 3. Structured Error Check: balance < amount
       if (balanceBefore.lessThan(amountDecimal)) {
-        throw new Error(`Insufficient wallet balance. Current balance: ₦${balanceBefore.toFixed(2)}, Required: ₦${amountDecimal.toFixed(2)}`);
+        throw new InsufficientFundsError(
+          balanceBefore.toFixed(2),
+          amountDecimal.toFixed(2),
+          dto.user_id
+        );
       }
 
       const balanceAfter = balanceBefore.sub(amountDecimal);
 
-      // 3. Atomic wallet update with balance guard (prevents race condition)
-      const updateResult = await tx.wallet.updateMany({
-        where: {
-          id: wallet.id,
-          balance: { gte: amountDecimal }, // Double-check constraint
-        },
+      // 4. Update Wallet balance
+      const updatedWallet = await tx.wallet.update({
+        where: { id: wallet.id },
         data: {
           balance: balanceAfter,
         },
       });
 
-      if (updateResult.count === 0) {
-        throw new Error('Concurrent transaction detected or insufficient funds.');
-      }
-
-      const updatedWallet = await tx.wallet.findUnique({ where: { id: wallet.id } });
-
-      // 4. Create immutable LedgerEntry
+      // 5. Create immutable Double-Entry Ledger record
       const ledgerEntry = await tx.ledgerEntry.create({
         data: {
           wallet_id: wallet.id,
@@ -128,10 +151,18 @@ export class WalletService {
       });
 
       return {
-        wallet: updatedWallet!,
+        wallet: updatedWallet,
         ledger: ledgerEntry,
       };
-    });
+    };
+
+    if (externalTx) {
+      return await executeInTransaction(externalTx);
+    } else {
+      return await prisma.$transaction(async (tx) => {
+        return await executeInTransaction(tx);
+      });
+    }
   }
 
   /**
@@ -143,7 +174,7 @@ export class WalletService {
     });
 
     if (!wallet) {
-      throw new Error(`Wallet not found for user ID: ${userId}`);
+      throw new WalletNotFoundError(userId);
     }
 
     return wallet;
