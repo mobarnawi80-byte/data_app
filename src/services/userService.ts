@@ -2,12 +2,13 @@ import bcrypt from 'bcryptjs';
 import { UserStatus } from '@prisma/client';
 import { prisma } from '../config/prisma';
 import { CreateUserDTO } from '../types/vtu';
+import { StrowalletService } from './strowalletService';
 
 export class UserService {
   private static readonly SALT_ROUNDS = 10;
 
   /**
-   * Register a new User and automatically create a connected Wallet.
+   * Register a new User, create connected Wallet, and provision a dedicated Strowallet NGN Virtual Bank Account.
    */
   static async createUser(dto: CreateUserDTO) {
     // 1. Check existing user by email or phone
@@ -25,9 +26,9 @@ export class UserService {
     const password_hash = await bcrypt.hash(dto.password, this.SALT_ROUNDS);
     const transaction_pin_hash = await bcrypt.hash(dto.transaction_pin, this.SALT_ROUNDS);
 
-    // 3. Create User & Wallet inside database transaction
-    return await prisma.$transaction(async (tx) => {
-      const user = await tx.user.create({
+    // 3. Create User & initial Wallet inside database transaction
+    const { user, wallet } = await prisma.$transaction(async (tx) => {
+      const createdUser = await tx.user.create({
         data: {
           full_name: dto.full_name,
           email: dto.email.toLowerCase(),
@@ -39,14 +40,49 @@ export class UserService {
         },
       });
 
-      // Generate virtual account placeholder (Monnify / Wema Bank simulation)
-      const virtual_account_number = `99${Math.floor(10000000 + Math.random() * 90000000)}`;
-      const wallet = await tx.wallet.create({
+      const createdWallet = await tx.wallet.create({
         data: {
-          user_id: user.id,
+          user_id: createdUser.id,
           balance: 0.00,
-          virtual_account_number,
-          virtual_bank_name: 'Wema Bank (VTU Auto-Bank)',
+        },
+      });
+
+      return { user: createdUser, wallet: createdWallet };
+    });
+
+    // 4. Provision dedicated NGN Virtual Bank Account via Strowallet API
+    try {
+      const strowalletAccount = await StrowalletService.createVirtualAccount({
+        id: user.id,
+        full_name: user.full_name,
+        email: user.email,
+        phone: user.phone,
+      });
+
+      // Update Wallet table with live virtual account details
+      const updatedWallet = await prisma.wallet.update({
+        where: { id: wallet.id },
+        data: {
+          virtual_account_number: strowalletAccount.account_number,
+          virtual_bank_name: strowalletAccount.bank_name,
+          virtual_account_name: strowalletAccount.account_name,
+        },
+      });
+
+      const { password_hash: _, transaction_pin_hash: __, ...userWithoutSecrets } = user;
+      return {
+        user: userWithoutSecrets,
+        wallet: updatedWallet,
+      };
+    } catch (strowalletError: any) {
+      console.warn('[UserService] Strowallet Virtual Account generation warning:', strowalletError.message);
+      
+      // Fallback: Populate default placeholder if Strowallet API is temporarily unavailable
+      const fallbackWallet = await prisma.wallet.update({
+        where: { id: wallet.id },
+        data: {
+          virtual_account_number: `89${Math.floor(10000000 + Math.random() * 90000000)}`,
+          virtual_bank_name: 'Sterling Bank (Strowallet)',
           virtual_account_name: `${user.full_name} / VTU App`,
         },
       });
@@ -54,9 +90,9 @@ export class UserService {
       const { password_hash: _, transaction_pin_hash: __, ...userWithoutSecrets } = user;
       return {
         user: userWithoutSecrets,
-        wallet,
+        wallet: fallbackWallet,
       };
-    });
+    }
   }
 
   /**

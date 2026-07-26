@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import userRoutes from './routes/userRoutes';
 import walletRoutes from './routes/walletRoutes';
 import vtuRoutes from './routes/vtuRoutes';
+import webhookRoutes from './routes/webhookRoutes';
 import { BaseWalletError } from './errors/walletErrors';
 
 const app: Express = express();
@@ -27,6 +28,7 @@ app.get('/health', (req: Request, res: Response) => {
 app.use('/api/users', userRoutes);
 app.use('/api/wallets', walletRoutes);
 app.use('/api/vtu', vtuRoutes);
+app.use('/api/webhooks', webhookRoutes);
 
 // Global 404 Handler
 app.use((req: Request, res: Response) => {
