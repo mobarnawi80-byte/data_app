@@ -1,16 +1,39 @@
-import { Provider } from '@prisma/client';
-import { ProviderPurchaseRequest, ProviderPurchaseResponse } from '../../types/vtu';
+import { Network, Provider } from '@prisma/client';
 
-export interface IVTUProvider {
+export type ProviderTxStatus = 'SUCCESS' | 'PENDING' | 'FAILED';
+
+export interface ProviderPurchaseResponse {
+  success: boolean;
+  status: ProviderTxStatus;
+  provider: Provider;
+  provider_reference?: string;
+  message?: string;
+  raw_response?: Record<string, any>;
+}
+
+export interface ProviderBalanceResponse {
+  success: boolean;
+  provider: Provider;
+  balance: number;
+  currency: string;
+  message?: string;
+}
+
+export interface IVtuProvider {
   readonly providerName: Provider;
 
   /**
    * Purchase Airtime from VTU provider
    */
-  purchaseAirtime(request: ProviderPurchaseRequest): Promise<ProviderPurchaseResponse>;
+  purchaseAirtime(network: Network, phone: string, amount: number): Promise<ProviderPurchaseResponse>;
 
   /**
    * Purchase Data Plan from VTU provider
    */
-  purchaseData(request: ProviderPurchaseRequest): Promise<ProviderPurchaseResponse>;
+  purchaseData(network: Network, phone: string, planId: string): Promise<ProviderPurchaseResponse>;
+
+  /**
+   * Check Provider API Wallet/Float Balance
+   */
+  checkBalance(): Promise<ProviderBalanceResponse>;
 }

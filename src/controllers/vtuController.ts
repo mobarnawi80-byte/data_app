@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { VTUService } from '../services/vtuService';
+import { VtuService } from '../services/vtuService';
 
 export class VTUController {
   static async purchase(req: Request, res: Response) {
@@ -10,7 +10,7 @@ export class VTUController {
         return res.status(400).json({ success: false, message: 'Missing required VTU transaction parameters.' });
       }
 
-      const result = await VTUService.processVTUPurchase({
+      const result = await VtuService.processPurchase({
         user_id,
         service_type,
         network,
@@ -33,13 +33,22 @@ export class VTUController {
     }
   }
 
+  static async getProviderBalances(req: Request, res: Response) {
+    try {
+      const balances = await VtuService.checkAllProviderBalances();
+      return res.status(200).json({ success: true, data: balances });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
   static async getHistory(req: Request, res: Response) {
     try {
       const userId = req.params.userId;
       const page = req.query.page ? parseInt(req.query.page as string) : 1;
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 20;
 
-      const history = await VTUService.getTransactionHistory(userId, limit, page);
+      const history = await VtuService.getTransactionHistory(userId, limit, page);
       return res.status(200).json({ success: true, data: history });
     } catch (error: any) {
       return res.status(400).json({ success: false, message: error.message });
@@ -49,7 +58,7 @@ export class VTUController {
   static async getByReference(req: Request, res: Response) {
     try {
       const reference = req.params.reference;
-      const transaction = await VTUService.getTransactionByReference(reference);
+      const transaction = await VtuService.getTransactionByReference(reference);
       return res.status(200).json({ success: true, data: transaction });
     } catch (error: any) {
       return res.status(404).json({ success: false, message: error.message });

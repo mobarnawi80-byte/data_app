@@ -4,6 +4,7 @@ import { VTUController } from '../controllers/vtuController';
 const router = Router();
 
 router.post('/purchase', VTUController.purchase);
+router.get('/balances', VTUController.getProviderBalances);
 router.get('/history/:userId', VTUController.getHistory);
 router.get('/transaction/:reference', VTUController.getByReference);
 
