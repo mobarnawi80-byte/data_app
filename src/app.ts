@@ -5,6 +5,7 @@ import userRoutes from './routes/userRoutes';
 import walletRoutes from './routes/walletRoutes';
 import vtuRoutes from './routes/vtuRoutes';
 import webhookRoutes from './routes/webhookRoutes';
+import adminRoutes from './routes/adminRoutes';
 import { BaseWalletError } from './errors/walletErrors';
 
 const app: Express = express();
@@ -28,10 +29,11 @@ app.get('/health', (req: Request, res: Response) => {
 app.use('/api/users', userRoutes);
 app.use('/api/wallets', walletRoutes);
 app.use('/api/vtu', vtuRoutes);
-
-// Strowallet Webhook Listener Route (POST /api/v1/webhooks/strowallet)
+app.use('/api/webhooks', webhookRoutes);
 app.use('/api/v1/webhooks', webhookRoutes);
-app.use('/api/webhooks', webhookRoutes); // Alias for backwards compatibility
+
+// Admin Management APIs
+app.use('/api/admin', adminRoutes);
 
 // Global 404 Handler
 app.use((req: Request, res: Response) => {
