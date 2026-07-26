@@ -28,7 +28,10 @@ app.get('/health', (req: Request, res: Response) => {
 app.use('/api/users', userRoutes);
 app.use('/api/wallets', walletRoutes);
 app.use('/api/vtu', vtuRoutes);
-app.use('/api/webhooks', webhookRoutes);
+
+// Strowallet Webhook Listener Route (POST /api/v1/webhooks/strowallet)
+app.use('/api/v1/webhooks', webhookRoutes);
+app.use('/api/webhooks', webhookRoutes); // Alias for backwards compatibility
 
 // Global 404 Handler
 app.use((req: Request, res: Response) => {

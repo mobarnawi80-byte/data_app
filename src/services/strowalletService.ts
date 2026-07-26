@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { WalletService } from './walletService';
 import { prisma } from '../config/prisma';
+import { DuplicateTransactionError } from '../errors/walletErrors';
 
 export interface StrowalletUserPayload {
   id: string;
@@ -14,23 +15,22 @@ export interface StrowalletVirtualAccountResponse {
   bank_name: string;
   account_name: string;
   customer_id?: string;
-  raw_response?: Record<string, any>;
 }
 
 export interface StrowalletWebhookPayload {
-  event: string; // e.g., 'virtual_account.credited' or 'transfer.success'
+  event: string;
   reference: string;
+  session_id?: string;
   amount: number;
-  fee?: number;
-  customer: {
-    email: string;
+  customer?: {
+    email?: string;
     phone?: string;
   };
-  account_details: {
-    account_number: string;
-    bank_name: string;
+  account_details?: {
+    account_number?: string;
+    bank_name?: string;
   };
-  timestamp: string;
+  timestamp?: string;
 }
 
 export class StrowalletService {
@@ -44,9 +44,7 @@ export class StrowalletService {
    */
   static async createVirtualAccount(user: StrowalletUserPayload): Promise<StrowalletVirtualAccountResponse> {
     try {
-      // In production environment with valid API credentials:
       if (this.SECRET_KEY && this.SECRET_KEY !== 'mock_secret_key') {
-        /* 
         const response = await fetch(`${this.BASE_URL}/virtual-accounts`, {
           method: 'POST',
           headers: {
@@ -69,14 +67,12 @@ export class StrowalletService {
 
         return {
           account_number: data.data.account_number,
-          bank_name: data.data.bank_name || 'Sterling Bank / Strowallet',
+          bank_name: data.data.bank_name || 'Sterling Bank (Strowallet)',
           account_name: data.data.account_name || `${user.full_name} / VTU App`,
-          customer_id: data.data.customer_id,
         };
-        */
       }
 
-      // Simulated/Fallback Strowallet Virtual Account generation for development & testing
+      // Development Sandbox Virtual Account Generation
       const generatedAccountNumber = `8${Math.floor(100000009 + Math.random() * 899999990)}`;
       const partnerBanks = ['Sterling Bank (Strowallet)', 'Wema Bank (Strowallet)', 'Fidelity Bank (Strowallet)'];
       const selectedBank = partnerBanks[Math.floor(Math.random() * partnerBanks.length)];
@@ -93,7 +89,7 @@ export class StrowalletService {
   }
 
   /**
-   * Cryptographically verify incoming Strowallet Webhook Signature (HMAC SHA512/SHA256).
+   * Cryptographically verify incoming Strowallet Webhook Signature (HMAC SHA-512).
    */
   static verifyWebhookSignature(payload: string | Buffer, signatureHeader: string | undefined): boolean {
     if (!signatureHeader) return false;
@@ -104,28 +100,44 @@ export class StrowalletService {
       .update(payload)
       .digest('hex');
 
-    // Constant-time string comparison to prevent timing attacks
     const signatureBuffer = Buffer.from(signatureHeader, 'utf-8');
     const computedBuffer = Buffer.from(computedSignature, 'utf-8');
 
-    if (signatureBuffer.length !== computedBuffer.length) {
-      return false;
-    }
-
+    if (signatureBuffer.length !== computedBuffer.length) return false;
     return crypto.timingSafeEqual(signatureBuffer, computedBuffer);
   }
 
   /**
    * Process automated wallet deposit webhook event from Strowallet.
+   * Performs idempotency pre-check on reference / session_id before executing atomic transaction.
    */
   static async processFundingWebhook(payload: StrowalletWebhookPayload) {
-    const { reference, amount, customer, account_details } = payload;
+    const { reference, session_id, amount, customer, account_details } = payload;
 
-    if (!reference || !amount || amount <= 0) {
-      throw new Error('Invalid webhook payload: missing reference or invalid amount');
+    if (!reference && !session_id) {
+      throw new Error('Invalid webhook payload: missing reference or session_id');
     }
 
-    // 1. Locate User by email or account_number
+    if (!amount || amount <= 0) {
+      throw new Error(`Invalid credit amount: ₦${amount}`);
+    }
+
+    // Unique ledger reference constructed using session_id or reference
+    const depositReference = `STROWALLET-DEP-${session_id || reference}`;
+
+    console.log(`[Strowallet Service Log] Processing deposit webhook. Reference: '${depositReference}', Amount: ₦${amount}`);
+
+    // 1. Strict Idempotency Check: Pre-check if reference or session_id already exists in LedgerEntries
+    const existingLedger = await prisma.ledgerEntry.findUnique({
+      where: { reference: depositReference },
+    });
+
+    if (existingLedger) {
+      console.warn(`[Strowallet Service Log] Idempotent duplicate event ignored for reference '${depositReference}'`);
+      throw new DuplicateTransactionError(depositReference);
+    }
+
+    // 2. Locate User by email or virtual account number
     let user = null;
     if (customer?.email) {
       user = await prisma.user.findUnique({
@@ -142,18 +154,21 @@ export class StrowalletService {
     }
 
     if (!user) {
-      throw new Error(`Strowallet Webhook Error: Target user not found for email '${customer?.email}' or account '${account_details?.account_number}'`);
+      console.error(`[Strowallet Service Error] Target user not found for email '${customer?.email}' or account '${account_details?.account_number}'`);
+      throw new Error(`Target user not found for email '${customer?.email}' or account '${account_details?.account_number}'`);
     }
 
-    // 2. Perform Atomic Wallet Credit with Row-Level Locking (`FOR UPDATE`) & Ledger Entry
-    const depositReference = `STROWALLET-DEP-${reference}`;
-    const description = `Automated Bank Transfer Deposit via ${account_details?.bank_name || 'Strowallet Virtual Account'}`;
+    // 3. Atomically Credit Wallet inside Database Transaction with Row-Level Locking (`FOR UPDATE`)
+    const description = `Automated Deposit via ${account_details?.bank_name || 'Strowallet'} (Session ID: ${session_id || reference})`;
 
-    return await WalletService.creditWallet({
+    const result = await WalletService.creditWallet({
       user_id: user.id,
       amount,
       reference: depositReference,
       description,
     });
+
+    console.log(`[Strowallet Service Log] Successfully credited wallet ID '${result.wallet.id}' with ₦${amount}. New balance: ₦${result.wallet.balance}`);
+    return result;
   }
 }

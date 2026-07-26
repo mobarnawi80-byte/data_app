@@ -4,78 +4,83 @@ import { DuplicateTransactionError } from '../errors/walletErrors';
 
 export class WebhookController {
   /**
-   * Handle incoming Strowallet Webhook for automated wallet funding.
-   * Performs cryptographic signature verification & idempotent atomic wallet credit.
+   * Strowallet Webhook Listener Endpoint (`POST /api/v1/webhooks/strowallet`).
+   * Validates signature, parses transaction reference/session_id/amount/account_number,
+   * performs strict idempotency check, atomically credits user wallet via WalletService.creditWallet(),
+   * and returns HTTP 200 immediately.
    */
   static async handleStrowalletWebhook(req: Request, res: Response) {
-    try {
-      const signatureHeader = req.headers['x-strowallet-signature'] as string | undefined;
-      const rawBody = req.body ? JSON.stringify(req.body) : '';
+    const startTime = Date.now();
+    const signatureHeader = req.headers['x-strowallet-signature'] as string | undefined;
 
-      // 1. Cryptographic Signature Verification
-      // Note: In production, pass the raw buffer / unparsed body string for signature check
+    try {
+      // 1. Cryptographic HMAC SHA-512 Signature Verification
+      const rawBody = JSON.stringify(req.body);
       const isValidSignature = StrowalletService.verifyWebhookSignature(rawBody, signatureHeader);
-      
-      // In strict production mode:
+
       if (process.env.NODE_ENV === 'production' && !isValidSignature) {
+        console.warn('[Strowallet Webhook Warning]: Invalid signature header received.');
         return res.status(401).json({
           status: 'error',
-          message: 'Invalid or missing Strowallet webhook signature',
+          message: 'Invalid cryptographic signature header.',
         });
       }
 
       const payload = req.body;
-
-      if (!payload || !payload.event) {
+      if (!payload || Object.keys(payload).length === 0) {
         return res.status(400).json({
           status: 'error',
-          message: 'Invalid webhook payload structure',
+          message: 'Empty webhook payload received.',
         });
       }
 
-      // 2. Process automated wallet funding event
-      if (payload.event === 'virtual_account.credited' || payload.event === 'transfer.success') {
-        const result = await StrowalletService.processFundingWebhook({
-          event: payload.event,
-          reference: payload.reference || payload.id || `TX-${Date.now()}`,
-          amount: Number(payload.amount || payload.data?.amount),
-          customer: payload.customer || { email: payload.data?.customer_email },
-          account_details: payload.account_details || {
-            account_number: payload.data?.account_number,
-            bank_name: payload.data?.bank_name,
-          },
-          timestamp: payload.timestamp || new Date().toISOString(),
-        });
+      // Extract required fields
+      const transactionReference = payload.reference || payload.id;
+      const sessionId = payload.session_id || payload.sessionId;
+      const amountCredited = Number(payload.amount || payload.data?.amount);
+      const accountNumber = payload.account_number || payload.account_details?.account_number;
+      const customerEmail = payload.customer_email || payload.customer?.email;
+      const bankName = payload.bank_name || payload.account_details?.bank_name;
 
-        return res.status(200).json({
-          status: 'success',
-          message: 'Wallet credited successfully via Strowallet webhook.',
-          data: {
-            wallet_id: result.wallet.id,
-            ledger_reference: result.ledger.reference,
-            new_balance: result.wallet.balance,
-          },
-        });
-      }
+      console.log(`[Strowallet Webhook Received]: Ref='${transactionReference}', SessionID='${sessionId}', Amount=₦${amountCredited}, Account='${accountNumber}'`);
 
-      // Acknowledge other unhandled webhook events gracefully
+      // 2. Process automated wallet credit via StrowalletService
+      const result = await StrowalletService.processFundingWebhook({
+        event: payload.event || 'virtual_account.credited',
+        reference: transactionReference,
+        session_id: sessionId,
+        amount: amountCredited,
+        customer: { email: customerEmail },
+        account_details: { account_number: accountNumber, bank_name: bankName },
+      });
+
+      const processingTime = Date.now() - startTime;
+      console.log(`[Strowallet Webhook Success]: Credited ₦${amountCredited} to user in ${processingTime}ms.`);
+
+      // 3. Return HTTP 200 immediately
       return res.status(200).json({
-        status: 'ignored',
-        message: `Event type '${payload.event}' acknowledged but requires no wallet update.`,
+        status: 'success',
+        message: 'Wallet funded successfully via Strowallet automated transfer.',
+        data: {
+          reference: result.ledger.reference,
+          amount_credited: result.ledger.amount,
+          new_balance: result.wallet.balance,
+        },
       });
     } catch (error: any) {
       if (error instanceof DuplicateTransactionError) {
-        // Return 200 OK for duplicate webhooks to prevent provider retry loops
+        // Return HTTP 200 immediately for duplicate events to acknowledge provider idempotency
+        console.log(`[Strowallet Webhook Idempotency]: Duplicate webhook ignored.`);
         return res.status(200).json({
           status: 'success',
-          message: 'Webhook reference previously processed (idempotent response).',
+          message: 'Webhook reference/session_id previously processed (idempotent response).',
         });
       }
 
-      console.error('[Strowallet Webhook Error]:', error);
+      console.error('[Strowallet Webhook Failure]:', error.message);
       return res.status(500).json({
         status: 'error',
-        message: error.message || 'Failed to process webhook',
+        message: error.message || 'Internal server error processing webhook payload.',
       });
     }
   }
