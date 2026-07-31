@@ -6,6 +6,7 @@ import walletRoutes from './routes/walletRoutes';
 import vtuRoutes from './routes/vtuRoutes';
 import webhookRoutes from './routes/webhookRoutes';
 import adminRoutes from './routes/adminRoutes';
+import adminViewRoute from './routes/adminViewRoute';
 import { BaseWalletError } from './errors/walletErrors';
 
 const app: Express = express();
@@ -16,7 +17,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health Check
+// Health Check Endpoint
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({
     status: 'online',
@@ -25,6 +26,9 @@ app.get('/health', (req: Request, res: Response) => {
   });
 });
 
+// Admin Interactive Web UI Dashboard
+app.use(adminViewRoute);
+
 // API Routes
 app.use('/api/users', userRoutes);
 app.use('/api/wallets', walletRoutes);
@@ -32,7 +36,7 @@ app.use('/api/vtu', vtuRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/v1/webhooks', webhookRoutes);
 
-// Admin Management APIs
+// Admin Management REST APIs
 app.use('/api/admin', adminRoutes);
 
 // Global 404 Handler
