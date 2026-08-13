@@ -1,0 +1,1549 @@
+﻿node.exe : npm info using npm@11.17.0
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm info using npm@11.17.0:String 
+   ) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm info using node@v26.5.0
+npm http fetch GET 200 https://registry.npmjs.org/@react-navigation%2fnative 
+1586ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-navigation%2fnative-stack 973ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/expo 918ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/expo-clipboard 455ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/expo-contacts 428ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/expo-constants 496ms (cache 
+miss)
+npm http fetch GET 200 https://registry.npmjs.org/expo-font 437ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/expo-linking 516ms (cache 
+miss)
+npm http fetch GET 200 https://registry.npmjs.org/expo-local-authentication 
+479ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/expo-router 451ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/expo-secure-store 455ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/expo-splash-screen 468ms 
+(cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/expo-status-bar 417ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/expo-system-ui 437ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lucide-react-native 437ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react 481ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-native 971ms (cache 
+miss)
+npm http fetch GET 200 https://registry.npmjs.org/react-native-gesture-handler 
+439ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-native-reanimated 
+451ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/react-native-safe-area-context 422ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-native-screens 442ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-native-svg 454ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/zustand 431ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fcore 122ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@types%2freact 130ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/typescript 476ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/debug 445ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/json5 793ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/semver 795ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/gensync 423ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2ftypes 221ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fparser 222ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2ftraverse 205ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2ftemplate 518ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fhelpers 722ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fcode-frame 200ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fgenerator 518ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@jridgewell%2fremapping 
+215ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/convert-source-map 427ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-compilation-targets 210ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/nanoid 179ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-module-transforms 517ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/fast-deep-equal 220ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/escape-string-regexp 437ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/warn-once 535ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/csstype 208ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@react-navigation%2fcore 
+1016ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@react-navigation%2felements 
+943ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/expo-asset 815ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fcli 1241ms (cache 
+miss)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fmetro 932ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/pretty-format 271ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fruntime 226ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-refresh 496ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fconfig 1155ms (cache 
+miss)
+npm http fetch GET 200 https://registry.npmjs.org/expo-keep-awake 431ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fdevtools 1092ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/expo-file-system 1145ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2ffingerprint 937ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/babel-preset-expo 524ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/expo-modules-core 545ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fmetro-config 996ms 
+(cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fvector-icons 1010ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fconfig-plugins 
+1084ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/expo-modules-autolinking 
+561ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@ungap%2fstructured-clone 
+899ms (cache revalidated)
+npm http cache https://registry.npmjs.org/@expo%2fconfig 14ms (cache hit)
+npm http fetch GET 200 https://registry.npmjs.org/whatwg-url-without-unicode 
+552ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/fontfaceobserver 431ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fenv 999ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/invariant 535ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/invariant 431ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/client-only 200ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/vaul 541ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/expo-server 442ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/server-only 516ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/shallowequal 422ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/query-string 531ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fmetro-runtime 211ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-fast-compare 448ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fschema-utils 887ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/use-latest-callback 537ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@radix-ui%2freact-slot 912ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/sf-symbols-typescript 517ms 
+(cache revalidated)
+npm http cache https://registry.npmjs.org/@react-navigation%2fnative 24ms 
+(cache hit)
+npm http fetch GET 200 https://registry.npmjs.org/@radix-ui%2freact-tabs 851ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-native-is-edge-to-edge 
+452ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-navigation%2fbottom-tabs 1056ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fprebuild-config 
+941ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/loose-envify 216ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ws 213ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-native%2fnormalize-colors 921ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/mkdirp 204ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/base64-js 223ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/promise 432ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/anser 517ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/scheduler 289ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/jsc-android 443ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/nullthrows 543ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/memoize-one 580ms (cache 
+revalidated)
+npm http cache https://registry.npmjs.org/react-refresh 36ms (cache hit)
+npm http fetch GET 200 https://registry.npmjs.org/whatwg-fetch 520ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-runtime 519ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-source-map 456ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/abort-controller 526ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/event-target-shim 507ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/stacktrace-parser 413ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-devtools-core 534ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/regenerator-runtime 508ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/jest-environment-node 200ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-native-codegen 510ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@react-native%2fassets 927ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-shallow-renderer 512ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/use-sync-external-store 
+479ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-native-gradle-plugin 
+514ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@react-native%2fpolyfills 
+1016ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-native%2fnormalize-color 1004ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-native-community%2fcli 1117ms (cache miss)
+npm http fetch GET 200 
+https://registry.npmjs.org/@jest%2fcreate-cache-key-function 1019ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/metro-react-native-babel-transformer 438ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/deprecated-react-native-prop-types 555ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lodash 219ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/prop-types 220ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-native-community%2fcli-platform-ios 1106ms 
+(cache miss)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-native-community%2fcli-platform-android 
+922ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/hoist-non-react-statics 
+508ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/setimmediate 432ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@egjs%2fhammerjs 1001ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fpreset-typescript 
+197ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/string-hash-64 437ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lodash.isequal 521ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-freeze 429ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/css-tree 510ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-object-assign 823ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/css-select 434ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/picocolors 210ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/js-tokens 217ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/jsesc 210ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@jridgewell%2fgen-mapping 
+213ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@jridgewell%2ftrace-mapping 
+227ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lru-cache 236ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-validator-identifier 732ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/browserslist 243ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fcompat-data 230ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fhelper-globals 
+213ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-module-imports 227ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-string-parser 223ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ms 224ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-validator-option 713ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@jridgewell%2fresolve-uri 
+218ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@jridgewell%2fsourcemap-codec 226ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@jridgewell%2fsourcemap-codec 917ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/electron-to-chromium 243ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/node-releases 433ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/update-browserslist-db 203ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/caniuse-lite 513ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/yallist 217ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/baseline-browser-mapping 
+435ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-is 219ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@react-navigation%2frouters 
+1025ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/split-on-first 429ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/filter-obj 508ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/strict-uri-encode 520ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/decode-uri-component 428ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/escalade 209ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/arg 206ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ora 210ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/send 204ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/glob 216ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/tar 439ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/chalk 239ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/undici 436ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/accepts 241ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/getenv 517ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ci-info 417ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/connect 500ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/resolve 121ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/prompts 500ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/progress 415ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/slugify 506ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/requireg 503ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/picomatch 199ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/wrap-ansi 188ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/minimatch 411ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/better-opn 512ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/env-editor 425ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@urql%2fcore 1047ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/node-forge 531ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/compression 205ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/pretty-bytes 223ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fplist 932ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lan-network 525ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/resolve-from 230ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/bplist-parser 513ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/terminal-link 499ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fdevcert 930ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/bplist-creator 522ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/freeport-async 439ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fxcpretty 988ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fjson-file 1023ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fosascript 936ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fws-tunnel 1009ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/qrcode-terminal 428ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/resolve.exports 225ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/npm-package-arg 545ms (cache 
+revalidated)
+npm http cache https://registry.npmjs.org/@expo%2fmetro-config 69ms (cache hit)
+npm http fetch GET 200 https://registry.npmjs.org/source-map-support 243ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fimage-utils 932ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/structured-headers 515ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fspawn-async 1065ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/require-from-string 196ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@0no-co%2fgraphql.web 921ms 
+(cache revalidated)
+npm http cache https://registry.npmjs.org/@expo%2fprebuild-config 13ms (cache 
+hit)
+npm http fetch GET 200 https://registry.npmjs.org/@urql%2fexchange-retry 
+1000ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fpackage-manager 
+1003ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/sucrase 520ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-native%2fdev-middleware 920ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/deepmerge 206ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@expo%2fcode-signing-certificates 1024ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/resolve-workspace-root 513ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/slash 523ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fconfig-types 925ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/xml2js 202ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ignore 213ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/p-limit 227ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/xcode 1184ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fsdk-runtime-versions 
+950ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro 514ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-cache 416ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-core 534ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-config 525ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-file-map 453ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-resolver 513ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-cache-key 538ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-symbolicate 433ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-minify-terser 524ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-babel-transformer 
+433ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-transform-worker 550ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-transform-plugins 
+536ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/postcss 287ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/dotenv 435ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lightningcss 216ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/hermes-parser 217ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/jsc-safe-url 510ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/dotenv-expand 416ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fpreset-react 218ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/babel-plugin-react-compiler 
+451ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/babel-plugin-react-native-web 530ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@react-native%2fbabel-preset 
+1014ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-runtime 737ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-proposal-decorators 819ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/babel-plugin-syntax-hermes-parser 533ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/babel-plugin-transform-flow-enums 472ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-private-methods 223ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-parameters 236ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-modules-commonjs 215ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-syntax-export-default-from 730ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-flow-strip-types 835ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-proposal-export-default-from 837ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-export-namespace-from 
+207ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-object-rest-spread 510ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-class-static-block 734ms 
+(cache revalidated)
+npm http cache https://registry.npmjs.org/react-is 30ms (cache hit)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fplugin-transform-pri
+vate-property-in-object 257ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/commander 212ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/buffer 210ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@jest%2fschemas 406ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ansi-styles 430ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/punycode 200ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/webidl-conversions 221ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/jimp-compact 432ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/parse-png 517ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/xmlbuilder 214ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2fsudo-prompt 1066ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/cross-spawn 215ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@expo%2frequire-utils 919ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@xmldom%2fxmldom 700ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/js-yaml 210ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/serve-static 215ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/open 429ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/chrome-launcher 511ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/chromium-edge-launcher 441ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/wonka 438ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@isaacs%2fttlcache 1017ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/negotiator 203ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-native%2fdebugger-frontend 1022ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/mime-types 407ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/supports-color 128ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/stream-buffers 511ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/big-integer 501ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/bytes 209ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/vary 412ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/on-headers 200ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/safe-buffer 209ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/finalhandler 198ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/parseurl 200ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/compressible 409ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/utils-merge 207ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/minipass 196ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/brace-expansion 202ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/path-scurry 425ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/proc-log 496ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/hosted-git-info 505ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/validate-npm-package-name 
+406ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/cli-cursor 193ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/wcwidth 502ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/log-symbols 208ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/strip-ansi 411ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/cli-spinners 203ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/kleur 196ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/rc 198ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/sisteransi 428ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/path-parse 121ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/es-errors 212ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/nested-error-stacks 501ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/supports-preserve-symlinks-flag 205ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/is-core-module 437ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/depd 504ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/etag 518ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/mime 426ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/destroy 210ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/fresh 501ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/escape-html 191ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/statuses 430ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/encodeurl 528ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/http-errors 213ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/range-parser 200ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/buffer-from 199ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/on-finished 446ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/type-fest 210ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/source-map 229ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@isaacs%2ffs-minipass 215ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/chownr 417ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ansi-escapes 202ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/minizlib 520ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/string-width 209ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/supports-hyperlinks 413ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/mz 470ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lines-and-columns 555ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/tinyglobby 203ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fhighlight 833ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/pirates 418ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ts-interface-checker 200ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/sax 206ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/uuid 438ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/simple-plist 516ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/yocto-queue 208ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/pngjs 410ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/yargs 198ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/graceful-fs 203ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/image-size 455ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/throat 517ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/jest-worker 203ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/serialize-error 210ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lodash.throttle 425ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/error-stack-parser 535ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/flow-enums-runtime 529ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/flow-enums-runtime 411ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/https-proxy-agent 212ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/yaml 418ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/exponential-backoff 503ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/jest-validate 514ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/micromatch 204ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/fb-watchman 194ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/walker 429ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/terser 213ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/vlq 426ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ob1 508ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/vlq 514ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/detect-libc 215ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lightningcss-linux-x64-gnu 
+197ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/hermes-estree 430ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lightningcss-darwin-x64 
+532ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lightningcss-darwin-arm64 
+198ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/lightningcss-win32-arm64-msvc 429ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lightningcss-win32-x64-msvc 
+513ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lightningcss-linux-arm64-gnu 
+203ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lightningcss-linux-x64-musl 
+204ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/lightningcss-linux-arm-gnueabihf 437ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lightningcss-freebsd-x64 
+223ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lightningcss-android-arm64 
+117ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/lightningcss-linux-arm64-musl 515ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/source-map-js 194ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fhelper-plugin-utils 
+708ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/path-key 214ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/shebang-command 219ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/which 433ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/argparse 198ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@types%2fnode 260ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/is-wsl 623ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lighthouse-logger 680ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/is-docker 219ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/rimraf 443ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/is-wsl 792ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/async-limiter 501ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/mime-db 430ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-create-class-features-plugin 220ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-syntax-decorators 235ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-create-class-features-plugin 734ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-destructuring 524ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/babel-plugin-polyfill-corejs2 198ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fplugin-syntax-flow 
+828ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/babel-plugin-polyfill-corejs3 227ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/babel-plugin-polyfill-regenerator 214ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-react-jsx 200ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-annotate-as-pure 714ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-react-jsx-development 
+220ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-react-display-name 499ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fplugin-syntax-jsx 
+211ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-typescript 203ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-for-of 201ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-react-pure-annotations 
+712ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-spread 217ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-classes 213ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-syntax-dynamic-import 213ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-literals 720ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-regenerator 517ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-native%2fbabel-plugin-codegen 822ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-function-name 217ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-unicode-regex 217ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-block-scoping 508ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-sticky-regex 731ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-syntax-optional-chaining 217ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-class-properties 245ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-arrow-functions 731ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-react-jsx-self 842ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-optional-chaining 206ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-async-to-generator 201ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-react-jsx-source 827ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-computed-properties 216ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-shorthand-properties 
+203ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-numeric-separator 730ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-optional-catch-binding 
+207ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-syntax-nullish-coalescing-operator 
+507ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fplugin-transform-log
+ical-assignment-operators 217ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-async-generator-functions 
+735ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fplugin-transform-nam
+ed-capturing-groups-regex 219ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fplugin-transform-nul
+lish-coalescing-operator 823ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-member-expression-to-functions 
+218ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-optimise-call-expression 227ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fhelper-skip-transpar
+ent-expression-wrappers 215ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-replace-supers 732ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/core-js-compat 205ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-define-polyfill-provider 217ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-define-polyfill-provider 229ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-define-polyfill-provider 726ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-syntax-typescript 209ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-remap-async-to-generator 224ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-create-regexp-features-plugin 515ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-create-regexp-features-plugin 303ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-remap-async-to-generator 730ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@react-native%2fcodegen 
+1049ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-wrap-function 207ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/regexpu-core 436ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/regenerate 202ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/regjsparser 199ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/regenerate-unicode-properties 420ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/regjsgen 505ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/unicode-match-property-ecmascript 203ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/unicode-match-property-value-ecmascript 428ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/inherits 130ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/inflight 213ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/once 218ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/fs.realpath 127ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/y18n 210ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/path-is-absolute 232ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/yargs-parser 212ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/cliui 416ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/get-caller-file 527ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/require-directory 501ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/lodash.debounce 429ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/define-lazy-prop 211ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/color-convert 215ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/has-flag 431ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/color-name 216ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/undici-types 211ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/marky 435ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/unpipe 639ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/isexe 135ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/shebang-regex 210ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@radix-ui%2freact-id 217ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@radix-ui%2fprimitive 390ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@radix-ui%2freact-compose-refs 915ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@radix-ui%2freact-context 
+708ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@radix-ui%2freact-presence 
+716ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@radix-ui%2freact-roving-focus 233ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@radix-ui%2freact-primitive 
+440ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@radix-ui%2freact-direction 
+928ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/color 519ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@radix-ui%2freact-use-controllable-state 544ms 
+(cache revalidated)
+npm http cache https://registry.npmjs.org/@react-navigation%2fcore 20ms (cache 
+hit)
+npm http fetch GET 200 https://registry.npmjs.org/standard-navigation 430ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@radix-ui%2freact-dialog 
+426ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@radix-ui%2freact-use-layout-effect 248ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@radix-ui%2freact-use-layout-effect 257ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@radix-ui%2freact-use-callback-ref 415ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@radix-ui%2freact-use-is-hydrated 443ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@radix-ui%2freact-use-effect-event 220ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@radix-ui%2freact-collection 
+951ms (cache revalidated)
+npm http cache https://registry.npmjs.org/use-sync-external-store 25ms (cache 
+hit)
+npm http fetch GET 200 https://registry.npmjs.org/color-string 532ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/simple-swizzle 512ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/is-arrayish 419ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ee-first 213ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/jest-util 214ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/merge-stream 198ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/stackframe 432ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/queue 521ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@jest%2ftypes 712ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@types%2fyargs 531ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@types%2fistanbul-reports 
+734ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@types%2fistanbul-lib-coverage 858ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@types%2fyargs-parser 529ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@types%2fistanbul-lib-report 
+812ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@sinclair%2ftypebox 911ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/agent-base 210ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/camelcase 144ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/leven 213ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/jest-get-type 214ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/makeerror 219ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/bser 432ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/braces 522ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/node-int64 221ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/acorn 133ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@jridgewell%2fsource-map 
+406ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/fill-range 198ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/to-regex-range 144ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/is-number 520ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/balanced-match 208ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/restore-cursor 222ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ansi-regex 223ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/defaults 429ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/onetime 204ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/signal-exit 214ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/fs-extra 232ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/find-up 249ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/execa 431ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-native-community%2fcli-tools 1048ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-native-community%2fcli-types 912ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-native-community%2fcli-clean 1351ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-native-community%2fcli-doctor 940ms (cache 
+miss)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-native-community%2fcli-hermes 1010ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-native-community%2fcli-config 1430ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-native-community%2fcli-server-api 978ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-native-community%2fcli-debugger-ui 1001ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/logkitty 423ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@react-native-community%2fcli-plugin-metro 1059ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/fast-xml-parser 472ms (cache 
+miss)
+npm http fetch GET 200 https://registry.npmjs.org/jest-mock 554ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@jest%2fenvironment 791ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@jest%2ffake-timers 608ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/babel-preset-fbjs 504ms 
+(cache revalidated)
+npm http cache https://registry.npmjs.org/react-is 28ms (cache hit)
+npm http fetch GET 200 https://registry.npmjs.org/minimist 219ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/metro-react-native-babel-preset 506ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/asap 415ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/shell-quote 530ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/flow-parser 515ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/jscodeshift 436ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/object-assign 235ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/cosmiconfig 470ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/joi 534ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/envinfo 551ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/command-exists 224ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/sudo-prompt 419ms (cache 
+revalidated)
+npm http cache 
+https://registry.npmjs.org/@react-native-community%2fcli-platform-ios 8ms 
+(cache hit)
+npm http fetch GET 200 https://registry.npmjs.org/node-stream-zip 501ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/hermes-profile-transformer 
+521ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/hermes-profile-transformer 
+427ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/readline 506ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/errorhandler 421ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/nocache 516ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/is-stream 195ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/appdirsjs 515ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/node-fetch 447ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/p-finally 518ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/strip-eof 500ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/get-stream 423ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/npm-run-path 221ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/path-exists 135ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/jsonfile 208ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/locate-path 520ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/universalify 417ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/import-fresh 202ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/parse-json 216ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@hapi%2fhoek 214ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/is-directory 432ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@hapi%2ftopo 1017ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@sideway%2faddress 825ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@sideway%2fformula 898ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@sideway%2fpinpoint 851ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/bl 213ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/is-unicode-supported 221ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/is-interactive 434ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/dayjs 210ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ansi-fragments 519ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/strnum 521ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/async 232ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/denodeify 440ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/temp 526ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/absolute-path 567ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-minify-uglify 429ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-hermes-compiler 505ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-inspector-proxy 512ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/whatwg-url 419ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/esprima 201ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/error-ex 419ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/caller-path 513ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/json-parse-better-errors 
+515ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/pump 128ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/nice-try 522ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/p-locate 199ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/end-of-stream 431ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/caller-callsite 529ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/callsites 215ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/jest-message-util 435ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@sinonjs%2ffake-timers 713ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/stack-utils 460ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@types%2fstack-utils 551ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@sinonjs%2fcommons 717ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/type-detect 128ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/decamelize 233ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/colorette 247ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/slice-ansi 468ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/which-module 231ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/set-blocking 240ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/require-main-filename 432ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/is-fullwidth-code-point 
+202ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/astral-regex 525ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-syntax-class-properties 231ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-proposal-class-properties 524ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-object-super 730ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-syntax-object-rest-spread 542ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-proposal-object-rest-spread 254ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-template-literals 312ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/babel-plugin-syntax-trailing-function-commas 585ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-property-literals 729ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fplugin-transform-mem
+ber-expression-literals 225ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-transform-block-scoped-functions 
+521ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-proposal-optional-chaining 740ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-proposal-optional-catch-binding 
+849ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-proposal-async-generator-functions 
+835ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fplugin-proposal-null
+ish-coalescing-operator 748ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-syntax-async-generators 259ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fplugin-syntax-optional-catch-binding 765ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@babel%2fhelper-environment-visitor 863ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/tr46 203ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/p-try 451ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/wrappy 205ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/recast 441ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/node-dir 533ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/neo-async 536ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/babel-core 438ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/write-file-atomic 537ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fregister 552ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fpreset-flow 796ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/clone-deep 210ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/find-cache-dir 431ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/tslib 232ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/make-dir 525ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ast-types 452ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/imurmurhash 523ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/kind-of 151ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/is-plain-object 215ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/shallow-clone 560ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/pkg-dir 438ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/commondir 517ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/pify 535ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/isobject 444ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@types%2fhammerjs 821ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/css-what 276ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/nth-check 215ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/domutils 496ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/boolbase 545ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/domhandler 236ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/mdn-data 436ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/dom-serializer 221ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/domelementtype 224ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/domelementtype 448ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/entities 513ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/unicode-canonical-property-names-ecmascript 218ms 
+(cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/unicode-property-aliases-ecmascript 432ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ini 144ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/strip-json-comments 206ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/deep-extend 212ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/hasown 430ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/function-bind 215ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/mimic-fn 254ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/toidentifier 268ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/setprototypeof 507ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/fdir 206ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/any-promise 217ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/thenify-all 435ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/thenify 212ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-remove-scroll 219ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@radix-ui%2freact-portal 
+238ms (cache revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@radix-ui%2freact-focus-scope 219ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/aria-hidden 456ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@radix-ui%2freact-focus-guards 225ms (cache 
+revalidated)
+npm http fetch GET 200 
+https://registry.npmjs.org/@radix-ui%2freact-dismissable-layer 249ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-style-singleton 207ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/use-callback-ref 218ms 
+(cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/use-sidecar 224ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-remove-scroll-bar 
+443ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/detect-node-es 212ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/get-nonce 216ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/tmpl 419ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/clone 529ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ieee754 213ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/emoji-regex 452ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/plist 522ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/concat-map 214ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/readable-stream 146ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/string_decoder 218ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/util-deprecate 227ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/anymatch 138ms (cache 
+revalidated)

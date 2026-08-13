@@ -35,19 +35,23 @@ const StatusIcon = ({ status }: { status: Transaction['status'] }) => {
 };
 
 export default function TransactionsScreen() {
-  const { token } = useStore();
+  const { token, user } = useStore();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchTransactions = async () => {
+    if (!token || !user) {
+      setLoading(false);
+      return;
+    }
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000'}/api/wallets/transactions`,
+        `${process.env.EXPO_PUBLIC_API_URL || 'http://192.168.1.40:3000'}/api/wallets/${user.id}/ledger`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const data = await response.json();
-      if (data.success) setTransactions(data.data || []);
+      if (data.success) setTransactions(data.data?.entries || data.data || []);
     } catch (_err) {
       // silently fail — show empty state
     } finally {

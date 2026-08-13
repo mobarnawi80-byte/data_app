@@ -3,8 +3,10 @@ import { UserController } from '../controllers/userController';
 
 const router = Router();
 
+router.post('/login', UserController.login);
 router.post('/register', UserController.register);
 router.get('/:id', UserController.getProfile);
 router.patch('/:id/status', UserController.updateStatus);
 
 export default router;
+

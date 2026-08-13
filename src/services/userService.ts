@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import { UserStatus } from '@prisma/client';
 import { prisma } from '../config/prisma';
 import { CreateUserDTO } from '../types/vtu';
@@ -6,6 +7,40 @@ import { StrowalletService } from './strowalletService';
 
 export class UserService {
   private static readonly SALT_ROUNDS = 10;
+  private static readonly JWT_SECRET = process.env.JWT_SECRET ?? 'vtu_dev_secret_change_in_prod';
+  private static readonly JWT_EXPIRES_IN = '30d';
+
+  /**
+   * Login: verify credentials and return JWT token
+   */
+  static async login(email: string, password: string) {
+    const user = await prisma.user.findUnique({
+      where: { email: email.toLowerCase().trim() },
+      include: { wallet: true },
+    });
+
+    if (!user) {
+      throw new Error('Invalid email or password.');
+    }
+
+    if (user.status !== UserStatus.ACTIVE) {
+      throw new Error('Account is suspended. Please contact support.');
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+    if (!isPasswordValid) {
+      throw new Error('Invalid email or password.');
+    }
+
+    const token = jwt.sign(
+      { userId: user.id, email: user.email },
+      this.JWT_SECRET,
+      { expiresIn: this.JWT_EXPIRES_IN }
+    );
+
+    const { password_hash: _, transaction_pin_hash: __, ...userWithoutSecrets } = user;
+    return { token, user: userWithoutSecrets };
+  }
 
   /**
    * Register a new User, create connected Wallet, and provision a dedicated Strowallet NGN Virtual Bank Account.

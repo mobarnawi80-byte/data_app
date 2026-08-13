@@ -58,7 +58,7 @@ export default function ProfileScreen() {
           <View style={styles.avatar}>
             <User color="#6C63FF" size={40} />
           </View>
-          <Text style={styles.userName}>{user?.name ?? 'VTU User'}</Text>
+          <Text style={styles.userName}>{user?.full_name ?? 'VTU User'}</Text>
           <View style={styles.verifiedBadge}>
             <Text style={styles.verifiedText}>✓ Verified Account</Text>
           </View>

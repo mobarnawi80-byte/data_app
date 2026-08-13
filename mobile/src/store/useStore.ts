@@ -1,80 +1,130 @@
 import { create } from 'zustand';
 import * as SecureStore from 'expo-secure-store';
-
-export interface UserProfile {
-  id: string;
-  full_name: string;
-  email: string;
-  phone: string;
-  biometric_enabled: boolean;
-}
+import { authApi, walletApi, type AuthUser, type WalletBalance } from '../services/api';
 
 export interface WalletData {
   balance: number;
-  virtual_account_number: string;
-  virtual_bank_name: string;
-  virtual_account_name: string;
-}
-
-export interface DataPlan {
-  id: string;
-  network: 'MTN' | 'AIRTEL' | 'GLO' | 'NINE_MOBILE';
-  category: 'SME' | 'CG' | 'DIRECT';
-  name: string;
-  size: string;
-  validity: string;
-  price: number;
+  currency: string;
+  virtual_account_number?: string;
+  virtual_bank_name?: string;
+  virtual_account_name?: string;
 }
 
 interface AppState {
-  user: UserProfile | null;
-  wallet: WalletData | null;
+  // Auth
+  user: AuthUser | null;
   token: string | null;
-  isBalanceVisible: boolean;
   isAuthenticated: boolean;
+
+  // Wallet
+  wallet: WalletData | null;
+  isBalanceVisible: boolean;
+
+  // UI Preferences
   selectedNetwork: 'MTN' | 'AIRTEL' | 'GLO' | 'NINE_MOBILE';
   selectedCategory: 'SME' | 'CG' | 'DIRECT';
-  
-  // Actions
-  setUser: (user: UserProfile | null) => void;
-  setWallet: (wallet: WalletData | null) => void;
-  setToken: (token: string | null) => Promise<void>;
+  isLoading: boolean;
+  error: string | null;
+
+  // Actions — Auth
+  login: (email: string, password: string) => Promise<boolean>;
+  register: (payload: {
+    full_name: string;
+    email: string;
+    phone: string;
+    password: string;
+    transaction_pin: string;
+  }) => Promise<boolean>;
+  logout: () => Promise<void>;
+  restoreSession: () => Promise<void>;
+
+  // Actions — Wallet
+  fetchWallet: () => Promise<void>;
   toggleBalanceVisibility: () => void;
+
+  // Actions — UI
   setSelectedNetwork: (network: 'MTN' | 'AIRTEL' | 'GLO' | 'NINE_MOBILE') => void;
   setSelectedCategory: (category: 'SME' | 'CG' | 'DIRECT') => void;
-  logout: () => Promise<void>;
+  clearError: () => void;
 }
 
-export const useStore = create<AppState>((set) => ({
-  user: {
-    id: 'usr_881923',
-    full_name: 'Amina Bello',
-    email: 'amina.bello@example.ng',
-    phone: '08031234567',
-    biometric_enabled: true,
-  },
-  wallet: {
-    balance: 48500.50,
-    virtual_account_number: '8192039481',
-    virtual_bank_name: 'Sterling Bank (Strowallet)',
-    virtual_account_name: 'Amina Bello / VTU App',
-  },
+export const useStore = create<AppState>((set, get) => ({
+  user: null,
   token: null,
+  isAuthenticated: false,
+  wallet: null,
   isBalanceVisible: true,
-  isAuthenticated: true,
   selectedNetwork: 'MTN',
   selectedCategory: 'SME',
+  isLoading: false,
+  error: null,
 
-  setUser: (user) => set({ user }),
-  setWallet: (wallet) => set({ wallet }),
-  
-  setToken: async (token) => {
-    if (token) {
-      await SecureStore.setItemAsync('user_token', token);
-    } else {
-      await SecureStore.deleteItemAsync('user_token');
+  // ─── Login ────────────────────────────────────────────────────────────────
+  login: async (email, password) => {
+    set({ isLoading: true, error: null });
+    const res = await authApi.login(email, password);
+    if (!res.success || !res.data) {
+      set({ isLoading: false, error: res.error ?? res.message ?? 'Login failed.' });
+      return false;
     }
-    set({ token, isAuthenticated: !!token });
+    const { token, user } = res.data;
+    await SecureStore.setItemAsync('user_token', token);
+    await SecureStore.setItemAsync('user_id', user.id);
+    set({ token, user, isAuthenticated: true, isLoading: false });
+    // Fetch wallet right after login
+    get().fetchWallet();
+    return true;
+  },
+
+  // ─── Register ─────────────────────────────────────────────────────────────
+  register: async (payload) => {
+    set({ isLoading: true, error: null });
+    const res = await authApi.register(payload);
+    if (!res.success || !res.data) {
+      set({ isLoading: false, error: res.error ?? res.message ?? 'Registration failed.' });
+      return false;
+    }
+    // After register, auto-login
+    return get().login(payload.email, payload.password);
+  },
+
+  // ─── Restore session on app start ─────────────────────────────────────────
+  restoreSession: async () => {
+    try {
+      const token = await SecureStore.getItemAsync('user_token');
+      const userId = await SecureStore.getItemAsync('user_id');
+      if (!token || !userId) return;
+
+      // Verify token is still valid by fetching profile
+      const res = await authApi.getProfile(token, userId);
+      if (res.success && res.data) {
+        set({ token, user: res.data, isAuthenticated: true });
+        get().fetchWallet();
+      } else {
+        // Token expired — clear storage
+        await SecureStore.deleteItemAsync('user_token');
+        await SecureStore.deleteItemAsync('user_id');
+      }
+    } catch {
+      // Silent fail — user will see login screen
+    }
+  },
+
+  // ─── Logout ───────────────────────────────────────────────────────────────
+  logout: async () => {
+    await SecureStore.deleteItemAsync('user_token');
+    await SecureStore.deleteItemAsync('user_id');
+    set({ user: null, wallet: null, token: null, isAuthenticated: false });
+  },
+
+  // ─── Fetch Wallet ─────────────────────────────────────────────────────────
+  fetchWallet: async () => {
+    const { token, user } = get();
+    if (!token || !user) return;
+    const res = await walletApi.getBalance(token, user.id);
+    if (res.success && res.data) {
+      set({ wallet: res.data as WalletData });
+    }
   },
 
   toggleBalanceVisibility: () =>
@@ -82,9 +132,5 @@ export const useStore = create<AppState>((set) => ({
 
   setSelectedNetwork: (selectedNetwork) => set({ selectedNetwork }),
   setSelectedCategory: (selectedCategory) => set({ selectedCategory }),
-
-  logout: async () => {
-    await SecureStore.deleteItemAsync('user_token');
-    set({ user: null, wallet: null, token: null, isAuthenticated: false });
-  },
+  clearError: () => set({ error: null }),
 }));
