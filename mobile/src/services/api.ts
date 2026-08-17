@@ -3,7 +3,7 @@
  * All HTTP calls to the Node.js backend go through here.
  */
 
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://192.168.1.40:3000';
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://10.21.132.45:3000';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
