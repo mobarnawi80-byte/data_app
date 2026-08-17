@@ -1,0 +1,348 @@
+﻿<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>CoopFund Admin - Ministry Cooperative Society</title><meta name="description" content="Administrative dashboard for Ministry of Finance Cooperative Society"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script><style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--n9:#0d1f3c;--n8:#162d52;--n7:#1e3a5f;--n6:#264d7a;--n5:#3465a0;--n4:#5480b8;--n3:#7da0cc;--n1:#d6e4f3;--n0:#eef4fa;--g8:#7c5a0a;--g7:#9a730d;--g6:#b88d13;--g5:#c9a227;--g4:#d4b245;--g3:#e0c870;--g1:#f5ecd0;--g0:#faf5e8;--ok7:#14532d;--ok6:#166534;--ok5:#16a34a;--ok1:#dcfce7;--ok0:#f0fdf4;--w7:#92400e;--w6:#b45309;--w5:#d97706;--w1:#fef3c7;--w0:#fffbeb;--r7:#991b1b;--r6:#b91c1c;--r5:#dc2626;--r1:#fee2e2;--r0:#fff5f5;--q9:#111827;--q8:#1f2937;--q7:#374151;--q6:#4b5563;--q5:#6b7280;--q4:#9ca3af;--q3:#d1d5db;--q2:#e5e7eb;--q15:#eff0f3;--q1:#f3f4f6;--q0:#f9fafb;--wh:#ffffff;--pb:#eef2f7;--sw:252px;--hh:68px;--ff:'Inter',-apple-system,sans-serif;--fm:'JetBrains Mono',monospace;--s2:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--s3:0 4px 12px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.04);--s4:0 10px 28px rgba(0,0,0,.10),0 4px 8px rgba(0,0,0,.05)}
+html{font-size:15px;scroll-behavior:smooth}
+body{font-family:var(--ff);background:var(--pb);color:var(--q8);line-height:1.5;min-height:100vh;overflow-x:hidden}
+.lay{display:flex;min-height:100vh}
+.sb{width:var(--sw);background:linear-gradient(160deg,rgba(22,45,82,.97),rgba(7,21,38,.99));display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;overflow-y:auto;overflow-x:hidden;transition:transform .3s ease;box-shadow:4px 0 24px rgba(0,0,0,.18)}
+.sb::-webkit-scrollbar{width:3px}.sb::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:4px}
+.sb-lg{display:flex;align-items:center;gap:12px;padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.lm{width:40px;height:40px;background:linear-gradient(135deg,var(--g5),var(--g3));border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:var(--n9);flex-shrink:0;box-shadow:0 2px 10px rgba(201,162,39,.4)}
+.lt{display:flex;flex-direction:column;gap:1px}
+.ln{font-size:15px;font-weight:700;color:#fff;letter-spacing:-.01em;line-height:1.2}
+.ls{font-size:10.5px;color:rgba(255,255,255,.35);letter-spacing:.07em;text-transform:uppercase}
+.sb-nv{flex:1;padding:14px 10px}
+.ns{margin-bottom:18px}
+.nl{display:block;font-size:10px;font-weight:600;color:rgba(255,255,255,.27);text-transform:uppercase;letter-spacing:.12em;padding:0 10px 6px}
+.na{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;color:rgba(255,255,255,.50);text-decoration:none;font-size:13.5px;font-weight:500;transition:all .18s;cursor:pointer;position:relative;margin-bottom:1px;border:none;background:none;width:100%;font-family:var(--ff)}
+.na:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.88)}
+.na.on{background:rgba(201,162,39,.14);color:var(--g3)}
+.na.on::before{content:'';position:absolute;left:0;top:5px;bottom:5px;width:3px;background:var(--g5);border-radius:0 2px 2px 0}
+.na svg{width:16px;height:16px;flex-shrink:0;opacity:.8}.na.on svg{opacity:1}
+.nb{margin-left:auto;background:var(--r6);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;min-width:18px;text-align:center;line-height:1.4}
+.nb.g{background:var(--g6);color:var(--n9)}
+.sb-ft{padding:14px 16px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.ua{width:34px;height:34px;background:linear-gradient(135deg,var(--n5),var(--n3));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0;border:2px solid rgba(255,255,255,.14)}
+.ui{flex:1;min-width:0}.un{display:block;font-size:13px;font-weight:600;color:rgba(255,255,255,.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ur{display:block;font-size:11px;color:rgba(255,255,255,.32)}
+.lob{background:none;border:none;color:rgba(255,255,255,.28);cursor:pointer;padding:6px;border-radius:6px;transition:all .15s;display:flex;align-items:center}
+.lob:hover{color:rgba(255,255,255,.7);background:rgba(255,255,255,.08)}
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;backdrop-filter:blur(2px)}
+.mw{flex:1;margin-left:var(--sw);min-height:100vh;display:flex;flex-direction:column}
+.hd{background:#fff;border-bottom:1px solid var(--q2);padding:0 28px;height:var(--hh);display:flex;align-items:center;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:50;box-shadow:var(--s2)}
+.hl{display:flex;align-items:center;gap:16px}
+.sbt{display:none;background:none;border:1px solid var(--q2);border-radius:6px;padding:7px;cursor:pointer;color:var(--q6);transition:all .15s;align-items:center}
+.sbt:hover{background:var(--q0)}.sbt svg{display:block;width:18px;height:18px}
+.pt{font-size:18px;font-weight:700;color:var(--q9);letter-spacing:-.02em}
+.ps{font-size:12px;color:var(--q4);margin-top:1px}
+.hr2{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.dfg{display:flex;background:var(--q1);border-radius:10px;padding:3px;gap:2px}
+.fb{background:none;border:none;padding:6px 12px;border-radius:6px;font-size:12.5px;font-weight:500;color:var(--q5);cursor:pointer;transition:all .15s;white-space:nowrap;font-family:var(--ff)}
+.fb.on{background:#fff;color:var(--n7);box-shadow:0 1px 2px rgba(0,0,0,.04);font-weight:600}
+.fb:hover:not(.on){color:var(--q7)}
+.ds{background:#fff;border:1px solid var(--q2);border-radius:10px;padding:7px 28px 7px 12px;font-size:12.5px;font-family:var(--ff);color:var(--q7);cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.ds:focus{border-color:var(--n4);outline:none}
+.dv{width:1px;height:24px;background:var(--q2)}
+.rb{background:none;border:1px solid var(--q2);border-radius:10px;padding:7px;cursor:pointer;color:var(--q5);transition:all .15s;display:flex;align-items:center}
+.rb:hover{background:var(--q0);color:var(--q7);border-color:var(--q3)}.rb svg{width:16px;height:16px}
+.mc{flex:1;padding:24px 28px}
+.sl{font-size:11.5px;font-weight:600;color:var(--q4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.sl::after{content:'';flex:1;height:1px;background:var(--q2)}
+.kg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.kc{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:var(--s2);border:1px solid var(--q15);position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s;cursor:default}
+.kc:hover{box-shadow:var(--s3);transform:translateY(-1px)}
+.kc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.kc.cn::before{background:linear-gradient(90deg,var(--n7),var(--n4))}.kc.cg::before{background:linear-gradient(90deg,var(--g6),var(--g4))}
+.kc.co::before{background:linear-gradient(90deg,var(--ok6),var(--ok5))}.kc.cw::before{background:linear-gradient(90deg,var(--w6),var(--w5))}.kc.cr::before{background:linear-gradient(90deg,var(--r6),var(--r5))}
+.kh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.kl{font-size:11px;font-weight:600;color:var(--q4);text-transform:uppercase;letter-spacing:.05em;line-height:1.3}
+.ki{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ki.cn{background:var(--n0);color:var(--n6)}.ki.cg{background:var(--g0);color:var(--g7)}.ki.co{background:var(--ok0);color:var(--ok6)}.ki.cw{background:var(--w0);color:var(--w6)}.ki.cr{background:var(--r0);color:var(--r6)}.ki svg{width:17px;height:17px}
+.kv{font-size:26px;font-weight:800;color:var(--q9);letter-spacing:-.03em;line-height:1;margin-bottom:8px}
+.kv.m{font-family:var(--fm);font-size:21px}
+.kf{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.tr{display:flex;align-items:center;gap:3px;font-size:11.5px;font-weight:500}.tr.up{color:var(--ok6)}.tr.dn{color:var(--r6)}.tr.nu{color:var(--q4)}.tr svg{width:12px;height:12px}
+.kp{color:var(--q4);font-size:11px}
+.c2{display:grid;grid-template-columns:3fr 2fr;gap:14px;margin-bottom:14px}
+.ceq{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.cc{background:#fff;border-radius:14px;padding:20px;box-shadow:var(--s2);border:1px solid var(--q15)}
+.cf2{background:#fff;border-radius:14px;padding:20px;box-shadow:var(--s2);border:1px solid var(--q15);margin-bottom:14px}
+.ch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:12px}
+.ct{font-size:14px;font-weight:700;color:var(--q9);letter-spacing:-.01em}
+.cu{font-size:11.5px;color:var(--q4);margin-top:2px}
+.cl{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--q5);flex-shrink:0;padding-top:2px}
+.li2{display:flex;align-items:center;gap:5px}
+.ld{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cw2{position:relative;height:230px}.cw2.tall{height:270px}
+.cs{display:flex;gap:16px;margin-top:14px;padding-top:14px;border-top:1px solid var(--q1);flex-wrap:wrap}
+.ci{flex:1;min-width:80px}.cil{font-size:10.5px;color:var(--q4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.civ{font-size:14px;font-weight:700;color:var(--q9);font-family:var(--fm)}
+.sg{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:32px}
+.scard{background:#fff;border-radius:14px;box-shadow:var(--s2);border:1px solid var(--q15);overflow:hidden}
+.scard.full{grid-column:1/-1}
+.sh{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 12px;border-bottom:1px solid var(--q1)}
+.st{font-size:13.5px;font-weight:700;color:var(--q9);display:flex;align-items:center;gap:8px}
+.cnt{background:var(--q1);color:var(--q6);font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:20px}
+.cnt.a{background:var(--r1);color:var(--r7)}.cnt.w{background:var(--w1);color:var(--w7)}.cnt.ok{background:var(--ok1);color:var(--ok7)}
+.va{font-size:12px;font-weight:600;color:var(--n5);text-decoration:none;padding:4px 8px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.va:hover{background:var(--n0);color:var(--n7)}
+.tw{overflow-x:auto}
+.t{width:100%;border-collapse:collapse;font-size:12.5px}
+.t th{padding:9px 16px;text-align:left;font-size:10.5px;font-weight:600;color:var(--q4);text-transform:uppercase;letter-spacing:.05em;background:var(--q0);border-bottom:1px solid var(--q1);white-space:nowrap}
+.t td{padding:10px 16px;border-bottom:1px solid var(--q1);vertical-align:middle;color:var(--q7)}
+.t tr:last-child td{border-bottom:none}.t tr:hover td{background:var(--q0)}
+.tp{font-weight:600;color:var(--q9)}.tm{font-family:var(--fm);font-size:12px}.ts{color:var(--q4);font-size:11px}
+.b{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.bd2{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.bo{background:var(--ok1);color:var(--ok7)}.bo .bd2{background:var(--ok5)}
+.bw{background:var(--w1);color:var(--w7)}.bw .bd2{background:var(--w5)}
+.br{background:var(--r1);color:var(--r7)}.br .bd2{background:var(--r5)}
+.bn{background:var(--n0);color:var(--n7)}.bn .bd2{background:var(--n5)}
+.bg2{background:var(--g1);color:var(--g8)}.bg2 .bd2{background:var(--g6)}
+.bz{background:var(--q1);color:var(--q6)}.bz .bd2{background:var(--q4)}
+.ab{background:none;border:1px solid var(--q2);border-radius:6px;padding:4px 10px;font-size:11.5px;font-weight:500;color:var(--q6);cursor:pointer;transition:all .15s;white-space:nowrap;font-family:var(--ff)}
+.ab:hover{background:var(--q0);border-color:var(--q3);color:var(--q8)}
+.ab.p{background:var(--n7);border-color:var(--n7);color:#fff}.ab.p:hover{background:var(--n6)}
+.ab.ok{background:var(--ok6);border-color:var(--ok6);color:#fff}.ab.ok:hover{background:var(--ok7)}
+.ab.ng{border-color:var(--r5);color:var(--r6)}.ab.ng:hover{background:var(--r0)}
+.br2{display:flex;gap:4px}
+.nlist{padding:2px 0}
+.ni{display:flex;gap:12px;padding:12px 18px;border-bottom:1px solid var(--q1);transition:background .15s;position:relative}
+.ni:last-child{border-bottom:none}.ni:hover{background:var(--q0)}
+.nic{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.nic.i{background:var(--n0);color:var(--n6)}.nic.ok{background:var(--ok0);color:var(--ok6)}.nic.w{background:var(--w0);color:var(--w6)}.nic.r{background:var(--r0);color:var(--r6)}.nic svg{width:14px;height:14px}
+.nb2{flex:1;min-width:0}.nt{font-size:13px;color:var(--q7);line-height:1.4}.nt strong{color:var(--q9);font-weight:600}.ntm{font-size:11px;color:var(--q4);margin-top:3px}
+.unr{position:relative}.unr::after{content:'';width:7px;height:7px;background:var(--n5);border-radius:50%;position:absolute;top:14px;right:14px;border:1.5px solid #fff}
+.ir{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 18px;border-bottom:1px solid var(--q1)}
+.ir:last-child{border-bottom:none}.ir:hover{background:var(--q0)}
+.iic{width:34px;height:34px;background:var(--n0);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--n6);flex-shrink:0}.iic svg{width:15px;height:15px}
+.iin{min-width:0}.inm{font-size:13px;font-weight:600;color:var(--q9)}.imt{font-size:11px;color:var(--q4);margin-top:1px}
+.ipb{width:100%;background:var(--q1);border-radius:20px;height:4px;overflow:hidden;margin-top:7px}
+.ipf{height:100%;border-radius:20px}.ipf.ok{background:linear-gradient(90deg,var(--ok5),var(--ok6))}.ipf.w{background:linear-gradient(90deg,var(--w5),var(--w6))}
+.imc{font-size:11px;color:var(--q4);margin-top:3px}
+.iir{text-align:right}.iam{font-family:var(--fm);font-size:13px;font-weight:700;color:var(--q9);margin-bottom:5px}
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:flex-start;justify-content:center;padding-top:80px;backdrop-filter:blur(3px)}
+.mo.open{display:flex}
+.md{background:#fff;border-radius:20px;padding:26px;width:360px;box-shadow:var(--s4);animation:mi .2s ease}
+@keyframes mi{from{opacity:0;transform:translateY(-10px) scale(.97)}to{opacity:1;transform:none}}
+.md h2{font-size:15px;font-weight:700;color:var(--q9);margin-bottom:18px}
+.fg{margin-bottom:14px}.fl{display:block;font-size:11.5px;font-weight:600;color:var(--q5);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.fi{width:100%;border:1px solid var(--q2);border-radius:10px;padding:8px 12px;font-size:13.5px;font-family:var(--ff);color:var(--q8);outline:none;transition:border-color .15s}
+.fi:focus{border-color:var(--n4)}
+.ma2{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+.btn{padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:1px solid transparent;font-family:var(--ff)}
+.bto{background:none;border-color:var(--q2);color:var(--q6)}.bto:hover{background:var(--q0)}
+.btp{background:var(--n7);color:#fff}.btp:hover{background:var(--n6)}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:var(--q1);border-radius:10px}::-webkit-scrollbar-thumb{background:var(--q3);border-radius:10px}
+@media(max-width:1280px){.c2{grid-template-columns:1fr}.cw2.tall{height:220px}}
+@media(max-width:1024px){.kg{grid-template-columns:repeat(2,1fr)}.ceq{grid-template-columns:1fr}.sg{grid-template-columns:1fr}.scard.full{grid-column:auto}}
+@media(max-width:900px){.sb{transform:translateX(-252px);width:252px}.sb.open{transform:translateX(0)}.ov.open{display:block}.mw{margin-left:0}.sbt{display:flex}.dfg{display:none}.dv{display:none}}
+@media(max-width:600px){.hd{padding:0 14px}.mc{padding:14px}.kg{grid-template-columns:repeat(2,1fr);gap:10px}.kv{font-size:20px}.kv.m{font-size:17px}}
+</style></head><body>
+<div class="lay">
+<div class="ov" id="ov"></div>
+<aside class="sb" id="sb">
+  <div class="sb-lg"><div class="lm">CF</div><div class="lt"><span class="ln">CoopFund</span><span class="ls">Admin Portal</span></div></div>
+  <nav class="sb-nv">
+    <div class="ns"><span class="nl">Overview</span>
+      <a class="na on" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>
+    </div>
+    <div class="ns"><span class="nl">Members</span>
+      <a class="na" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>All Members</a>
+      <a class="na" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>Register Member</a>
+    </div>
+    <div class="ns"><span class="nl">Contributions</span>
+      <a class="na" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>Contributions</a>
+      <a class="na" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Payroll Import<span class="nb g">2</span></a>
+      <a class="na" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Reconciliation</a>
+    </div>
+    <div class="ns"><span class="nl">Financial</span>
+      <a class="na" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Loans<span class="nb">7</span></a>
+      <a class="na" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Withdrawals<span class="nb">4</span></a>
+      <a class="na" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Fund Ledger</a>
+    </div>
+    <div class="ns"><span class="nl">Governance</span>
+      <a class="na" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Approvals<span class="nb">11</span></a>
+      <a class="na" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>Reports</a>
+      <a class="na" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Audit Log</a>
+    </div>
+    <div class="ns"><span class="nl">System</span>
+      <a class="na" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 0 0 3 12a10 10 0 0 0 16.07 7.07M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>Settings</a>
+    </div>
+  </nav>
+  <div class="sb-ft">
+    <div class="ua">AO</div>
+    <div class="ui"><span class="un">Admin Officer</span><span class="ur">Super Administrator</span></div>
+    <button class="lob" title="Sign out"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+  </div>
+</aside>
+<div class="mw">
+  <header class="hd">
+    <div class="hl">
+      <button class="sbt" id="sbt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <div><h1 class="pt">Dashboard</h1><p class="ps">Ministry of Finance Cooperative Society &middot; August 2026</p></div>
+    </div>
+    <div class="hr2">
+      <div class="dfg">
+        <button class="fb" onclick="setF('m',this)">This Month</button>
+        <button class="fb" onclick="setF('lm',this)">Last Month</button>
+        <button class="fb on" onclick="setF('y',this)">This Year</button>
+        <button class="fb" onclick="setF('c',this)">Custom</button>
+      </div>
+      <div class="dv"></div>
+      <select class="ds" onchange="fDept(this.value)">
+        <option value="all">All Departments</option>
+        <option>Treasury</option><option>Budget</option><option>Accounts</option>
+        <option>Human Resources</option><option>Procurement</option>
+        <option>ICT</option><option>Legal</option><option>Internal Audit</option><option>Administration</option>
+      </select>
+      <button class="rb" id="rfb" title="Refresh data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>
+    </div>
+  </header>
+  <main class="mc">
+    <p class="sl">Fund Overview</p>
+    <div class="kg">
+      <div class="kc cn"><div class="kh"><span class="kl">Total Members</span><div class="ki cn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div></div><div class="kv">287</div><div class="kf"><span class="tr up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+4 new</span><span class="kp">this year</span></div></div>
+      <div class="kc co"><div class="kh"><span class="kl">Active Members</span><div class="ki co"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div></div><div class="kv">271</div><div class="kf"><span class="tr nu">94.4% of total</span><span class="kp">&middot; 16 inactive</span></div></div>
+      <div class="kc cg"><div class="kh"><span class="kl">Total Contributions</span><div class="ki cg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div></div><div class="kv m">&#8358;186.45M</div><div class="kf"><span class="tr up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+8.2%</span><span class="kp">vs last year</span></div></div>
+      <div class="kc cn"><div class="kh"><span class="kl">Current Fund Balance</span><div class="ki cn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div></div><div class="kv m">&#8358;94.23M</div><div class="kf"><span class="tr up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+&#8358;2.1M</span><span class="kp">this month</span></div></div>
+      <div class="kc cw"><div class="kh"><span class="kl">Outstanding Loans</span><div class="ki cw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div></div><div class="kv m">&#8358;42.15M</div><div class="kf"><span class="tr nu">63 active loans</span><span class="kp">&middot; 3 delinquent</span></div></div>
+      <div class="kc cr"><div class="kh"><span class="kl">Total Withdrawals</span><div class="ki cr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg></div></div><div class="kv m">&#8358;28.90M</div><div class="kf"><span class="tr dn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>-12.4%</span><span class="kp">vs last year</span></div></div>
+      <div class="kc co"><div class="kh"><span class="kl">This Month&#39;s Contributions</span><div class="ki co"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div></div><div class="kv m">&#8358;4.85M</div><div class="kf"><span class="tr up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+&#8358;350K</span><span class="kp">vs July</span></div></div>
+      <div class="kc cw"><div class="kh"><span class="kl">Outstanding Contributions</span><div class="ki cw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div></div><div class="kv">16</div><div class="kf"><span class="tr nu">members pending</span><span class="kp">&middot; &#8358;480K unposted</span></div></div>
+    </div>
+    <p class="sl">Financial Charts</p>
+    <div class="c2">
+      <div class="cc">
+        <div class="ch"><div><div class="ct">Contributions by Month</div><div class="cu">Monthly payroll + manual payments (&#8358; millions) &mdash; YTD 2026</div></div><div class="cl"><span class="li2"><span class="ld" style="background:#1e3a5f"></span>Payroll</span><span class="li2"><span class="ld" style="background:#c9a227"></span>Manual</span></div></div>
+        <div class="cw2 tall"><canvas id="c1"></canvas></div>
+        <div class="cs"><div class="ci"><div class="cil">YTD Total</div><div class="civ">&#8358;38.80M</div></div><div class="ci"><div class="cil">Monthly Avg</div><div class="civ">&#8358;4.85M</div></div><div class="ci"><div class="cil">Peak Month</div><div class="civ" style="font-size:12px;font-family:var(--ff)">May &mdash; &#8358;5.10M</div></div></div>
+      </div>
+      <div class="cc">
+        <div class="ch"><div><div class="ct">Members by Department</div><div class="cu">Active member distribution</div></div></div>
+        <div class="cw2 tall"><canvas id="c2"></canvas></div>
+        <div class="cs"><div class="ci"><div class="cil">Largest</div><div class="civ" style="font-size:12px;font-family:var(--ff)">Accounts (52)</div></div><div class="ci"><div class="cil">Smallest</div><div class="civ" style="font-size:12px;font-family:var(--ff)">Legal (15)</div></div></div>
+      </div>
+    </div>
+    <div class="ceq">
+      <div class="cc">
+        <div class="ch"><div><div class="ct">Loans Issued</div><div class="cu">Monthly disbursements by type (&#8358;M)</div></div><div class="cl"><span class="li2"><span class="ld" style="background:#b45309"></span>Salary Adv.</span><span class="li2"><span class="ld" style="background:#dc2626"></span>Emergency</span></div></div>
+        <div class="cw2"><canvas id="c3"></canvas></div>
+        <div class="cs"><div class="ci"><div class="cil">YTD Disbursed</div><div class="civ">&#8358;26.60M</div></div><div class="ci"><div class="cil">Active Loans</div><div class="civ">63</div></div></div>
+      </div>
+      <div class="cc">
+        <div class="ch"><div><div class="ct">Loan Repayments</div><div class="cu">Monthly repayments received (&#8358;M)</div></div><div class="cl"><span class="li2"><span class="ld" style="background:#166534"></span>Repaid</span><span class="li2"><span class="ld" style="background:#d1d5db"></span>Outstanding</span></div></div>
+        <div class="cw2"><canvas id="c4"></canvas></div>
+        <div class="cs"><div class="ci"><div class="cil">YTD Repaid</div><div class="civ">&#8358;14.60M</div></div><div class="ci"><div class="cil">Recovery Rate</div><div class="civ" style="color:#166534">97.3%</div></div></div>
+      </div>
+    </div>
+    <div class="cf2">
+      <div class="ch"><div><div class="ct">Fund Growth</div><div class="cu">Cumulative fund balance vs. total contributions &mdash; Jan to Aug 2026 (&#8358; millions)</div></div><div class="cl"><span class="li2"><span class="ld" style="background:#1e3a5f"></span>Fund Balance</span><span class="li2"><span class="ld" style="background:#c9a227"></span>Cumulative Contributions</span></div></div>
+      <div class="cw2" style="height:195px"><canvas id="c5"></canvas></div>
+      <div class="cs"><div class="ci"><div class="cil">Jan 2026</div><div class="civ">&#8358;72.0M</div></div><div class="ci"><div class="cil">Aug 2026</div><div class="civ">&#8358;94.2M</div></div><div class="ci"><div class="cil">Net Growth</div><div class="civ" style="color:#166534">+&#8358;22.2M</div></div><div class="ci"><div class="cil">Growth Rate</div><div class="civ" style="color:#166534">+30.8%</div></div></div>
+    </div>
+    <p class="sl">Activity &amp; Alerts</p>
+    <div class="sg">
+      <div class="scard full">
+        <div class="sh"><div class="st">Recent Transactions<span class="cnt">24 today</span></div><a class="va" href="#">View All &rarr;</a></div>
+        <div class="tw"><table class="t"><thead><tr><th>Reference</th><th>Member</th><th>Type</th><th>Amount</th><th>Date &amp; Time</th><th>Status</th><th>Posted By</th></tr></thead><tbody>
+          <tr><td><span class="tm">TXN-2026-08-001834</span></td><td><span class="tp">Adaeze Okonkwo</span><br><span class="ts">CF-2024-00043</span></td><td><span class="b bn"><span class="bd2"></span>Contribution</span></td><td class="tm" style="color:#166534;font-weight:700">+&#8358;18,000</td><td>13 Aug 2026<br><span class="ts">09:42 AM</span></td><td><span class="b bo"><span class="bd2"></span>Verified</span></td><td><span class="ts">Finance Officer</span></td></tr>
+          <tr><td><span class="tm">TXN-2026-08-001833</span></td><td><span class="tp">Babatunde Fadahunsi</span><br><span class="ts">CF-2023-00018</span></td><td><span class="b bw"><span class="bd2"></span>Loan Repayment</span></td><td class="tm" style="color:#166534;font-weight:700">+&#8358;25,000</td><td>13 Aug 2026<br><span class="ts">09:18 AM</span></td><td><span class="b bo"><span class="bd2"></span>Completed</span></td><td><span class="ts">System (Payroll)</span></td></tr>
+          <tr><td><span class="tm">TXN-2026-08-001832</span></td><td><span class="tp">Ngozi Eze-Williams</span><br><span class="ts">CF-2022-00007</span></td><td><span class="b br"><span class="bd2"></span>Withdrawal</span></td><td class="tm" style="color:#b91c1c;font-weight:700">-&#8358;150,000</td><td>13 Aug 2026<br><span class="ts">08:55 AM</span></td><td><span class="b bo"><span class="bd2"></span>Processed</span></td><td><span class="ts">Finance Officer</span></td></tr>
+          <tr><td><span class="tm">TXN-2026-08-001831</span></td><td><span class="tp">Chukwuemeka Obi</span><br><span class="ts">CF-2024-00071</span></td><td><span class="b bg2"><span class="bd2"></span>Loan Disbursement</span></td><td class="tm" style="color:#b91c1c;font-weight:700">-&#8358;300,000</td><td>13 Aug 2026<br><span class="ts">08:30 AM</span></td><td><span class="b bo"><span class="bd2"></span>Completed</span></td><td><span class="ts">Finance Officer</span></td></tr>
+          <tr><td><span class="tm">TXN-2026-08-001830</span></td><td><span class="tp">Fatima Al-Hassan</span><br><span class="ts">CF-2021-00003</span></td><td><span class="b bn"><span class="bd2"></span>Contribution</span></td><td class="tm" style="color:#166534;font-weight:700">+&#8358;22,500</td><td>13 Aug 2026<br><span class="ts">08:15 AM</span></td><td><span class="b bw"><span class="bd2"></span>Pending</span></td><td><span class="ts">Finance Officer</span></td></tr>
+        </tbody></table></div>
+      </div>
+      <div class="scard">
+        <div class="sh"><div class="st">Pending Loan Applications<span class="cnt a">7</span></div><a class="va" href="#">View All &rarr;</a></div>
+        <div class="tw"><table class="t"><thead><tr><th>Member</th><th>Type</th><th>Amount</th><th>Applied</th><th>Action</th></tr></thead><tbody>
+          <tr><td><span class="tp">Ifeoma Uchenna</span><br><span class="ts">CF-2023-00034 &middot; GL-10</span></td><td><span class="b bw"><span class="bd2"></span>Salary Advance</span></td><td class="tm tp">&#8358;200,000</td><td><span class="ts">10 Aug</span></td><td><div class="br2"><button class="ab ok">Approve</button><button class="ab ng">Reject</button></div></td></tr>
+          <tr><td><span class="tp">Samson Afolabi</span><br><span class="ts">CF-2022-00019 &middot; GL-12</span></td><td><span class="b br"><span class="bd2"></span>Emergency</span></td><td class="tm tp">&#8358;350,000</td><td><span class="ts">9 Aug</span></td><td><div class="br2"><button class="ab ok">Approve</button><button class="ab ng">Reject</button></div></td></tr>
+          <tr><td><span class="tp">Blessing Nwosu</span><br><span class="ts">CF-2024-00058 &middot; GL-08</span></td><td><span class="b bw"><span class="bd2"></span>Salary Advance</span></td><td class="tm tp">&#8358;120,000</td><td><span class="ts">8 Aug</span></td><td><div class="br2"><button class="ab ok">Approve</button><button class="ab ng">Reject</button></div></td></tr>
+          <tr><td><span class="tp">Emmanuel Dare</span><br><span class="ts">CF-2021-00011 &middot; GL-14</span></td><td><span class="b br"><span class="bd2"></span>Emergency</span></td><td class="tm tp">&#8358;500,000</td><td><span class="ts">7 Aug</span></td><td><div class="br2"><button class="ab ok">Approve</button><button class="ab ng">Reject</button></div></td></tr>
+          <tr><td><span class="tp">Grace Obiora</span><br><span class="ts">CF-2023-00047 &middot; GL-09</span></td><td><span class="b bw"><span class="bd2"></span>Salary Advance</span></td><td class="tm tp">&#8358;180,000</td><td><span class="ts">5 Aug</span></td><td><div class="br2"><button class="ab ok">Approve</button><button class="ab ng">Reject</button></div></td></tr>
+        </tbody></table></div>
+      </div>
+      <div class="scard">
+        <div class="sh"><div class="st">Pending Withdrawal Requests<span class="cnt w">4</span></div><a class="va" href="#">View All &rarr;</a></div>
+        <div class="tw"><table class="t"><thead><tr><th>Member</th><th>Requested</th><th>Balance</th><th>Reason</th><th>Action</th></tr></thead><tbody>
+          <tr><td><span class="tp">Chiamaka Osei</span><br><span class="ts">CF-2020-00004 &middot; 12 Aug</span></td><td class="tm tp">&#8358;250,000</td><td class="tm" style="color:#166534">&#8358;820,000</td><td><span class="ts">Medical</span></td><td><div class="br2"><button class="ab ok">Approve</button><button class="ab ng">Reject</button></div></td></tr>
+          <tr><td><span class="tp">Sunday Olawale</span><br><span class="ts">CF-2021-00015 &middot; 11 Aug</span></td><td class="tm tp">&#8358;400,000</td><td class="tm" style="color:#166534">&#8358;1,200,000</td><td><span class="ts">School Fees</span></td><td><div class="br2"><button class="ab ok">Approve</button><button class="ab ng">Reject</button></div></td></tr>
+          <tr><td><span class="tp">Amaka Nwachukwu</span><br><span class="ts">CF-2022-00029 &middot; 9 Aug</span></td><td class="tm tp">&#8358;600,000</td><td class="tm" style="color:#b45309">&#8358;680,000</td><td><span class="ts">Personal</span></td><td><div class="br2"><button class="ab ok">Approve</button><button class="ab ng">Reject</button></div></td></tr>
+          <tr><td><span class="tp">Kola Adeyemi</span><br><span class="ts">CF-2019-00001 &middot; 7 Aug</span></td><td class="tm tp">&#8358;180,000</td><td class="tm" style="color:#166534">&#8358;2,100,000</td><td><span class="ts">Medical</span></td><td><div class="br2"><button class="ab ok">Approve</button><button class="ab ng">Reject</button></div></td></tr>
+        </tbody></table></div>
+      </div>
+      <div class="scard">
+        <div class="sh"><div class="st">Outstanding Contributions<span class="cnt w">16</span></div><a class="va" href="#">View All &rarr;</a></div>
+        <div class="tw"><table class="t"><thead><tr><th>Member</th><th>Dept</th><th>Months</th><th>Amount Due</th><th></th></tr></thead><tbody>
+          <tr><td><span class="tp">Tunde Bakare</span><br><span class="ts">CF-2023-00061</span></td><td><span class="ts">Procurement</span></td><td><span class="b br"><span class="bd2"></span>3 months</span></td><td class="tm tp">&#8358;54,000</td><td><button class="ab p">Record</button></td></tr>
+          <tr><td><span class="tp">Chidinma Uche</span><br><span class="ts">CF-2024-00082</span></td><td><span class="ts">Treasury</span></td><td><span class="b bw"><span class="bd2"></span>2 months</span></td><td class="tm tp">&#8358;36,000</td><td><button class="ab p">Record</button></td></tr>
+          <tr><td><span class="tp">Moses Ogundele</span><br><span class="ts">CF-2022-00033</span></td><td><span class="ts">ICT</span></td><td><span class="b bw"><span class="bd2"></span>2 months</span></td><td class="tm tp">&#8358;40,000</td><td><button class="ab p">Record</button></td></tr>
+          <tr><td><span class="tp">Yetunde Adegbite</span><br><span class="ts">CF-2025-00091</span></td><td><span class="ts">HR</span></td><td><span class="b bg2"><span class="bd2"></span>1 month</span></td><td class="tm tp">&#8358;18,000</td><td><button class="ab p">Record</button></td></tr>
+          <tr><td><span class="tp">Obinna Chukwu</span><br><span class="ts">CF-2023-00055</span></td><td><span class="ts">Accounts</span></td><td><span class="b bg2"><span class="bd2"></span>1 month</span></td><td class="tm tp">&#8358;22,500</td><td><button class="ab p">Record</button></td></tr>
+        </tbody></table></div>
+      </div>
+      <div class="scard">
+        <div class="sh"><div class="st">Recent Payroll Imports<span class="cnt">8 batches</span></div><a class="va" href="#">Import New &rarr;</a></div>
+        <div>
+          <div class="ir"><div class="iic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="iin"><div class="inm">Payroll Aug 2026</div><div class="imt">PAY-2026-08-001 &middot; 13 Aug, 09:00 AM</div><div class="ipb"><div class="ipf w" style="width:94%"></div></div><div class="imc">271 matched &middot; 16 exceptions</div></div><div class="iir"><div class="iam">&#8358;4.85M</div><span class="b bw"><span class="bd2"></span>Reconciling</span></div></div>
+          <div class="ir"><div class="iic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="iin"><div class="inm">Payroll Jul 2026</div><div class="imt">PAY-2026-07-001 &middot; 2 Jul, 08:30 AM</div><div class="ipb"><div class="ipf ok" style="width:100%"></div></div><div class="imc">287 matched &middot; 0 exceptions</div></div><div class="iir"><div class="iam">&#8358;4.50M</div><span class="b bo"><span class="bd2"></span>Reconciled</span></div></div>
+          <div class="ir"><div class="iic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="iin"><div class="inm">Payroll Jun 2026</div><div class="imt">PAY-2026-06-001 &middot; 4 Jun, 09:15 AM</div><div class="ipb"><div class="ipf ok" style="width:100%"></div></div><div class="imc">283 matched &middot; 0 exceptions</div></div><div class="iir"><div class="iam">&#8358;4.30M</div><span class="b bo"><span class="bd2"></span>Reconciled</span></div></div>
+          <div class="ir"><div class="iic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="iin"><div class="inm">Payroll May 2026</div><div class="imt">PAY-2026-05-001 &middot; 3 May, 10:00 AM</div><div class="ipb"><div class="ipf ok" style="width:100%"></div></div><div class="imc">282 matched &middot; 0 exceptions</div></div><div class="iir"><div class="iam">&#8358;5.10M</div><span class="b bo"><span class="bd2"></span>Reconciled</span></div></div>
+        </div>
+      </div>
+      <div class="scard">
+        <div class="sh"><div class="st">Failed / Unmatched Records<span class="cnt a">16 errors</span></div><a class="va" href="#">Resolve All &rarr;</a></div>
+        <div class="tw"><table class="t"><thead><tr><th>Row</th><th>Employee ID</th><th>Amount</th><th>Issue</th><th>Action</th></tr></thead><tbody>
+          <tr><td class="ts">#14</td><td class="tm tp">MF-0472</td><td class="tm">&#8358;18,000</td><td><span class="b br"><span class="bd2"></span>No match</span></td><td><button class="ab">Match</button></td></tr>
+          <tr><td class="ts">#27</td><td class="tm tp">MF-0291</td><td class="tm">&#8358;0</td><td><span class="b bw"><span class="bd2"></span>Zero amount</span></td><td><button class="ab">Review</button></td></tr>
+          <tr><td class="ts">#53</td><td class="tm tp">MF-0388</td><td class="tm">&#8358;9,000</td><td><span class="b bw"><span class="bd2"></span>Underpayment</span></td><td><button class="ab">Review</button></td></tr>
+          <tr><td class="ts">#68</td><td class="tm tp">MF-0510</td><td class="tm">&#8358;18,000</td><td><span class="b br"><span class="bd2"></span>Exited member</span></td><td><button class="ab">Review</button></td></tr>
+          <tr><td class="ts">#91</td><td class="tm tp">MF-0044</td><td class="tm">&#8358;22,500</td><td><span class="b br"><span class="bd2"></span>Duplicate</span></td><td><button class="ab">Review</button></td></tr>
+        </tbody></table></div>
+      </div>
+      <div class="scard">
+        <div class="sh"><div class="st">Recent Approvals</div><a class="va" href="#">View All &rarr;</a></div>
+        <div class="tw"><table class="t"><thead><tr><th>Member</th><th>Type</th><th>Amount</th><th>Decision</th><th>By</th><th>Date</th></tr></thead><tbody>
+          <tr><td><span class="tp">Akin Adebayo</span></td><td><span class="ts">Salary Advance</span></td><td class="tm">&#8358;280,000</td><td><span class="b bo"><span class="bd2"></span>Approved</span></td><td><span class="ts">Comm. Chair</span></td><td><span class="ts">13 Aug, 08:00</span></td></tr>
+          <tr><td><span class="tp">Funke Adedayo</span></td><td><span class="ts">Withdrawal</span></td><td class="tm">&#8358;500,000</td><td><span class="b bo"><span class="bd2"></span>Approved</span></td><td><span class="ts">Comm. Secretary</span></td><td><span class="ts">12 Aug, 16:30</span></td></tr>
+          <tr><td><span class="tp">Ibrahim Musa</span></td><td><span class="ts">Emergency Loan</span></td><td class="tm">&#8358;800,000</td><td><span class="b br"><span class="bd2"></span>Rejected</span></td><td><span class="ts">Comm. Chair</span></td><td><span class="ts">12 Aug, 14:15</span></td></tr>
+          <tr><td><span class="tp">Ngozi Eze</span></td><td><span class="ts">Salary Advance</span></td><td class="tm">&#8358;150,000</td><td><span class="b bo"><span class="bd2"></span>Approved</span></td><td><span class="ts">Comm. Member</span></td><td><span class="ts">11 Aug, 11:00</span></td></tr>
+          <tr><td><span class="tp">Chidi Okafor</span></td><td><span class="ts">Withdrawal</span></td><td class="tm">&#8358;200,000</td><td><span class="b bw"><span class="bd2"></span>Deferred</span></td><td><span class="ts">Comm. Chair</span></td><td><span class="ts">11 Aug, 09:30</span></td></tr>
+        </tbody></table></div>
+      </div>
+      <div class="scard">
+        <div class="sh"><div class="st">System Notifications<span class="cnt a">5 unread</span></div><a class="va" href="#" id="mar">Mark All Read</a></div>
+        <div class="nlist">
+          <div class="ni unr"><div class="nic w"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="nb2"><div class="nt"><strong>16 payroll exceptions</strong> require resolution in August 2026 batch before reconciliation can complete.</div><div class="ntm">13 Aug 2026, 09:00 AM</div></div></div>
+          <div class="ni unr"><div class="nic r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div class="nb2"><div class="nt"><strong>3 members</strong> are delinquent on loan repayments for 2+ consecutive months. Immediate action needed.</div><div class="ntm">12 Aug 2026, 04:00 PM</div></div></div>
+          <div class="ni unr"><div class="nic i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div><div class="nb2"><div class="nt"><strong>7 loan applications</strong> pending committee review. Oldest from 5 August 2026.</div><div class="ntm">12 Aug 2026, 10:00 AM</div></div></div>
+          <div class="ni unr"><div class="nic ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="nb2"><div class="nt"><strong>July 2026 payroll</strong> fully reconciled. 287 records matched, zero exceptions.</div><div class="ntm">5 Aug 2026, 11:30 AM</div></div></div>
+          <div class="ni unr"><div class="nic w"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="nb2"><div class="nt"><strong>Annual General Meeting</strong> scheduled 30 August 2026. Reports due by 27 August.</div><div class="ntm">1 Aug 2026, 08:00 AM</div></div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div></div>
+<div class="mo" id="mo"><div class="md"><h2>Custom Date Range</h2><div class="fg"><label class="fl">From Date</label><input type="date" class="fi" id="df"></div><div class="fg"><label class="fl">To Date</label><input type="date" class="fi" id="dt2"></div><div class="ma2"><button class="btn bto" onclick="cm()">Cancel</button><button class="btn btp" onclick="ar()">Apply Filter</button></div></div></div>
+<script>
+Chart.defaults.font.family="'Inter',-apple-system,sans-serif";Chart.defaults.font.size=11.5;Chart.defaults.color='#6b7280';Chart.defaults.plugins.legend.display=false;Chart.defaults.plugins.tooltip.backgroundColor='#1f2937';Chart.defaults.plugins.tooltip.titleColor='#f9fafb';Chart.defaults.plugins.tooltip.bodyColor='#d1d5db';Chart.defaults.plugins.tooltip.padding=10;Chart.defaults.plugins.tooltip.cornerRadius=8;Chart.defaults.plugins.tooltip.displayColors=false;
+const MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'];
+new Chart(document.getElementById('c1'),{type:'bar',data:{labels:MO,datasets:[{label:'Payroll',data:[2.98,3.82,3.52,4.21,4.78,3.65,4.22,4.51],backgroundColor:'rgba(30,58,95,.85)',borderRadius:5,borderSkipped:false,barPercentage:.7},{label:'Manual',data:[0.22,0.28,0.28,0.29,0.32,0.25,0.28,0.34],backgroundColor:'rgba(201,162,39,.85)',borderRadius:5,borderSkipped:false,barPercentage:.7}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},scales:{x:{grid:{display:false},border:{display:false}},y:{grid:{color:'rgba(0,0,0,.04)'},border:{display:false},ticks:{callback:v=>'{v}M'}}},plugins:{legend:{display:true,position:'top',align:'end',labels:{boxWidth:7,boxHeight:7,padding:14,font:{size:11},usePointStyle:true,pointStyle:'circle'}},tooltip:{callbacks:{label:c=> {c.dataset.label}: N{c.parsed.y.toFixed(2)}M}}}}});
+new Chart(document.getElementById('c2'),{type:'bar',data:{labels:['Accounts','Treasury','Admin','Budget','Procurement','HR','ICT','Int.Audit','Legal'],datasets:[{data:[52,48,36,35,31,28,22,20,15],backgroundColor:['rgba(30,58,95,.87)','rgba(30,58,95,.73)','rgba(30,58,95,.60)','rgba(201,162,39,.87)','rgba(201,162,39,.72)','rgba(22,101,74,.82)','rgba(22,101,74,.68)','rgba(180,83,9,.78)','rgba(180,83,9,.62)'],borderRadius:5,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,scales:{x:{grid:{color:'rgba(0,0,0,.04)'},border:{display:false},ticks:{stepSize:10}},y:{grid:{display:false},border:{display:false},ticks:{font:{size:11.5}}}},plugins:{tooltip:{callbacks:{label:c=> {c.parsed.x} members}}}}});
+new Chart(document.getElementById('c3'),{type:'bar',data:{labels:MO,datasets:[{label:'Salary Advance',data:[1.2,1.8,1.4,2.0,2.4,1.6,1.5,1.8],backgroundColor:'rgba(180,83,9,.85)',borderRadius:4,borderSkipped:false},{label:'Emergency',data:[0.3,0.4,0.4,0.5,0.6,0.5,0.4,0.5],backgroundColor:'rgba(220,38,38,.80)',borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},scales:{x:{stacked:true,grid:{display:false},border:{display:false}},y:{stacked:true,grid:{color:'rgba(0,0,0,.04)'},border:{display:false},ticks:{callback:v=>'{v}M'}}},plugins:{legend:{display:true,position:'top',align:'end',labels:{boxWidth:7,boxHeight:7,padding:12,font:{size:11},usePointStyle:true,pointStyle:'circle'}},tooltip:{callbacks:{label:c=> {c.dataset.label}: N{c.parsed.y.toFixed(2)}M}}}}});
+new Chart(document.getElementById('c4'),{type:'line',data:{labels:MO,datasets:[{label:'Repaid',data:[1.4,1.6,1.7,1.8,2.0,2.1,1.9,2.1],borderColor:'rgba(22,101,74,1)',backgroundColor:'rgba(22,101,74,.1)',borderWidth:2.5,fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'rgba(22,101,74,1)',pointBorderColor:'#fff',pointBorderWidth:2},{label:'Outstanding',data:[4.2,4.8,5.1,5.4,5.8,5.3,5.0,4.7],borderColor:'rgba(209,213,219,1)',backgroundColor:'rgba(209,213,219,.08)',borderWidth:2,fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'rgba(156,163,175,1)',borderDash:[5,4]}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},scales:{x:{grid:{display:false},border:{display:false}},y:{grid:{color:'rgba(0,0,0,.04)'},border:{display:false},ticks:{callback:v=>'{v}M'}}},plugins:{legend:{display:true,position:'top',align:'end',labels:{boxWidth:7,boxHeight:7,padding:12,font:{size:11},usePointStyle:true,pointStyle:'circle'}},tooltip:{callbacks:{label:c=> {c.dataset.label}: N{c.parsed.y.toFixed(1)}M}}}}});
+new Chart(document.getElementById('c5'),{type:'line',data:{labels:MO,datasets:[{label:'Fund Balance',data:[72.0,75.2,78.1,81.3,84.9,87.2,91.1,94.2],borderColor:'rgba(30,58,95,1)',backgroundColor:'rgba(30,58,95,.07)',borderWidth:3,fill:true,tension:.4,pointRadius:5,pointBackgroundColor:'rgba(30,58,95,1)',pointBorderColor:'#fff',pointBorderWidth:2.5},{label:'Cumulative Contributions',data:[75.2,79.3,83.1,87.6,92.7,96.6,101.1,105.9],borderColor:'rgba(201,162,39,.9)',backgroundColor:'rgba(201,162,39,.05)',borderWidth:2.5,fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'rgba(201,162,39,1)',pointBorderColor:'#fff',pointBorderWidth:2,borderDash:[6,3]}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},scales:{x:{grid:{display:false},border:{display:false}},y:{grid:{color:'rgba(0,0,0,.04)'},border:{display:false},ticks:{callback:v=>'{v}M'}}},plugins:{legend:{display:true,position:'top',align:'end',labels:{boxWidth:7,boxHeight:7,padding:14,font:{size:11},usePointStyle:true,pointStyle:'circle'}},tooltip:{callbacks:{label:c=> {c.dataset.label}: N{c.parsed.y.toFixed(1)}M}}}}});
+const sb=document.getElementById('sb'),ov2=document.getElementById('ov'),sbt2=document.getElementById('sbt');
+sbt2.addEventListener('click',()=>{sb.classList.toggle('open');ov2.classList.toggle('open')});
+ov2.addEventListener('click',()=>{sb.classList.remove('open');ov2.classList.remove('open')});
+const mo2=document.getElementById('mo');
+function setF(t,b){document.querySelectorAll('.fb').forEach(x=>x.classList.remove('on'));b.classList.add('on');if(t==='c')mo2.classList.add('open')}
+function cm(){mo2.classList.remove('open')}
+function ar(){const f=document.getElementById('df').value,t=document.getElementById('dt2').value;if(f&&t){cm();console.log('Range:',f,'to',t)}}
+mo2.addEventListener('click',e=>{if(e.target===mo2)cm()});
+function fDept(v){console.log('dept:',v)}
+document.getElementById('rfb').addEventListener('click',function(){this.style.transition='transform .6s ease';this.style.transform='rotate(360deg)';setTimeout(()=>{this.style.transition='';this.style.transform=''},640)});
+const mar=document.getElementById('mar');
+if(mar)mar.addEventListener('click',function(e){e.preventDefault();document.querySelectorAll('.unr').forEach(el=>el.classList.remove('unr'));const cnt=document.querySelector('.scard:last-child .cnt.a');if(cnt){cnt.textContent='All read';cnt.className='cnt ok'}});
+</script></body></html>

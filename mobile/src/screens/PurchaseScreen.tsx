@@ -14,6 +14,8 @@ import { NetworkSelector, NetworkType } from '../components/NetworkSelector';
 import { CategorySelector, CategoryType } from '../components/CategorySelector';
 import { PinKeypadModal } from '../components/PinKeypadModal';
 import { detectNetworkFromPhone } from '../utils/networkDetector';
+import { useStore } from '../store/useStore';
+import { vtuApi } from '../services/api';
 
 interface PurchaseScreenProps {
   onBack: () => void;
@@ -50,6 +52,7 @@ const SAMPLE_PLANS: Record<NetworkType, PlanOption[]> = {
 };
 
 export const PurchaseScreen: React.FC<PurchaseScreenProps> = ({ onBack, serviceType }) => {
+  const { user, token, wallet, fetchWallet } = useStore();
   const [network, setNetwork] = useState<NetworkType>('MTN');
   const [category, setCategory] = useState<CategoryType>('SME');
   const [phone, setPhone] = useState<string>('');
@@ -114,16 +117,63 @@ export const PurchaseScreen: React.FC<PurchaseScreenProps> = ({ onBack, serviceT
   };
 
   const handleConfirmPinPurchase = async (pin: string) => {
-    setIsPurchasing(true);
-    setTimeout(() => {
-      setIsPurchasing(false);
+    if (!user || !token) {
+      Alert.alert('Authentication Required', 'Please log in to complete your transaction.');
+      return;
+    }
+
+    if (wallet && Number(wallet.balance) < totalPrice) {
       setIsPinModalVisible(false);
       Alert.alert(
-        '🎉 Transaction Successful!',
-        `Successfully delivered ${serviceType === 'DATA' ? selectedPlan.name : `₦${airtimeAmount} Airtime`} to ${phone} via ${network}.`,
-        [{ text: 'Great!', onPress: onBack }]
+        '⚠️ Insufficient Balance',
+        `Your balance is ₦${Number(wallet.balance).toLocaleString('en-NG', { minimumFractionDigits: 2 })}, but this purchase requires ₦${totalPrice.toLocaleString('en-NG', { minimumFractionDigits: 2 })}.\n\nWould you like to top up your wallet?`,
+        [
+          {
+            text: '+₦2,500 (Test Top-Up)',
+            onPress: async () => {
+              await useStore.getState().topUpWallet(2500);
+            },
+          },
+          { text: 'Cancel', style: 'cancel' },
+        ]
       );
-    }, 1200);
+      return;
+    }
+
+    setIsPurchasing(true);
+    try {
+      const res = await vtuApi.purchase(token, {
+        user_id: user.id,
+        network: network,
+        phone_number: phone.replace(/\s+/g, ''),
+        service_type: serviceType,
+        plan_id: serviceType === 'DATA' ? selectedPlan.id : undefined,
+        amount: totalPrice,
+        category: serviceType === 'DATA' ? category : undefined,
+        transaction_pin: pin,
+      });
+
+      setIsPurchasing(false);
+      setIsPinModalVisible(false);
+
+      if (res.success) {
+        await fetchWallet();
+        Alert.alert(
+          '🎉 Transaction Successful!',
+          res.data?.message || `Successfully delivered ${serviceType === 'DATA' ? selectedPlan.name : `₦${airtimeAmount} Airtime`} to ${phone} via ${network}.`,
+          [{ text: 'Great!', onPress: onBack }]
+        );
+      } else {
+        Alert.alert(
+          'Transaction Failed',
+          res.error || res.message || 'Transaction could not be processed. Please check your PIN or balance.'
+        );
+      }
+    } catch (err: any) {
+      setIsPurchasing(false);
+      setIsPinModalVisible(false);
+      Alert.alert('Network Error', err.message || 'Failed to communicate with the server.');
+    }
   };
 
   return (

@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Monthly Contributions &mdash; CoopFund Admin</title>
+<meta name="description" content="Monthly contribution management for the cooperative fund">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --n9:#071526;--n8:#0f2240;--n7:#1e3a5f;--n6:#264d7a;--n5:#3465a0;--n4:#5480b8;--n3:#7da0cc;--n1:#d6e4f3;--n0:#eef4fa;
+  --g6:#b88d13;--g5:#c9a227;--g4:#d4b245;--g1:#f5ecd0;--g0:#faf5e8;
+  --ok7:#14532d;--ok6:#166534;--ok5:#16a34a;--ok2:#bbf7d0;--ok1:#dcfce7;--ok0:#f0fdf4;
+  --w7:#92400e;--w6:#b45309;--w5:#d97706;--w1:#fef3c7;--w0:#fffbeb;
+  --r7:#991b1b;--r6:#b91c1c;--r5:#dc2626;--r1:#fee2e2;--r0:#fff5f5;
+  --p6:#6d28d9;--p1:#ede9fe;--p0:#f5f3ff;
+  --q9:#111827;--q8:#1f2937;--q7:#374151;--q6:#4b5563;--q5:#6b7280;--q4:#9ca3af;--q3:#d1d5db;--q2:#e5e7eb;--q15:#eff0f3;--q1:#f3f4f6;--q0:#f9fafb;
+  --ff:'Inter',-apple-system,sans-serif;--fm:'JetBrains Mono',monospace;
+  --s2:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --s3:0 4px 16px rgba(0,0,0,.09);--s4:0 12px 32px rgba(0,0,0,.14);
+}
+html{font-size:15px}
+body{font-family:var(--ff);background:#eef2f7;color:var(--q8);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* ── TOPBAR ──────────────────────────────────────────── */
+.topbar{background:var(--n7);color:#fff;padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,.22);position:sticky;top:0;z-index:90}
+.tb-l{display:flex;align-items:center;gap:14px}
+.tb-logo{font-size:17px;font-weight:800;color:var(--g5)}
+.tb-sep{width:1px;height:20px;background:rgba(255,255,255,.2)}
+.tb-info .tb-title{font-size:14px;font-weight:600;color:rgba(255,255,255,.88)}
+.tb-info .tb-bc{font-size:11.5px;color:rgba(255,255,255,.38);margin-top:1px}
+.tb-r{display:flex;align-items:center;gap:10px}
+.tb-avt{width:32px;height:32px;background:linear-gradient(135deg,var(--n5),var(--n3));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff}
+.tb-usr{font-size:13px;color:rgba(255,255,255,.6)}
+.tb-role{font-size:11px;color:rgba(255,255,255,.35)}
+
+/* ── TOOLBAR ─────────────────────────────────────────── */
+.toolbar{background:#fff;border-bottom:1px solid var(--q2);padding:14px 28px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:var(--s2)}
+.toolbar-title{font-size:15px;font-weight:700;color:var(--q9);margin-right:4px;white-space:nowrap}
+.tselect{border:1.5px solid var(--q2);border-radius:9px;padding:8px 12px;font-size:13.5px;font-family:var(--ff);color:var(--q8);outline:none;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 10px center;padding-right:32px;transition:border-color .15s}
+.tselect:focus{border-color:var(--n4)}
+.srch{flex:1;min-width:200px;max-width:320px;position:relative}
+.srch input{width:100%;border:1.5px solid var(--q2);border-radius:9px;padding:8px 12px 8px 34px;font-size:13.5px;font-family:var(--ff);color:var(--q8);outline:none;transition:border-color .15s;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2.5'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 11px center}
+.srch input:focus{border-color:var(--n4)}
+.toolbar-right{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+
+/* ── BUTTONS ─────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;transition:all .15s;border:none;font-family:var(--ff);white-space:nowrap;text-decoration:none}
+.btn svg{width:14px;height:14px;flex-shrink:0}
+.btn-primary{background:var(--n7);color:#fff}.btn-primary:hover{background:var(--n6)}
+.btn-green{background:var(--ok6);color:#fff}.btn-green:hover{background:var(--ok7)}
+.btn-gold{background:var(--g5);color:var(--n9)}.btn-gold:hover{background:var(--g4)}
+.btn-out{background:#fff;color:var(--q7);border:1px solid var(--q2)}.btn-out:hover{background:var(--q0);border-color:var(--q3)}
+.btn-danger{background:var(--r0);color:var(--r6);border:1px solid var(--r1)}.btn-danger:hover{background:var(--r1)}
+.btn-sm{padding:5px 12px;font-size:12.5px}
+.btn-xs{padding:4px 9px;font-size:12px;border-radius:7px}
+.btn-grp{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ── MAIN LAYOUT ─────────────────────────────────────── */
+.main{max-width:1300px;margin:0 auto;padding:24px 28px}
+
+/* ── KPI STRIP ───────────────────────────────────────── */
+.kpi-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:20px}
+.kpi{background:#fff;border-radius:14px;padding:14px 16px;border:1px solid var(--q15);box-shadow:var(--s2);position:relative;overflow:hidden;transition:box-shadow .15s}
+.kpi:hover{box-shadow:var(--s3)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.kpi-n::before{background:linear-gradient(90deg,var(--n7),var(--n4))}
+.kpi-ok::before{background:linear-gradient(90deg,var(--ok6),var(--ok5))}
+.kpi-w::before{background:linear-gradient(90deg,var(--w6),var(--w5))}
+.kpi-r::before{background:linear-gradient(90deg,var(--r6),var(--r5))}
+.kpi-g::before{background:linear-gradient(90deg,var(--g6),var(--g4))}
+.kpi-p::before{background:linear-gradient(90deg,var(--p6),#8b5cf6)}
+.kpi-z::before{background:linear-gradient(90deg,var(--q4),var(--q3))}
+.kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--q4);margin-bottom:7px}
+.kpi-val{font-size:22px;font-weight:800;color:var(--q9);letter-spacing:-.02em;line-height:1;font-family:var(--fm)}
+.kpi-val.lg{font-size:18px}
+.kpi-sub{font-size:11px;color:var(--q4);margin-top:4px}
+
+/* ── PANEL ───────────────────────────────────────────── */
+.panel{background:#fff;border-radius:16px;box-shadow:var(--s2);border:1px solid var(--q15);margin-bottom:16px;overflow:hidden}
+.ph{padding:16px 22px;border-bottom:1px solid var(--q1);display:flex;align-items:center;justify-content:space-between;gap:14px}
+.ph-title{font-size:15px;font-weight:700;color:var(--q9);letter-spacing:-.01em}
+.ph-sub{font-size:12.5px;color:var(--q5);margin-top:2px}
+
+/* ── STATUS BAR ──────────────────────────────────────── */
+.status-bar{display:flex;height:8px;border-radius:20px;overflow:hidden;margin:0 22px 16px;gap:1px}
+.sb-seg{height:100%;transition:width .5s ease;border-radius:0}
+.sb-seg:first-child{border-radius:20px 0 0 20px}.sb-seg:last-child{border-radius:0 20px 20px 0}
+.sb-paid{background:var(--ok5)}.sb-partial{background:var(--w5)}.sb-unpaid{background:var(--r5)}.sb-overpaid{background:var(--g5)}.sb-pending{background:#8b5cf6}
+
+/* ── STATUS LEGEND ───────────────────────────────────── */
+.legend{display:flex;gap:16px;padding:0 22px 16px;flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--q5)}
+.leg-dot{width:9px;height:9px;border-radius:50%}
+.ld-paid{background:var(--ok5)}.ld-partial{background:var(--w5)}.ld-unpaid{background:var(--r5)}.ld-over{background:var(--g5)}.ld-pend{background:#8b5cf6}
+
+/* ── TABLE ───────────────────────────────────────────── */
+.tbl-wrap{overflow-x:auto;max-height:calc(100vh - 360px)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead{position:sticky;top:0;z-index:5}
+thead tr{background:var(--q0);border-bottom:2px solid var(--q2)}
+th{padding:9px 14px;text-align:left;font-size:10.5px;font-weight:700;color:var(--q4);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;cursor:pointer;user-select:none;transition:color .15s}
+th:hover{color:var(--q7)}
+th.sorted{color:var(--n7)}
+th .sort-ico{margin-left:4px;opacity:.4;font-size:10px}
+th.sorted .sort-ico{opacity:1}
+td{padding:11px 14px;border-bottom:1px solid var(--q1);vertical-align:middle;white-space:nowrap}
+tbody tr:hover td{background:var(--q0)}
+tbody tr:last-child td{border-bottom:none}
+.tr-paid{}.tr-partial{background:rgba(217,119,6,.03)}.tr-unpaid{background:rgba(220,38,38,.03)}.tr-overpaid{background:rgba(201,162,39,.04)}.tr-pending{background:rgba(109,40,217,.03)}
+.member-cell{display:flex;align-items:center;gap:10px}
+.m-avt{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;flex-shrink:0}
+.m-name{font-size:13.5px;font-weight:600;color:var(--q9)}
+.m-id{font-size:11px;color:var(--q4);font-family:var(--fm)}
+.mono{font-family:var(--fm);font-size:13px}
+.tp{font-weight:600;color:var(--q9)}.ts{color:var(--q4);font-size:12px}.tv{font-weight:700;color:var(--q9)}
+.diff-pos{color:var(--ok6);font-weight:700;font-family:var(--fm)}.diff-neg{color:var(--r6);font-weight:700;font-family:var(--fm)}.diff-zero{color:var(--q4);font-family:var(--fm)}
+
+/* ── BADGES ──────────────────────────────────────────── */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap}
+.bd{width:5px;height:5px;border-radius:50%}
+.b-ok{background:var(--ok1);color:var(--ok7)}.b-ok .bd{background:var(--ok5)}
+.b-w{background:var(--w1);color:var(--w7)}.b-w .bd{background:var(--w5)}
+.b-r{background:var(--r1);color:var(--r7)}.b-r .bd{background:var(--r5)}
+.b-g{background:var(--g1);color:#7c5a0a}.b-g .bd{background:var(--g5)}
+.b-p{background:var(--p1);color:var(--p6)}.b-p .bd{background:#8b5cf6}
+.b-z{background:var(--q1);color:var(--q6)}.b-z .bd{background:var(--q4)}
+.b-n{background:var(--n0);color:var(--n7)}.b-n .bd{background:var(--n5)}
+
+/* ── METHOD CHIP ─────────────────────────────────────── */
+.method-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:11.5px;font-weight:600}
+.mc-payroll{background:var(--n0);color:var(--n7)}
+.mc-manual{background:var(--g0);color:#7c5a0a}
+.mc-none{background:var(--q1);color:var(--q4)}
+
+/* ── AVATAR COLORS ───────────────────────────────────── */
+.av-0{background:#1e3a5f}.av-1{background:#166534}.av-2{background:#b45309}.av-3{background:#6d28d9}.av-4{background:#b91c1c}.av-5{background:#0e7490}.av-6{background:#9f1239}
+
+/* ── ACTIONS COL ─────────────────────────────────────── */
+.act-row{display:flex;gap:4px;align-items:center}
+
+/* ── SHEETS (SLIDE-IN) ───────────────────────────────── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;backdrop-filter:blur(2px)}
+.overlay.open{display:block}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100vw);background:#fff;box-shadow:var(--s4);z-index:210;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .28s cubic-bezier(.32,1,.27,1)}
+.drawer.open{transform:none}
+.dr-head{padding:20px 24px;border-bottom:1px solid var(--q1);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-shrink:0}
+.dr-title{font-size:17px;font-weight:700;color:var(--q9);letter-spacing:-.01em}
+.dr-sub{font-size:13px;color:var(--q5);margin-top:3px}
+.dr-close{background:none;border:none;cursor:pointer;color:var(--q4);padding:4px;display:flex;align-items:center;transition:color .15s}
+.dr-close:hover{color:var(--q7)}
+.dr-close svg{width:20px;height:20px}
+.dr-body{flex:1;overflow-y:auto;padding:20px 24px}
+.dr-foot{padding:16px 24px;border-top:1px solid var(--q1);flex-shrink:0;display:flex;gap:10px}
+
+/* ── FORM ELEMENTS ───────────────────────────────────── */
+.fg{margin-bottom:16px}
+.fg.inline{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fl{display:block;font-size:12.5px;font-weight:700;color:var(--q5);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.fi{width:100%;border:1.5px solid var(--q2);border-radius:10px;padding:10px 13px;font-size:14.5px;font-family:var(--ff);color:var(--q9);outline:none;transition:border-color .15s,box-shadow .15s;background:#fff}
+.fi:focus{border-color:var(--n4);box-shadow:0 0 0 3px rgba(84,128,184,.15)}
+.fi.mono2{font-family:var(--fm);font-size:14px}
+.fi.err{border-color:var(--r5)}
+.fsel{width:100%;border:1.5px solid var(--q2);border-radius:10px;padding:10px 13px;font-size:14.5px;font-family:var(--ff);color:var(--q9);outline:none;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 12px center;transition:border-color .15s}
+.fsel:focus{border-color:var(--n4)}
+.fta{width:100%;border:1.5px solid var(--q2);border-radius:10px;padding:10px 13px;font-size:14px;font-family:var(--ff);color:var(--q9);outline:none;resize:none;min-height:80px;transition:border-color .15s}
+.fta:focus{border-color:var(--n4)}
+.f-err{font-size:12px;color:var(--r6);margin-top:4px;display:none}
+.f-err.show{display:block}
+.info-box{display:flex;gap:10px;padding:12px 14px;border-radius:10px;font-size:13.5px;line-height:1.5;margin-bottom:14px}
+.ib-n{background:var(--n0);border:1px solid var(--n1);color:var(--n7)}.ib-n svg{color:var(--n5)}
+.ib-w{background:var(--w0);border:1px solid var(--w1);color:var(--w7)}.ib-w svg{color:var(--w6)}
+.ib-r{background:var(--r0);border:1px solid var(--r1);color:var(--r7)}.ib-r svg{color:var(--r6)}
+.info-box svg{width:16px;height:16px;flex-shrink:0;margin-top:2px}
+
+/* ── MEMBER SUMMARY CARD ─────────────────────────────── */
+.msummary{background:linear-gradient(135deg,var(--n7),var(--n8));border-radius:12px;padding:18px;margin-bottom:18px;color:#fff}
+.ms-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.ms-avt{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff;border:2px solid rgba(255,255,255,.25)}
+.ms-name{font-size:17px;font-weight:700;color:#fff}
+.ms-id{font-size:12px;color:rgba(255,255,255,.5);font-family:var(--fm)}
+.ms-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ms-stat{background:rgba(255,255,255,.08);border-radius:8px;padding:10px;text-align:center}
+.ms-stat-val{font-size:16px;font-weight:800;color:#fff;font-family:var(--fm)}
+.ms-stat-lbl{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;text-transform:uppercase;letter-spacing:.04em}
+
+/* ── CONTRIBUTION HISTORY TABLE ──────────────────────── */
+.hist-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--q1)}
+.hist-row:last-child{border-bottom:none}
+.hist-month{width:80px;font-size:13px;font-weight:600;color:var(--q7);flex-shrink:0}
+.hist-bar-wrap{flex:1;background:var(--q1);border-radius:20px;height:6px;overflow:hidden}
+.hist-bar{height:100%;border-radius:20px}
+.hb-paid{background:var(--ok5)}.hb-partial{background:var(--w5)}.hb-unpaid{background:var(--r3,#fca5a5)}.hb-over{background:var(--g5)}
+.hist-amount{width:90px;text-align:right;font-size:13px;font-weight:700;font-family:var(--fm);color:var(--q9);flex-shrink:0}
+.hist-ref{font-size:11px;color:var(--q4);font-family:var(--fm);flex-shrink:0;width:120px;overflow:hidden;text-overflow:ellipsis}
+
+/* ── ADJUSTMENT SECTION ──────────────────────────────── */
+.adj-divider{border:none;border-top:1px solid var(--q1);margin:18px 0}
+.adj-header{font-size:13px;font-weight:700;color:var(--q6);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+.lock-notice{display:flex;align-items:center;gap:8px;padding:12px 14px;background:var(--r0);border:1px solid var(--r1);border-radius:10px;font-size:13px;color:var(--r7);margin-bottom:14px}
+.lock-notice svg{width:16px;height:16px;flex-shrink:0}
+
+/* ── RULES TABLE ─────────────────────────────────────── */
+.rules-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px 22px}
+.rule-card{border:1px solid var(--q2);border-radius:12px;padding:14px;background:var(--q0)}
+.rc-grade{font-size:12.5px;font-weight:700;color:var(--n7);font-family:var(--fm);margin-bottom:3px}
+.rc-label{font-size:11.5px;color:var(--q5);margin-bottom:8px}
+.rc-amount{font-size:20px;font-weight:800;color:var(--q9);letter-spacing:-.02em;font-family:var(--fm)}
+.rc-amount span{font-size:12px;font-weight:500;color:var(--q4)}
+
+/* ── TABS ────────────────────────────────────────────── */
+.tab-strip{display:flex;gap:4px;border-bottom:1px solid var(--q1);background:var(--q0);padding:12px 22px 0;overflow-x:auto;scrollbar-width:none}
+.tab-strip::-webkit-scrollbar{display:none}
+.tab-btn{background:none;border:none;padding:7px 14px;font-size:13px;font-weight:600;color:var(--q5);cursor:pointer;border-radius:8px 8px 0 0;font-family:var(--ff);white-space:nowrap;position:relative;bottom:-1px;border:1px solid transparent;transition:all .15s}
+.tab-btn.on{background:#fff;color:var(--n7);border-color:var(--q2);border-bottom-color:#fff}
+.tab-btn:hover:not(.on){color:var(--q7);background:var(--q1)}
+.tab-count{display:inline-flex;align-items:center;justify-content:center;background:var(--q2);color:var(--q6);border-radius:20px;font-size:11px;font-weight:700;padding:1px 7px;margin-left:5px;min-width:22px}
+.tc-ok{background:var(--ok1);color:var(--ok7)}.tc-w{background:var(--w1);color:var(--w7)}.tc-r{background:var(--r1);color:var(--r7)}.tc-g{background:var(--g1);color:#7c5a0a}.tc-p{background:var(--p1);color:var(--p6)}
+.tab-panel{display:none}.tab-panel.on{display:block}
+
+/* ── MISC ────────────────────────────────────────────── */
+.divider{border:none;border-top:1px solid var(--q1);margin:14px 0}
+.field-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--q1)}
+.field-row:last-child{border-bottom:none}
+.fr-label{font-size:13.5px;color:var(--q5)}
+.fr-val{font-size:13.5px;font-weight:700;color:var(--q9)}
+.section-title{font-size:12.5px;font-weight:700;color:var(--q5);text-transform:uppercase;letter-spacing:.05em;margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--q1)}
+.empty{text-align:center;padding:48px 24px}
+.empty svg{width:48px;height:48px;color:var(--q3);display:block;margin:0 auto 12px}
+.empty-t{font-size:15px;font-weight:600;color:var(--q6);margin-bottom:4px}
+.empty-s{font-size:13px;color:var(--q4)}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:var(--q3);border-radius:4px}
+
+/* ── SUCCESS STATE ───────────────────────────────────── */
+.succ-box{text-align:center;padding:32px 20px}
+.succ-ico{width:72px;height:72px;background:var(--ok0);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;border:2px solid var(--ok2)}
+.succ-ico svg{width:36px;height:36px;color:var(--ok6)}
+.succ-t{font-size:20px;font-weight:700;color:var(--q9);margin-bottom:6px}
+.succ-s{font-size:14px;color:var(--q5);line-height:1.5;margin-bottom:20px}
+
+@media(max-width:1100px){.kpi-strip{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:800px){.kpi-strip{grid-template-columns:repeat(2,1fr)}.rules-grid{grid-template-columns:1fr 1fr}.main{padding:16px}}
+@media(max-width:500px){.toolbar{padding:10px 16px}}
+</style>
+</head>
+<body>
+
+<!-- ── TOPBAR ─────────────────────────────────────────── -->
+<header class="topbar">
+  <div class="tb-l">
+    <span class="tb-logo">CoopFund</span>
+    <div class="tb-sep"></div>
+    <div class="tb-info">
+      <div class="tb-title">Contribution Management</div>
+      <div class="tb-bc">Finance Officer &rarr; Contributions &rarr; Monthly</div>
+    </div>
+  </div>
+  <div class="tb-r">
+    <div class="tb-avt">FO</div>
+    <div>
+      <div class="tb-usr">Finance Officer</div>
+      <div class="tb-role">Finance Officer &mdash; Read/Write</div>
+    </div>
+  </div>
+</header>
+
+<!-- ── TOOLBAR ────────────────────────────────────────── -->
+<div class="toolbar">
+  <span class="toolbar-title">Contributions</span>
+  <select class="tselect" id="sel-month" onchange="applyFilters()">
+    <option value="2026-08">August 2026</option>
+    <option value="2026-07">July 2026</option>
+    <option value="2026-06">June 2026</option>
+    <option value="2026-05">May 2026</option>
+    <option value="2026-04">April 2026</option>
+  </select>
+  <select class="tselect" id="sel-dept" onchange="applyFilters()">
+    <option value="">All Departments</option>
+    <option>Accounts</option><option>Treasury</option><option>Budget</option>
+    <option>Procurement</option><option>Administration</option><option>ICT</option>
+    <option>HR</option><option>Legal</option>
+  </select>
+  <select class="tselect" id="sel-status" onchange="applyFilters()">
+    <option value="">All Statuses</option>
+    <option value="paid">Paid</option>
+    <option value="partial">Partially Paid</option>
+    <option value="unpaid">Not Paid</option>
+    <option value="overpaid">Overpaid</option>
+    <option value="pending_ver">Pending Verification</option>
+  </select>
+  <div class="srch"><input type="text" id="srch-inp" placeholder="Search member, ID, department..." oninput="applyFilters()"></div>
+  <div class="toolbar-right">
+    <button class="btn btn-green" onclick="openManualPayment(null)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Record Manual Payment
+    </button>
+    <button class="btn btn-out" onclick="exportCSV()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export
+    </button>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ── KPI STRIP ─────────────────────────────────────── -->
+<div class="kpi-strip" id="kpi-strip">
+  <div class="kpi kpi-n"><div class="kpi-label">Total Expected</div><div class="kpi-val lg" id="k-expected">—</div><div class="kpi-sub">Active members</div></div>
+  <div class="kpi kpi-ok"><div class="kpi-label">Total Collected</div><div class="kpi-val lg" id="k-collected">—</div><div class="kpi-sub" id="k-coll-sub">—</div></div>
+  <div class="kpi kpi-ok"><div class="kpi-label">Paid</div><div class="kpi-val" id="k-paid">—</div><div class="kpi-sub" id="k-paid-sub">—</div></div>
+  <div class="kpi kpi-w"><div class="kpi-label">Partially Paid</div><div class="kpi-val" id="k-partial">—</div><div class="kpi-sub">Shortfall this month</div></div>
+  <div class="kpi kpi-r"><div class="kpi-label">Not Paid</div><div class="kpi-val" id="k-unpaid">—</div><div class="kpi-sub" id="k-unpaid-sub">—</div></div>
+  <div class="kpi kpi-g"><div class="kpi-label">Overpaid</div><div class="kpi-val" id="k-over">—</div><div class="kpi-sub">Refund/credit due</div></div>
+  <div class="kpi kpi-p"><div class="kpi-label">Pending Verify</div><div class="kpi-val" id="k-pending">—</div><div class="kpi-sub">Awaiting officer</div></div>
+</div>
+
+<!-- ── MAIN TABLE PANEL ───────────────────────────────── -->
+<div class="panel">
+  <div class="ph">
+    <div><div class="ph-title" id="table-title">Monthly Contribution Register &mdash; August 2026</div><div class="ph-sub" id="table-sub">30 members &middot; 29 active</div></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span id="filter-badge" style="font-size:12px;color:var(--q4)"></span>
+      <button class="btn btn-out btn-sm" onclick="clearFilters()">Clear Filters</button>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div style="padding:14px 22px 8px">
+    <div class="status-bar">
+      <div class="sb-seg sb-paid" id="sb-paid" style="width:80%"></div>
+      <div class="sb-seg sb-partial" id="sb-partial" style="width:4%"></div>
+      <div class="sb-seg sb-unpaid" id="sb-unpaid" style="width:6%"></div>
+      <div class="sb-seg sb-overpaid" id="sb-over" style="width:4%"></div>
+      <div class="sb-seg sb-pending" id="sb-pend" style="width:6%"></div>
+    </div>
+  </div>
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot ld-paid"></div><span>Paid (<span id="leg-paid">—</span>)</span></div>
+    <div class="leg-item"><div class="leg-dot ld-partial"></div><span>Partially Paid (<span id="leg-partial">—</span>)</span></div>
+    <div class="leg-item"><div class="leg-dot ld-unpaid"></div><span>Not Paid (<span id="leg-unpaid">—</span>)</span></div>
+    <div class="leg-item"><div class="leg-dot ld-over"></div><span>Overpaid (<span id="leg-over">—</span>)</span></div>
+    <div class="leg-item"><div class="leg-dot ld-pend"></div><span>Pending Verification (<span id="leg-pend">—</span>)</span></div>
+  </div>
+
+  <!-- Tab strip -->
+  <div class="tab-strip">
+    <button class="tab-btn on" onclick="setTab('all',this)">All<span class="tab-count" id="tc-all">0</span></button>
+    <button class="tab-btn" onclick="setTab('paid',this)">Paid<span class="tab-count tc-ok" id="tc-paid">0</span></button>
+    <button class="tab-btn" onclick="setTab('partial',this)">Partially Paid<span class="tab-count tc-w" id="tc-partial">0</span></button>
+    <button class="tab-btn" onclick="setTab('unpaid',this)">Not Paid<span class="tab-count tc-r" id="tc-unpaid">0</span></button>
+    <button class="tab-btn" onclick="setTab('overpaid',this)">Overpaid<span class="tab-count tc-g" id="tc-overpaid">0</span></button>
+    <button class="tab-btn" onclick="setTab('pending_ver',this)">Pending Verify<span class="tab-count tc-p" id="tc-pend">0</span></button>
+  </div>
+
+  <div class="tbl-wrap">
+    <table id="main-table">
+      <thead>
+        <tr>
+          <th onclick="sortBy('name')">Member <span class="sort-ico">&#8597;</span></th>
+          <th onclick="sortBy('dept')">Department <span class="sort-ico">&#8597;</span></th>
+          <th onclick="sortBy('grade')">Grade</th>
+          <th onclick="sortBy('expected')" class="sorted">Expected (&#8358;) <span class="sort-ico">&#8597;</span></th>
+          <th onclick="sortBy('actual')">Actual (&#8358;) <span class="sort-ico">&#8597;</span></th>
+          <th>Difference</th>
+          <th>Method</th>
+          <th>Payment Status</th>
+          <th>Verification</th>
+          <th style="text-align:center">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="main-tbody"></tbody>
+    </table>
+  </div>
+  <div style="padding:12px 22px;border-top:1px solid var(--q1);display:flex;justify-content:space-between;align-items:center;color:var(--q5);font-size:13px">
+    <span id="tbl-footer">Showing 0 of 0 records</span>
+    <span id="tbl-total"></span>
+  </div>
+</div>
+
+<!-- ── CONTRIBUTION RULES ─────────────────────────────── -->
+<div class="panel">
+  <div class="ph" style="cursor:pointer" onclick="toggleRules()">
+    <div><div class="ph-title">Contribution Rules by Grade Level</div><div class="ph-sub">Minimum monthly contribution schedule. Members may elect to contribute more.</div></div>
+    <button class="btn btn-out btn-sm" id="rules-toggle-btn">Show Rules</button>
+  </div>
+  <div id="rules-body" style="display:none">
+    <div class="rules-grid" id="rules-grid"></div>
+    <div style="padding:0 22px 16px">
+      <div class="info-box ib-n">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span>Members may elect to contribute <strong>above</strong> the grade minimum at any time by submitting a contribution election form. The elected amount becomes the new expected contribution and overrides the grade minimum. Changes take effect from the following month and require Finance Officer registration.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- ═══════════════════════════════════════════════════════
+     DRAWER: MANUAL PAYMENT
+════════════════════════════════════════════════════════ -->
+<div class="overlay" id="ov-manual" onclick="closeDrawer('manual')"></div>
+<div class="drawer" id="dr-manual">
+  <div class="dr-head">
+    <div>
+      <div class="dr-title">Record Manual Payment</div>
+      <div class="dr-sub">For members who missed payroll deduction. All fields marked * are required.</div>
+    </div>
+    <button class="dr-close" onclick="closeDrawer('manual')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="dr-body">
+    <div id="manual-form-view">
+      <!-- Member selector -->
+      <div class="fg">
+        <label class="fl">Member *</label>
+        <select class="fsel" id="mp-member" onchange="onMemberSelect()">
+          <option value="">Select member...</option>
+        </select>
+      </div>
+
+      <!-- Member info card (shown after selection) -->
+      <div id="mp-member-info" style="display:none;background:var(--q0);border:1px solid var(--q2);border-radius:10px;padding:14px;margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:13px;font-weight:700;color:var(--q9)" id="mpi-name">—</span>
+          <span id="mpi-status" class="badge"></span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px">
+          <div><span style="color:var(--q5)">Grade: </span><span id="mpi-grade" style="font-weight:600"></span></div>
+          <div><span style="color:var(--q5)">Expected: </span><span id="mpi-expected" style="font-weight:700;color:var(--ok6);font-family:var(--fm)"></span></div>
+          <div><span style="color:var(--q5)">Dept: </span><span id="mpi-dept" style="font-weight:600"></span></div>
+          <div><span style="color:var(--q5)">Current status: </span><span id="mpi-paystatus" style="font-weight:600"></span></div>
+        </div>
+      </div>
+
+      <div class="info-box ib-w" id="already-paid-warn" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span>This member already has a <strong>verified</strong> payment for this period. Recording a second payment will create an overpayment record and require adjustment.</span>
+      </div>
+
+      <div class="fg inline">
+        <div>
+          <label class="fl">Payment Date *</label>
+          <input type="date" class="fi" id="mp-date" max="2026-08-31">
+          <div class="f-err" id="err-date">Payment date is required</div>
+        </div>
+        <div>
+          <label class="fl">Contribution Period *</label>
+          <select class="fsel" id="mp-period">
+            <option value="2026-08" selected>August 2026</option>
+            <option value="2026-07">July 2026</option>
+            <option value="2026-06">June 2026</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label class="fl">Amount (&#8358;) *</label>
+        <input type="number" class="fi mono2" id="mp-amount" placeholder="e.g. 12000" min="1000" step="500" oninput="calcManual()">
+        <div class="f-err" id="err-amount">Please enter a valid amount</div>
+      </div>
+
+      <div class="fg">
+        <label class="fl">Transaction Reference * <span style="font-weight:400;color:var(--q4);text-transform:none;letter-spacing:0">(Bank teller number, receipt no., USSD ref)</span></label>
+        <input type="text" class="fi mono2" id="mp-ref" placeholder="e.g. TRX2026081400047" oninput="validateRef(this)">
+        <div class="f-err" id="err-ref">Transaction reference is required</div>
+      </div>
+
+      <div class="fg">
+        <label class="fl">Payment Method *</label>
+        <select class="fsel" id="mp-method">
+          <option value="">Select method...</option>
+          <option value="bank_transfer">Bank Transfer</option>
+          <option value="cash">Cash Payment</option>
+          <option value="cheque">Cheque</option>
+          <option value="pos">POS Terminal</option>
+          <option value="ussd">USSD Transfer</option>
+        </select>
+      </div>
+
+      <div class="fg">
+        <label class="fl">Notes / Reason</label>
+        <textarea class="fta" id="mp-notes" placeholder="Reason for manual payment (e.g. missed payroll deduction, late payment)..." rows="3"></textarea>
+      </div>
+
+      <!-- Calculated summary -->
+      <div id="mp-calc" style="display:none;background:var(--n0);border:1px solid var(--n1);border-radius:10px;padding:14px;margin-bottom:2px">
+        <div style="font-size:11px;font-weight:700;color:var(--n6);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Payment Summary</div>
+        <div class="field-row"><span class="fr-label">Member</span><span class="fr-val" id="ms-name">—</span></div>
+        <div class="field-row"><span class="fr-label">Period</span><span class="fr-val">August 2026</span></div>
+        <div class="field-row"><span class="fr-label">Amount</span><span class="fr-val" id="ms-amount" style="font-family:var(--fm)">—</span></div>
+        <div class="field-row"><span class="fr-label">Expected</span><span class="fr-val" id="ms-expected" style="font-family:var(--fm)">—</span></div>
+        <div class="field-row"><span class="fr-label">Difference</span><span class="fr-val" id="ms-diff">—</span></div>
+        <div class="field-row"><span class="fr-label">Reference</span><span class="fr-val" id="ms-ref" style="font-family:var(--fm)">—</span></div>
+      </div>
+
+      <div class="info-box ib-n" style="margin-top:14px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>This payment will be recorded as <strong>Pending Verification</strong>. The member's contribution balance will only be updated after an authorised officer verifies the payment.</span>
+      </div>
+    </div>
+
+    <!-- Success view -->
+    <div id="manual-success-view" style="display:none" class="succ-box">
+      <div class="succ-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="succ-t">Payment Recorded</div>
+      <div class="succ-s">The manual payment has been recorded and is pending verification. The member's account will be updated after the payment is verified by an authorised officer.</div>
+      <div style="background:var(--q0);border:1px solid var(--q2);border-radius:10px;padding:14px;text-align:left;margin-bottom:20px">
+        <div class="field-row"><span class="fr-label">Member</span><span class="fr-val" id="succ-name">—</span></div>
+        <div class="field-row"><span class="fr-label">Amount</span><span class="fr-val" id="succ-amount" style="font-family:var(--fm);color:var(--ok6)">—</span></div>
+        <div class="field-row"><span class="fr-label">Reference</span><span class="fr-val" id="succ-ref" style="font-family:var(--fm)">—</span></div>
+        <div class="field-row"><span class="fr-label">Status</span><span><span class="badge b-p"><span class="bd"></span>Pending Verification</span></span></div>
+      </div>
+      <button class="btn btn-green" onclick="resetManual();closeDrawer('manual')">Done</button>
+    </div>
+  </div>
+  <div class="dr-foot" id="manual-foot">
+    <button class="btn btn-green" onclick="submitManual()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Save Payment Record
+    </button>
+    <button class="btn btn-out" onclick="closeDrawer('manual')">Cancel</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     DRAWER: MEMBER DETAIL / HISTORY / ADJUSTMENT
+════════════════════════════════════════════════════════ -->
+<div class="overlay" id="ov-detail" onclick="closeDrawer('detail')"></div>
+<div class="drawer" id="dr-detail">
+  <div class="dr-head">
+    <div>
+      <div class="dr-title" id="det-title">Member Detail</div>
+      <div class="dr-sub" id="det-sub">Contribution record and history</div>
+    </div>
+    <button class="dr-close" onclick="closeDrawer('detail')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="dr-body" id="det-body"></div>
+  <div class="dr-foot" id="det-foot"></div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────
+const MEMBERS = [{"id":"MF-0001","name":"Akin Adebayo","dept":"Treasury","grade":"GL-14","expected":25000,"status":"active","initials":"AA"},{"id":"MF-0002","name":"Fatima Al-Hassan","dept":"Administration","grade":"GL-12","expected":22500,"status":"active","initials":"FA"},{"id":"MF-0003","name":"Chiamaka Osei","dept":"Accounts","grade":"GL-10","expected":18000,"status":"active","initials":"CO"},{"id":"MF-0004","name":"Babatunde Fadahunsi","dept":"Budget","grade":"GL-13","expected":25000,"status":"active","initials":"BF"},{"id":"MF-0005","name":"Ngozi Eze-Williams","dept":"Accounts","grade":"GL-09","expected":12000,"status":"active","initials":"NE"},{"id":"MF-0006","name":"Chukwuemeka Obi","dept":"Treasury","grade":"GL-11","expected":18000,"status":"active","initials":"CO"},{"id":"MF-0007","name":"Ifeoma Uchenna","dept":"Procurement","grade":"GL-10","expected":18000,"status":"active","initials":"IU"},{"id":"MF-0008","name":"Sunday Olawale","dept":"ICT","grade":"GL-09","expected":12000,"status":"active","initials":"SO"},{"id":"MF-0009","name":"Blessing Nwosu","dept":"HR","grade":"GL-08","expected":12000,"status":"active","initials":"BN"},{"id":"MF-0010","name":"Emmanuel Dare","dept":"Legal","grade":"GL-15","expected":25000,"status":"active","initials":"ED"},{"id":"MF-0011","name":"Grace Obiora","dept":"Accounts","grade":"GL-10","expected":18000,"status":"active","initials":"GO"},{"id":"MF-0012","name":"Samson Afolabi","dept":"Treasury","grade":"GL-12","expected":22500,"status":"active","initials":"SA"},{"id":"MF-0013","name":"Adaeze Okonkwo","dept":"Accounts","grade":"GL-08","expected":12000,"status":"active","initials":"AO"},{"id":"MF-0014","name":"Ibrahim Musa","dept":"Administration","grade":"GL-14","expected":25000,"status":"active","initials":"IM"},{"id":"MF-0015","name":"Funke Adedayo","dept":"Budget","grade":"GL-11","expected":18000,"status":"active","initials":"FA"},{"id":"MF-0016","name":"Tunde Bakare","dept":"Procurement","grade":"GL-09","expected":12000,"status":"active","initials":"TB"},{"id":"MF-0017","name":"Chidinma Uche","dept":"Treasury","grade":"GL-10","expected":18000,"status":"active","initials":"CU"},{"id":"MF-0018","name":"Moses Ogundele","dept":"ICT","grade":"GL-09","expected":12000,"status":"active","initials":"MO"},{"id":"MF-0019","name":"Yetunde Adegbite","dept":"HR","grade":"GL-08","expected":12000,"status":"active","initials":"YA"},{"id":"MF-0020","name":"Obinna Chukwu","dept":"Accounts","grade":"GL-10","expected":18000,"status":"active","initials":"OC"},{"id":"MF-0021","name":"Kola Adeyemi","dept":"Legal","grade":"GL-13","expected":25000,"status":"active","initials":"KA"},{"id":"MF-0022","name":"Amaka Nwachukwu","dept":"Budget","grade":"GL-12","expected":22500,"status":"active","initials":"AN"},{"id":"MF-0023","name":"Segun Balogun","dept":"Procurement","grade":"GL-11","expected":18000,"status":"active","initials":"SB"},{"id":"MF-0024","name":"Nkechi Okafor","dept":"Accounts","grade":"GL-09","expected":12000,"status":"active","initials":"NO"},{"id":"MF-0025","name":"Damilola Ojo","dept":"Treasury","grade":"GL-10","expected":18000,"status":"active","initials":"DO"},{"id":"MF-0026","name":"Uche Nweze","dept":"ICT","grade":"GL-08","expected":12000,"status":"active","initials":"UN"},{"id":"MF-0027","name":"Taiwo Adeniyi","dept":"HR","grade":"GL-12","expected":22500,"status":"active","initials":"TA"},{"id":"MF-0028","name":"Zainab Aliyu","dept":"Administration","grade":"GL-09","expected":12000,"status":"active","initials":"ZA"},{"id":"MF-0029","name":"Emeka Anozie","dept":"Budget","grade":"GL-10","expected":18000,"status":"active","initials":"EA"},{"id":"MF-0030","name":"Hauwa Garba","dept":"Legal","grade":"GL-11","expected":18000,"status":"inactive","initials":"HG"}];
+const AUG_DATA = [{"id":"MF-0001","actual":25000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0002","actual":22500,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0003","actual":18000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0004","actual":25000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0005","actual":9000,"method":"payroll","payStatus":"partial","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":"Payroll shortfall — under investigation"},{"id":"MF-0006","actual":18000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0007","actual":18000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0008","actual":12000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0009","actual":12000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0010","actual":25000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0011","actual":18000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0012","actual":22500,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0013","actual":12000,"method":"manual","payStatus":"paid","verStatus":"verified","ref":"MAN-2026-08-007","date":"2026-08-05","note":"Missed payroll deduction"},{"id":"MF-0014","actual":25000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0015","actual":18000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0016","actual":0,"method":"—","payStatus":"unpaid","verStatus":"unverified","ref":"","date":"","note":""},{"id":"MF-0017","actual":18000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0018","actual":12000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0019","actual":8000,"method":"manual","payStatus":"partial","verStatus":"pending","ref":"MAN-2026-08-012","date":"2026-08-10","note":"Member requested partial — balance due Sep"},{"id":"MF-0020","actual":18000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0021","actual":0,"method":"—","payStatus":"unpaid","verStatus":"unverified","ref":"","date":"","note":"On leave — contribution deferred"},{"id":"MF-0022","actual":27500,"method":"payroll","payStatus":"overpaid","verStatus":"pending","ref":"PAY-2026-08-001","date":"2026-08-01","note":"Overpayment — payroll error, refund requested"},{"id":"MF-0023","actual":18000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0024","actual":12000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0025","actual":18000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0026","actual":12000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0027","actual":22500,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0028","actual":12000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0029","actual":18000,"method":"payroll","payStatus":"paid","verStatus":"verified","ref":"PAY-2026-08-001","date":"2026-08-01","note":""},{"id":"MF-0030","actual":0,"method":"—","payStatus":"unpaid","verStatus":"unverified","ref":"","date":"","note":"Inactive member"}];
+const MEMBER_HISTORY = [{"month":"Aug 2026","expected":12000,"actual":12000,"method":"manual","ref":"MAN-2026-08-007","status":"paid","verStatus":"verified"},{"month":"Jul 2026","expected":12000,"actual":12000,"method":"payroll","ref":"PAY-2026-07-001","status":"paid","verStatus":"verified"},{"month":"Jun 2026","expected":12000,"actual":12000,"method":"payroll","ref":"PAY-2026-06-001","status":"paid","verStatus":"verified"},{"month":"May 2026","expected":12000,"actual":12000,"method":"payroll","ref":"PAY-2026-05-001","status":"paid","verStatus":"verified"},{"month":"Apr 2026","expected":12000,"actual":12000,"method":"payroll","ref":"PAY-2026-04-001","status":"paid","verStatus":"verified"},{"month":"Mar 2026","expected":12000,"actual":12000,"method":"payroll","ref":"PAY-2026-03-001","status":"paid","verStatus":"verified"},{"month":"Feb 2026","expected":12000,"actual":8000,"method":"manual","ref":"MAN-2026-02-003","status":"partial","verStatus":"verified"},{"month":"Jan 2026","expected":12000,"actual":12000,"method":"payroll","ref":"PAY-2026-01-001","status":"paid","verStatus":"verified"},{"month":"Dec 2025","expected":12000,"actual":12000,"method":"payroll","ref":"PAY-2025-12-001","status":"paid","verStatus":"verified"},{"month":"Nov 2025","expected":12000,"actual":0,"method":"—","ref":"","status":"unpaid","verStatus":"unverified"},{"month":"Oct 2025","expected":12000,"actual":12000,"method":"payroll","ref":"PAY-2025-10-001","status":"paid","verStatus":"verified"},{"month":"Sep 2025","expected":12000,"actual":12000,"method":"payroll","ref":"PAY-2025-09-001","status":"paid","verStatus":"verified"}];
+const GRADE_RULES = [{"range":"GL-01 – GL-07","min":10000,"label":"Below GL-08"},{"range":"GL-08 – GL-09","min":12000,"label":"Junior Officer"},{"range":"GL-10 – GL-11","min":18000,"label":"Senior Officer"},{"range":"GL-12 – GL-13","min":22500,"label":"Principal Officer"},{"range":"GL-14 – GL-15","min":25000,"label":"Director II/I"},{"range":"GL-16+","min":30000,"label":"Director General"}];
+
+const memberMap = {};
+MEMBERS.forEach(m => memberMap[m.id] = m);
+const augMap = {};
+AUG_DATA.forEach(d => augMap[d.id] = d);
+
+const MONTHS_LABEL = {'2026-08':'August 2026','2026-07':'July 2026','2026-06':'June 2026','2026-05':'May 2026','2026-04':'April 2026'};
+
+// ── State ─────────────────────────────────────────────────────
+let currentTab = 'all';
+let sortField = 'expected';
+let sortDir = 1;
+let currentMonthData = [];
+
+// ── Helpers ───────────────────────────────────────────────────
+const fmt = n => '₦' + Number(n).toLocaleString('en-NG');
+const el = id => document.getElementById(id);
+const show = (id, d='block') => el(id) && (el(id).style.display = d);
+const hide = id => el(id) && (el(id).style.display = 'none');
+
+const avColors = ['av-0','av-1','av-2','av-3','av-4','av-5','av-6'];
+const avColor = id => avColors[parseInt(id.replace('MF-0',''))%7];
+
+const payBadge = s => ({
+  paid:        '<span class="badge b-ok"><span class="bd"></span>Paid</span>',
+  partial:     '<span class="badge b-w"><span class="bd"></span>Partially Paid</span>',
+  unpaid:      '<span class="badge b-r"><span class="bd"></span>Not Paid</span>',
+  overpaid:    '<span class="badge b-g"><span class="bd"></span>Overpaid</span>',
+  pending_ver: '<span class="badge b-p"><span class="bd"></span>Pending Verify</span>',
+}[s] || '<span class="badge b-z">Unknown</span>');
+
+const verBadge = s => ({
+  verified:   '<span class="badge b-ok"><span class="bd"></span>Verified</span>',
+  pending:    '<span class="badge b-p"><span class="bd"></span>Pending</span>',
+  unverified: '<span class="badge b-z"><span class="bd"></span>Unverified</span>',
+}[s] || '<span class="badge b-z">—</span>');
+
+const methodChip = m => ({
+  payroll: '<span class="method-chip mc-payroll"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Payroll</span>',
+  manual:  '<span class="method-chip mc-manual"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Manual</span>',
+  '—':     '<span class="method-chip mc-none">—</span>',
+}[m] || '<span class="method-chip mc-none">—</span>');
+
+const diffFmt = (actual, expected) => {
+  if (!expected) return '<span class="diff-zero">—</span>';
+  const d = actual - expected;
+  if (Math.abs(d) < 1) return '<span class="diff-zero">—</span>';
+  return d > 0
+    ? '<span class="diff-pos">+' + fmt(d) + '</span>'
+    : '<span class="diff-neg">' + fmt(d) + '</span>';
+};
+
+const trClass = s => ({paid:'',partial:'tr-partial',unpaid:'tr-unpaid',overpaid:'tr-overpaid',pending_ver:'tr-pending'}[s]||'');
+
+// ── Build combined rows ────────────────────────────────────────
+function buildRows(period) {
+  const rows = [];
+  MEMBERS.forEach(m => {
+    const d = augMap[m.id] || { actual:0, method:'—', payStatus: m.status==='inactive'?'unpaid':'unpaid', verStatus:'unverified', ref:'', date:'', note:'' };
+    rows.push({ ...m, ...d, member: m });
+  });
+  return rows;
+}
+
+// ── KPI Render ─────────────────────────────────────────────────
+function renderKPIs(rows) {
+  const active = rows.filter(r => r.status === 'active');
+  const totalExp = active.reduce((s,r) => s + r.expected, 0);
+  const totalColl = rows.reduce((s,r) => s + r.actual, 0);
+  const paid = rows.filter(r => r.payStatus === 'paid').length;
+  const partial = rows.filter(r => r.payStatus === 'partial').length;
+  const unpaid = rows.filter(r => r.payStatus === 'unpaid').length;
+  const overpaid = rows.filter(r => r.payStatus === 'overpaid').length;
+  const pendVer = rows.filter(r => r.payStatus === 'pending_ver').length;
+  const total = rows.length;
+
+  el('k-expected').textContent = fmt(totalExp);
+  el('k-collected').textContent = fmt(totalColl);
+  el('k-coll-sub').textContent = Math.round(totalColl/totalExp*100) + '% of expected';
+  el('k-paid').textContent = paid;
+  el('k-paid-sub').textContent = paid + ' of ' + total + ' members';
+  el('k-partial').textContent = partial;
+  el('k-unpaid').textContent = unpaid;
+  el('k-unpaid-sub').textContent = fmt(active.filter(r=>r.payStatus==='unpaid').reduce((s,r)=>s+r.expected,0)) + ' missing';
+  el('k-over').textContent = overpaid;
+  el('k-pending').textContent = pendVer;
+
+  // Legend + status bar
+  el('leg-paid').textContent = paid;
+  el('leg-partial').textContent = partial;
+  el('leg-unpaid').textContent = unpaid;
+  el('leg-over').textContent = overpaid;
+  el('leg-pend').textContent = pendVer;
+
+  const T = total || 1;
+  el('sb-paid').style.width = (paid/T*100).toFixed(1)+'%';
+  el('sb-partial').style.width = (partial/T*100).toFixed(1)+'%';
+  el('sb-unpaid').style.width = (unpaid/T*100).toFixed(1)+'%';
+  el('sb-over').style.width = (overpaid/T*100).toFixed(1)+'%';
+  el('sb-pend').style.width = (pendVer/T*100).toFixed(1)+'%';
+
+  // Tab counts
+  el('tc-all').textContent = total;
+  el('tc-paid').textContent = paid;
+  el('tc-partial').textContent = partial;
+  el('tc-unpaid').textContent = unpaid;
+  el('tc-overpaid').textContent = overpaid;
+  el('tc-pend').textContent = pendVer;
+}
+
+// ── Table Render ───────────────────────────────────────────────
+function renderTable(rows) {
+  const body = el('main-tbody');
+  if (!rows.length) {
+    body.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--q4)">No records match the current filters</td></tr>';
+    el('tbl-footer').textContent = 'Showing 0 records';
+    el('tbl-total').textContent = '';
+    return;
+  }
+
+  const totalActual = rows.reduce((s,r)=>s+r.actual,0);
+  const totalExpected = rows.reduce((s,r)=>s+r.expected,0);
+
+  body.innerHTML = rows.map(r => {
+    const canEdit = r.verStatus !== 'verified';
+    return `<tr class="${trClass(r.payStatus)}">
+      <td>
+        <div class="member-cell">
+          <div class="m-avt ${avColor(r.id)}">${r.initials}</div>
+          <div><div class="m-name">${r.name}</div><div class="m-id">${r.id}</div></div>
+        </div>
+      </td>
+      <td class="ts">${r.dept}</td>
+      <td><span class="mono" style="font-size:12.5px;font-weight:600;color:var(--q6)">${r.grade}</span></td>
+      <td class="mono tv">${fmt(r.expected)}</td>
+      <td class="mono tv" style="color:${r.actual===r.expected?'var(--q9)':r.actual>r.expected?'var(--g6)':r.actual===0?'var(--r6)':'var(--w6)'}">${r.actual > 0 ? fmt(r.actual) : '<span class="ts">—</span>'}</td>
+      <td>${diffFmt(r.actual, r.expected)}</td>
+      <td>${methodChip(r.method)}</td>
+      <td>${payBadge(r.payStatus)}</td>
+      <td>${verBadge(r.verStatus)}</td>
+      <td>
+        <div class="act-row" style="justify-content:center">
+          <button class="btn btn-xs btn-out" title="View history" onclick="openDetail('${r.id}')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>History
+          </button>
+          ${r.payStatus === 'unpaid' || r.payStatus === 'partial' ? '<button class="btn btn-xs btn-green" title="Record payment" onclick="openManualPayment('' + r.id + '')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Pay</button>' : ''}
+          ${canEdit ? '<button class="btn btn-xs" style="background:var(--w0);color:var(--w6);border:1px solid var(--w1)" title="Adjust contribution" onclick="openAdjust('' + r.id + '')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Adjust</button>' : '<button class="btn btn-xs" style="background:var(--r0);color:var(--r5);border:1px solid var(--r1);cursor:not-allowed" disabled title="Posted — cannot modify"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Locked</button>'}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  el('tbl-footer').textContent = 'Showing ' + rows.length + ' record' + (rows.length!==1?'s':'');
+  el('tbl-total').textContent = 'Total collected: ' + fmt(totalActual) + ' / ' + fmt(totalExpected) + ' expected';
+}
+
+// ── Filtering / Sorting ────────────────────────────────────────
+function applyFilters() {
+  const month = el('sel-month').value;
+  const dept = el('sel-dept').value;
+  const status = el('sel-status').value;
+  const q = (el('srch-inp').value || '').toLowerCase();
+  const period = MONTHS_LABEL[month] || 'August 2026';
+
+  el('table-title').textContent = 'Monthly Contribution Register — ' + period;
+
+  let rows = buildRows(month);
+  currentMonthData = rows;
+  renderKPIs(rows);
+
+  // Tab filter
+  if (currentTab !== 'all') rows = rows.filter(r => r.payStatus === currentTab);
+  if (dept) rows = rows.filter(r => r.dept === dept);
+  if (status) rows = rows.filter(r => r.payStatus === status);
+  if (q) rows = rows.filter(r => (r.name+r.id+r.dept+r.grade).toLowerCase().includes(q));
+
+  // Sort
+  rows.sort((a,b) => {
+    let av = a[sortField]||'', bv = b[sortField]||'';
+    if (typeof av === 'number') return sortDir * (av - bv);
+    return sortDir * String(av).localeCompare(String(bv));
+  });
+
+  renderTable(rows);
+  const active = MEMBERS.filter(m=>m.status==='active').length;
+  el('table-sub').textContent = MEMBERS.length + ' members · ' + active + ' active';
+  updateFilterBadge(dept, status, q);
+}
+
+function updateFilterBadge(dept, status, q) {
+  const parts = [];
+  if (dept) parts.push(dept);
+  if (status) parts.push(status);
+  if (q) parts.push('“'+q+'”');
+  el('filter-badge').textContent = parts.length ? 'Filtered by: ' + parts.join(', ') : '';
+}
+
+function clearFilters() {
+  el('sel-dept').value = ''; el('sel-status').value = ''; el('srch-inp').value = '';
+  currentTab = 'all';
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('on', i===0));
+  applyFilters();
+}
+
+function setTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  applyFilters();
+}
+
+function sortBy(field) {
+  if (sortField === field) sortDir *= -1; else { sortField = field; sortDir = 1; }
+  document.querySelectorAll('th').forEach(t => t.classList.remove('sorted'));
+  applyFilters();
+}
+
+// ── Rules panel ────────────────────────────────────────────────
+let rulesOpen = false;
+function toggleRules() {
+  rulesOpen = !rulesOpen;
+  el('rules-body').style.display = rulesOpen ? 'block' : 'none';
+  el('rules-toggle-btn').textContent = rulesOpen ? 'Hide Rules' : 'Show Rules';
+}
+
+function renderRules() {
+  el('rules-grid').innerHTML = GRADE_RULES.map(r => `
+    <div class="rule-card">
+      <div class="rc-grade">${r.range}</div>
+      <div class="rc-label">${r.label}</div>
+      <div class="rc-amount">${fmt(r.min)} <span>/ month</span></div>
+    </div>`).join('');
+}
+
+// ── Drawer helpers ─────────────────────────────────────────────
+function openDrawer(name) {
+  el('ov-' + name).classList.add('open');
+  setTimeout(() => el('dr-' + name).classList.add('open'), 10);
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer(name) {
+  el('ov-' + name).classList.remove('open');
+  el('dr-' + name).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── Manual Payment ─────────────────────────────────────────────
+function populateMemberSelect() {
+  const sel = el('mp-member');
+  const active = MEMBERS.filter(m => m.status === 'active').sort((a,b) => a.name.localeCompare(b.name));
+  sel.innerHTML = '<option value="">Select member...</option>' + active.map(m =>
+    `<option value="${m.id}">${m.name} (${m.id} · ${m.grade})</option>`).join('');
+}
+
+function openManualPayment(memberId) {
+  hide('manual-success-view');
+  show('manual-form-view');
+  show('manual-foot');
+  if (memberId) {
+    el('mp-member').value = memberId;
+    onMemberSelect();
+  } else {
+    el('mp-member').value = '';
+    hide('mp-member-info');
+    hide('already-paid-warn');
+    hide('mp-calc');
+  }
+  // Set default date to today
+  const today = new Date().toISOString().split('T')[0];
+  el('mp-date').value = today;
+  openDrawer('manual');
+}
+
+function onMemberSelect() {
+  const id = el('mp-member').value;
+  if (!id) { hide('mp-member-info'); hide('already-paid-warn'); hide('mp-calc'); return; }
+  const m = memberMap[id];
+  const d = augMap[id];
+  show('mp-member-info');
+  el('mpi-name').textContent = m.name + ' — ' + m.dept;
+  el('mpi-grade').textContent = m.grade;
+  el('mpi-expected').textContent = fmt(m.expected);
+  el('mpi-dept').textContent = m.dept;
+  el('mpi-paystatus').innerHTML = d ? payBadge(d.payStatus) : payBadge('unpaid');
+  el('mpi-status').innerHTML = `<span class="badge b-${m.status==='active'?'ok':'z'}">${m.status}</span>`;
+
+  // Warn if already fully paid and verified
+  if (d && d.payStatus === 'paid' && d.verStatus === 'verified') show('already-paid-warn');
+  else hide('already-paid-warn');
+
+  // Pre-fill amount
+  el('mp-amount').value = m.expected;
+  calcManual();
+}
+
+function calcManual() {
+  const id = el('mp-member').value;
+  const amount = parseFloat(el('mp-amount').value) || 0;
+  const ref = el('mp-ref').value.trim();
+  if (!id || !amount) { hide('mp-calc'); return; }
+  const m = memberMap[id];
+  show('mp-calc');
+  el('ms-name').textContent = m.name;
+  el('ms-amount').textContent = fmt(amount);
+  el('ms-expected').textContent = fmt(m.expected);
+  const diff = amount - m.expected;
+  el('ms-diff').innerHTML = Math.abs(diff) < 1 ? '<span style="color:var(--ok6)">Exact match</span>'
+    : diff > 0 ? '<span class="diff-pos">+' + fmt(diff) + ' (Overpayment)</span>'
+    : '<span class="diff-neg">' + fmt(diff) + ' (Shortfall)</span>';
+  el('ms-ref').textContent = ref || '(not entered)';
+}
+
+function validateRef(inp) { calcManual(); }
+
+function submitManual() {
+  const id = el('mp-member').value;
+  const date = el('mp-date').value;
+  const amount = parseFloat(el('mp-amount').value)||0;
+  const ref = el('mp-ref').value.trim();
+  const method = el('mp-method').value;
+  let ok = true;
+
+  if (!id) { alert('Please select a member.'); return; }
+  if (!date) { el('err-date').classList.add('show'); el('mp-date').classList.add('err'); ok=false; } else { el('err-date').classList.remove('show'); el('mp-date').classList.remove('err'); }
+  if (!amount||amount<100) { el('err-amount').classList.add('show'); el('mp-amount').classList.add('err'); ok=false; } else { el('err-amount').classList.remove('show'); el('mp-amount').classList.remove('err'); }
+  if (!ref) { el('err-ref').classList.add('show'); el('mp-ref').classList.add('err'); ok=false; } else { el('err-ref').classList.remove('show'); el('mp-ref').classList.remove('err'); }
+  if (!method) { alert('Please select a payment method.'); return; }
+  if (!ok) return;
+
+  const m = memberMap[id];
+  // Update local data
+  augMap[id] = { ...augMap[id], actual: amount, method:'manual', payStatus: amount < m.expected ? 'partial' : amount > m.expected ? 'overpaid' : 'pending_ver', verStatus:'pending', ref, date };
+
+  el('succ-name').textContent = m.name;
+  el('succ-amount').textContent = fmt(amount);
+  el('succ-ref').textContent = ref;
+  hide('manual-form-view');
+  hide('manual-foot');
+  show('manual-success-view');
+  applyFilters();
+}
+
+function resetManual() {
+  el('mp-member').value=''; el('mp-date').value=''; el('mp-amount').value=''; el('mp-ref').value=''; el('mp-method').value=''; el('mp-notes').value='';
+  hide('mp-member-info'); hide('already-paid-warn'); hide('mp-calc');
+  hide('manual-success-view'); show('manual-form-view'); show('manual-foot');
+}
+
+// ── Member Detail Drawer ───────────────────────────────────────
+function openDetail(id) {
+  const m = memberMap[id];
+  const d = augMap[id] || {};
+  el('det-title').textContent = m.name;
+  el('det-sub').textContent = m.id + ' · ' + m.dept + ' · ' + m.grade;
+
+  const history = id === 'MF-0013' ? MEMBER_HISTORY : generateHistory(m, d);
+
+  const totalPaid = history.filter(h=>h.status==='paid').length;
+  const totalContrib = history.reduce((s,h)=>s+h.actual,0);
+  const balance = totalContrib; // simplified
+
+  el('det-body').innerHTML = `
+    <div class="msummary">
+      <div class="ms-top">
+        <div class="ms-avt ${avColor(m.id)}">${m.initials}</div>
+        <div>
+          <div class="ms-name">${m.name}</div>
+          <div class="ms-id">${m.id} · ${m.dept} · ${m.grade}</div>
+        </div>
+      </div>
+      <div class="ms-stats">
+        <div class="ms-stat"><div class="ms-stat-val">${fmt(m.expected)}</div><div class="ms-stat-lbl">Monthly</div></div>
+        <div class="ms-stat"><div class="ms-stat-val">${fmt(totalContrib)}</div><div class="ms-stat-lbl">Total Paid</div></div>
+        <div class="ms-stat"><div class="ms-stat-val">${totalPaid}/${history.length}</div><div class="ms-stat-lbl">On Time</div></div>
+      </div>
+    </div>
+
+    <div class="section-title">August 2026 Record</div>
+    <div class="field-row"><span class="fr-label">Expected</span><span class="fr-val" style="font-family:var(--fm)">${fmt(m.expected)}</span></div>
+    <div class="field-row"><span class="fr-label">Actual Paid</span><span class="fr-val" style="font-family:var(--fm);color:var(--ok6)">${d.actual ? fmt(d.actual) : '<span style=\"color:var(--r6)\">Not paid</span>'}</span></div>
+    <div class="field-row"><span class="fr-label">Payment Method</span><span>${methodChip(d.method||'—')}</span></div>
+    <div class="field-row"><span class="fr-label">Transaction Ref</span><span class="fr-val" style="font-family:var(--fm);font-size:12px">${d.ref||'—'}</span></div>
+    <div class="field-row"><span class="fr-label">Payment Date</span><span class="fr-val">${d.date||'—'}</span></div>
+    <div class="field-row"><span class="fr-label">Payment Status</span><span>${payBadge(d.payStatus||'unpaid')}</span></div>
+    <div class="field-row"><span class="fr-label">Verification</span><span>${verBadge(d.verStatus||'unverified')}</span></div>
+    ${d.note ? '<div class="field-row"><span class="fr-label">Notes</span><span class="fr-val" style="font-size:12.5px">' + d.note + '</span></div>' : ''}
+
+    <div class="section-title" style="margin-top:22px">12-Month History</div>
+    <div>
+      ${history.map(h => {
+        const pct = h.expected ? Math.min(100, h.actual/h.expected*100) : 0;
+        const barClass = {paid:'hb-paid',partial:'hb-partial',unpaid:'hb-unpaid',overpaid:'hb-over'}[h.status]||'hb-unpaid';
+        return '<div class="hist-row"><div class="hist-month">' + h.month + '</div><div class="hist-bar-wrap"><div class="hist-bar ' + barClass + '" style="width:' + pct + '%"></div></div><div class="hist-amount">' + (h.actual > 0 ? fmt(h.actual) : '<span style=\"color:var(--r5)\">—</span>') + '</div><div class="hist-ref">' + (h.ref||'—') + '</div><div>' + payBadge(h.status) + '</div></div>';
+      }).join('')}
+    </div>
+
+    ${d.verStatus !== 'verified' ? `
+    <div class="section-title" style="margin-top:22px">Adjustment</div>
+    <div id="adj-section">
+      <div class="info-box ib-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Adjustments are logged with your name, timestamp, and reason. Only unverified records may be adjusted.</span></div>
+      <div class="fg"><label class="fl">Adjustment Type</label>
+        <select class="fsel" id="adj-type">
+          <option value="">Select...</option>
+          <option value="increase">Increase Amount</option>
+          <option value="decrease">Decrease Amount</option>
+          <option value="reverse">Reverse / Cancel Record</option>
+          <option value="change_ref">Correct Transaction Reference</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="fl">New Amount (&#8358;) <span style="font-weight:400;color:var(--q4);text-transform:none;letter-spacing:0">(if applicable)</span></label>
+        <input type="number" class="fi mono2" id="adj-amount" value="${d.actual||0}" min="0">
+      </div>
+      <div class="fg"><label class="fl">Authorisation Code / Reason *</label>
+        <input type="text" class="fi" id="adj-auth" placeholder="Enter authorisation code or reason...">
+      </div>
+      <div class="fg"><label class="fl">Notes *</label>
+        <textarea class="fta" id="adj-notes" placeholder="Detailed reason for this adjustment..." rows="3"></textarea>
+      </div>
+    </div>` : `
+    <div class="section-title" style="margin-top:22px">Adjustment</div>
+    <div class="lock-notice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>This record has been verified and posted. It cannot be modified. Raise a correction request through the Finance Officer if an error has been identified.</div>`}
+  `;
+
+  el('det-foot').innerHTML = d.verStatus !== 'verified'
+    ? '<button class="btn btn-gold" onclick="submitAdjust('' + id + '')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Save Adjustment</button><button class="btn btn-out" onclick="closeDrawer('detail')">Close</button>'
+    : '<button class="btn btn-out" onclick="closeDrawer('detail')">Close</button>';
+
+  openDrawer('detail');
+}
+
+function submitAdjust(id) {
+  const type = el('adj-type') && el('adj-type').value;
+  const auth = el('adj-auth') && el('adj-auth').value.trim();
+  const notes = el('adj-notes') && el('adj-notes').value.trim();
+  if (!type) { alert('Please select an adjustment type.'); return; }
+  if (!auth) { alert('Authorisation code or reason is required.'); return; }
+  if (!notes) { alert('Please provide adjustment notes.'); return; }
+  if (type === 'reverse') {
+    augMap[id] = { ...augMap[id], actual:0, payStatus:'unpaid', verStatus:'unverified', method:'—' };
+  } else if (type === 'increase' || type === 'decrease') {
+    const newAmt = parseFloat(el('adj-amount').value)||0;
+    const m = memberMap[id];
+    augMap[id] = { ...augMap[id], actual:newAmt, payStatus: newAmt===m.expected?'paid':newAmt<m.expected?'partial':newAmt>m.expected?'overpaid':'unpaid', verStatus:'pending' };
+  }
+  closeDrawer('detail');
+  applyFilters();
+  setTimeout(() => alert('Adjustment saved and logged. The record is now pending re-verification.'), 100);
+}
+
+function openAdjust(id) { openDetail(id); }
+
+// ── Generate plausible history for non-sample members ──────────
+function generateHistory(m, d) {
+  const months = ['Aug 2026','Jul 2026','Jun 2026','May 2026','Apr 2026','Mar 2026','Feb 2026','Jan 2026','Dec 2025','Nov 2025','Oct 2025','Sep 2025'];
+  return months.map((mo, i) => ({
+    month: mo,
+    expected: m.expected,
+    actual: i===0 ? (d.actual||0) : m.expected,
+    method: i===0 ? (d.method||'—') : 'payroll',
+    ref: i===0 ? (d.ref||'') : 'PAY-' + (i<4?'2026':'2025') + '-' + String(12-i).padStart(2,'0') + '-001',
+    status: i===0 ? (d.payStatus||'unpaid') : 'paid',
+    verStatus: i===0 ? (d.verStatus||'unverified') : 'verified',
+  }));
+}
+
+// ── Export ────────────────────────────────────────────────────
+function exportCSV() {
+  const month = el('sel-month').value;
+  const period = MONTHS_LABEL[month];
+  const rows = buildRows(month);
+  const lines = ['CoopFund Monthly Contribution Report — ' + period,'',
+    'Employee ID,Name,Department,Grade,Expected,Actual,Difference,Method,Payment Status,Verification'];
+  rows.forEach(r => {
+    const diff = r.actual - r.expected;
+    lines.push([r.id,r.name,r.dept,r.grade,r.expected,r.actual,diff,r.method,r.payStatus,r.verStatus].join(','));
+  });
+  const blob = new Blob([lines.join('\n')],{type:'text/csv'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='contributions_' + month + '.csv'; a.click();
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+populateMemberSelect();
+renderRules();
+applyFilters();
+</script>
+</body>
+</html>

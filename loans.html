@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Loan Management &mdash; CoopFund Admin</title>
+<meta name="description" content="Cooperative fund loan management system">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --n9:#071526;--n8:#0f2240;--n7:#1e3a5f;--n6:#264d7a;--n5:#3465a0;--n4:#5480b8;--n3:#7da0cc;--n1:#d6e4f3;--n0:#eef4fa;
+  --g6:#b88d13;--g5:#c9a227;--g4:#d4b245;--g3:#e0c870;--g1:#f5ecd0;--g0:#faf5e8;
+  --ok7:#14532d;--ok6:#166534;--ok5:#16a34a;--ok2:#bbf7d0;--ok1:#dcfce7;--ok0:#f0fdf4;
+  --w7:#92400e;--w6:#b45309;--w5:#d97706;--w2:#fde68a;--w1:#fef3c7;--w0:#fffbeb;
+  --r7:#991b1b;--r6:#b91c1c;--r5:#dc2626;--r2:#fca5a5;--r1:#fee2e2;--r0:#fff5f5;
+  --p6:#6d28d9;--p5:#7c3aed;--p1:#ede9fe;--p0:#f5f3ff;
+  --q9:#111827;--q8:#1f2937;--q7:#374151;--q6:#4b5563;--q5:#6b7280;--q4:#9ca3af;--q3:#d1d5db;--q2:#e5e7eb;--q15:#eff0f3;--q1:#f3f4f6;--q0:#f9fafb;
+  --ff:'Inter',-apple-system,sans-serif;--fm:'JetBrains Mono',monospace;
+  --s2:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --s3:0 4px 16px rgba(0,0,0,.09);--s4:0 12px 36px rgba(0,0,0,.15);
+}
+html{font-size:15px}
+body{font-family:var(--ff);background:#eef2f7;color:var(--q8);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* ── TOPBAR ──────────────────────────────────────────── */
+.topbar{background:var(--n7);height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;box-shadow:0 2px 12px rgba(0,0,0,.22);position:sticky;top:0;z-index:90}
+.tb-l{display:flex;align-items:center;gap:14px}
+.tb-logo{font-size:17px;font-weight:800;color:var(--g5)}
+.tb-sep{width:1px;height:20px;background:rgba(255,255,255,.2)}
+.tb-title{font-size:14px;font-weight:600;color:rgba(255,255,255,.88)}
+.tb-bc{font-size:11.5px;color:rgba(255,255,255,.38);margin-top:1px}
+.tb-r{display:flex;align-items:center;gap:10px}
+.tb-avt{width:32px;height:32px;background:linear-gradient(135deg,var(--n5),var(--n3));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff}
+.tb-usr{font-size:13px;color:rgba(255,255,255,.65)}
+.tb-role{font-size:11px;color:rgba(255,255,255,.35)}
+
+/* ── NAV TABS (TOP-LEVEL) ────────────────────────────── */
+.nav-tabs{background:#fff;border-bottom:1px solid var(--q2);padding:0 28px;display:flex;gap:0;box-shadow:var(--s2);position:sticky;top:62px;z-index:80}
+.ntab{display:flex;align-items:center;gap:7px;padding:14px 18px;font-size:13.5px;font-weight:600;color:var(--q5);cursor:pointer;border:none;background:none;font-family:var(--ff);border-bottom:2.5px solid transparent;transition:all .15s;white-space:nowrap}
+.ntab:hover{color:var(--q7);background:var(--q0)}
+.ntab.on{color:var(--n7);border-bottom-color:var(--n7)}
+.ntab svg{width:15px;height:15px}
+.ntab-count{background:var(--q1);color:var(--q6);border-radius:20px;font-size:11px;font-weight:700;padding:1px 7px;transition:all .15s}
+.ntab.on .ntab-count{background:var(--n0);color:var(--n7)}
+.ntab-count.alert{background:var(--r1);color:var(--r7)}
+.ntab-count.warn{background:var(--w1);color:var(--w7)}
+
+/* ── MAIN ─────────────────────────────────────────────── */
+.main{max-width:1300px;margin:0 auto;padding:24px 28px}
+.view{display:none;animation:fadeUp .2s ease}
+.view.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── KPI STRIP ───────────────────────────────────────── */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.kpi{background:#fff;border-radius:14px;padding:16px 18px;border:1px solid var(--q15);box-shadow:var(--s2);position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.kpi-n::before{background:linear-gradient(90deg,var(--n7),var(--n4))}
+.kpi-ok::before{background:linear-gradient(90deg,var(--ok6),var(--ok5))}
+.kpi-w::before{background:linear-gradient(90deg,var(--w6),var(--w5))}
+.kpi-r::before{background:linear-gradient(90deg,var(--r6),var(--r5))}
+.kpi-g::before{background:linear-gradient(90deg,var(--g6),var(--g4))}
+.kpi-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--q4);margin-bottom:7px}
+.kpi-val{font-size:24px;font-weight:800;color:var(--q9);letter-spacing:-.025em;line-height:1;font-family:var(--fm)}
+.kpi-val.sm{font-size:18px}
+.kpi-sub{font-size:11.5px;color:var(--q4);margin-top:5px}
+
+/* ── PANEL ───────────────────────────────────────────── */
+.panel{background:#fff;border-radius:16px;box-shadow:var(--s2);border:1px solid var(--q15);margin-bottom:16px;overflow:hidden}
+.ph{padding:16px 22px;border-bottom:1px solid var(--q1);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.ph-title{font-size:15px;font-weight:700;color:var(--q9)}
+.ph-sub{font-size:12.5px;color:var(--q5);margin-top:2px}
+
+/* ── TOOLBAR ROW ─────────────────────────────────────── */
+.toolbar{display:flex;align-items:center;gap:10px;padding:12px 22px;border-bottom:1px solid var(--q1);background:var(--q0);flex-wrap:wrap}
+.tsel{border:1.5px solid var(--q2);border-radius:9px;padding:7px 12px;font-size:13px;font-family:var(--ff);color:var(--q8);outline:none;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 9px center;padding-right:28px;transition:border-color .15s}
+.tsel:focus{border-color:var(--n4)}
+.srch{flex:1;max-width:280px}
+.srch-inp{width:100%;border:1.5px solid var(--q2);border-radius:9px;padding:7px 12px 7px 32px;font-size:13px;font-family:var(--ff);color:var(--q8);outline:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2.5'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 10px center;transition:border-color .15s}
+.srch-inp:focus{border-color:var(--n4)}
+.ml-auto{margin-left:auto}
+
+/* ── BUTTONS ─────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;transition:all .15s;border:none;font-family:var(--ff);white-space:nowrap}
+.btn svg{width:14px;height:14px;flex-shrink:0}
+.btn-primary{background:var(--n7);color:#fff}.btn-primary:hover{background:var(--n6)}
+.btn-green{background:var(--ok6);color:#fff}.btn-green:hover{background:var(--ok7)}
+.btn-gold{background:var(--g5);color:var(--n9)}.btn-gold:hover{background:var(--g4)}
+.btn-out{background:#fff;color:var(--q7);border:1.5px solid var(--q2)}.btn-out:hover{background:var(--q0)}
+.btn-danger{background:var(--r0);color:var(--r6);border:1.5px solid var(--r1)}.btn-danger:hover{background:var(--r1)}
+.btn-warn{background:var(--w0);color:var(--w7);border:1.5px solid var(--w1)}.btn-warn:hover{background:var(--w1)}
+.btn-sm{padding:6px 12px;font-size:12.5px}
+.btn-xs{padding:4px 10px;font-size:12px;border-radius:7px}
+.btn-grp{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* ── TABLE ───────────────────────────────────────────── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead{background:var(--q0)}
+thead tr{border-bottom:2px solid var(--q2)}
+th{padding:10px 14px;text-align:left;font-size:10.5px;font-weight:700;color:var(--q4);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:var(--q7)}
+td{padding:12px 14px;border-bottom:1px solid var(--q1);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--q0)}
+.mono{font-family:var(--fm);font-size:12.5px}
+.bold{font-weight:700;color:var(--q9)}
+.muted{color:var(--q4);font-size:12px}
+
+/* ── MEMBER CELL ─────────────────────────────────────── */
+.mc{display:flex;align-items:center;gap:10px}
+.mc-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0}
+.mc-name{font-size:13.5px;font-weight:600;color:var(--q9)}
+.mc-id{font-size:11px;color:var(--q4);font-family:var(--fm)}
+.av0{background:#1e3a5f}.av1{background:#166534}.av2{background:#b45309}.av3{background:#6d28d9}.av4{background:#b91c1c}.av5{background:#0e7490}.av6{background:#9f1239}
+
+/* ── LOAN TYPE ───────────────────────────────────────── */
+.type-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:6px;font-size:11.5px;font-weight:600}
+.tc-sa{background:var(--n0);color:var(--n7)}.tc-em{background:var(--r0);color:var(--r6)}
+
+/* ── STATUS BADGES ───────────────────────────────────── */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap}
+.bd{width:5px;height:5px;border-radius:50%}
+.b-ok{background:var(--ok1);color:var(--ok7)}.b-ok .bd{background:var(--ok5)}
+.b-w{background:var(--w1);color:var(--w7)}.b-w .bd{background:var(--w5)}
+.b-r{background:var(--r1);color:var(--r7)}.b-r .bd{background:var(--r5)}
+.b-g{background:var(--g1);color:#7c5a0a}.b-g .bd{background:var(--g5)}
+.b-p{background:var(--p1);color:var(--p6)}.b-p .bd{background:var(--p5)}
+.b-n{background:var(--n0);color:var(--n7)}.b-n .bd{background:var(--n5)}
+.b-z{background:var(--q1);color:var(--q6)}.b-z .bd{background:var(--q4)}
+
+/* ── PROGRESS BAR ────────────────────────────────────── */
+.prog-wrap{background:var(--q1);border-radius:20px;height:7px;overflow:hidden;min-width:80px}
+.prog-fill{height:100%;border-radius:20px;transition:width .5s ease}
+.pf-ok{background:linear-gradient(90deg,var(--ok6),var(--ok5))}
+.pf-w{background:linear-gradient(90deg,var(--w6),var(--w5))}
+.prog-label{font-size:11.5px;color:var(--q5);margin-top:3px;white-space:nowrap}
+
+/* ── APPLICATION CARDS ───────────────────────────────── */
+.app-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;padding:20px}
+.app-card{border:1px solid var(--q2);border-radius:14px;overflow:hidden;transition:all .2s}
+.app-card:hover{box-shadow:var(--s3);border-color:var(--q3)}
+.ac-head{padding:14px 18px;border-bottom:1px solid var(--q1);display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.ac-ref{font-size:11px;font-family:var(--fm);color:var(--q4);margin-bottom:4px}
+.ac-name{font-size:15px;font-weight:700;color:var(--q9)}
+.ac-dept{font-size:12.5px;color:var(--q5)}
+.ac-body{padding:14px 18px}
+.ac-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.ac-row:last-child{margin-bottom:0}
+.acr-label{font-size:13px;color:var(--q5)}
+.acr-val{font-size:13.5px;font-weight:700;color:var(--q9);font-family:var(--fm)}
+.ac-purpose{font-size:12.5px;color:var(--q5);padding:10px;background:var(--q0);border-radius:8px;margin-top:10px;line-height:1.5}
+.ac-foot{padding:12px 18px;border-top:1px solid var(--q1);display:flex;gap:8px}
+
+/* ── DECISION FORM ───────────────────────────────────── */
+.dec-form{background:var(--q0);border:1px solid var(--q2);border-radius:12px;padding:18px;margin-top:14px}
+.df-title{font-size:12px;font-weight:700;color:var(--q5);text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px}
+.fg{margin-bottom:14px}
+.fl{display:block;font-size:12px;font-weight:700;color:var(--q5);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.fi{width:100%;border:1.5px solid var(--q2);border-radius:9px;padding:9px 12px;font-size:14px;font-family:var(--ff);color:var(--q9);outline:none;background:#fff;transition:border-color .15s,box-shadow .15s}
+.fi:focus{border-color:var(--n4);box-shadow:0 0 0 3px rgba(84,128,184,.15)}
+.fta{width:100%;border:1.5px solid var(--q2);border-radius:9px;padding:9px 12px;font-size:13.5px;font-family:var(--ff);color:var(--q9);outline:none;resize:none;min-height:80px;transition:border-color .15s}
+.fta:focus{border-color:var(--n4)}
+.fsel{width:100%;border:1.5px solid var(--q2);border-radius:9px;padding:9px 12px;font-size:14px;font-family:var(--ff);color:var(--q9);outline:none;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 10px center;transition:border-color .15s}
+.fsel:focus{border-color:var(--n4)}
+.fi-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* ── APPLICATION FORM ────────────────────────────────── */
+.app-form-wrap{max-width:680px;margin:0 auto}
+.eligibility-card{background:linear-gradient(135deg,var(--n7),var(--n8));border-radius:16px;padding:24px;color:#fff;margin-bottom:20px}
+.ec-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.45);margin-bottom:16px}
+.ec-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.ec-item{background:rgba(255,255,255,.08);border-radius:10px;padding:14px}
+.ec-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.4);margin-bottom:5px}
+.ec-value{font-size:20px;font-weight:800;color:#fff;font-family:var(--fm);letter-spacing:-.02em;line-height:1}
+.ec-sub{font-size:11px;color:rgba(255,255,255,.35);margin-top:3px}
+.eligibility-bar-wrap{background:rgba(255,255,255,.1);border-radius:20px;height:8px;overflow:hidden;margin:16px 0 8px}
+.eligibility-bar{height:100%;border-radius:20px;background:linear-gradient(90deg,#4ade80,#22c55e);transition:width .4s ease}
+.eligibility-bar.warn{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+.eligibility-bar.danger{background:linear-gradient(90deg,#ef4444,#f87171)}
+.elg-labels{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.35)}
+.error-msg{font-size:12.5px;color:var(--r5);margin-top:5px;display:none}
+.error-msg.show{display:block}
+.calc-result{background:var(--n0);border:1px solid var(--n1);border-radius:12px;padding:16px;margin-bottom:16px}
+.cr-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--n6);margin-bottom:12px}
+.cr-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(30,58,95,.08)}
+.cr-row:last-child{border-bottom:none}
+.cr-label{font-size:13px;color:var(--n6)}
+.cr-value{font-size:14px;font-weight:700;color:var(--n7);font-family:var(--fm)}
+.info-box{display:flex;gap:10px;padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.5;margin-bottom:14px}
+.ib-n{background:var(--n0);border:1px solid var(--n1);color:var(--n7)}
+.ib-w{background:var(--w0);border:1px solid var(--w1);color:var(--w7)}
+.ib-r{background:var(--r0);border:1px solid var(--r1);color:var(--r7)}
+.info-box svg{width:15px;height:15px;flex-shrink:0;margin-top:2px}
+
+/* ── LOAN DETAIL DRAWER ──────────────────────────────── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;backdrop-filter:blur(2px)}
+.overlay.open{display:block}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(580px,100vw);background:#fff;box-shadow:var(--s4);z-index:210;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .28s cubic-bezier(.32,1,.27,1)}
+.drawer.open{transform:none}
+.dr-head{padding:20px 24px;border-bottom:1px solid var(--q1);display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;gap:12px}
+.dr-title{font-size:17px;font-weight:700;color:var(--q9)}
+.dr-sub{font-size:13px;color:var(--q5);margin-top:3px}
+.dr-close{background:none;border:none;cursor:pointer;color:var(--q4);display:flex;padding:4px;transition:color .15s}
+.dr-close:hover{color:var(--q7)}
+.dr-close svg{width:20px;height:20px}
+.dr-body{flex:1;overflow-y:auto;padding:22px 24px}
+.dr-foot{padding:16px 24px;border-top:1px solid var(--q1);flex-shrink:0;display:flex;gap:10px}
+
+/* ── LOAN DETAIL SECTIONS ────────────────────────────── */
+.loan-hero{background:linear-gradient(135deg,var(--n7),var(--n9));border-radius:14px;padding:22px;margin-bottom:20px}
+.lh-type{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:8px}
+.lh-amount{font-size:34px;font-weight:800;color:#fff;letter-spacing:-.03em;font-family:var(--fm);line-height:1;margin-bottom:18px}
+.lh-bar-wrap{background:rgba(255,255,255,.1);border-radius:20px;height:8px;overflow:hidden;margin-bottom:8px}
+.lh-bar-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,#4ade80,#22c55e)}
+.lh-bar-labels{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.35);margin-bottom:18px}
+.lh-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.lh-stat{background:rgba(255,255,255,.08);border-radius:8px;padding:10px;text-align:center}
+.lhs-val{font-size:15px;font-weight:800;color:#fff;font-family:var(--fm)}
+.lhs-label{font-size:10px;color:rgba(255,255,255,.35);margin-top:2px;text-transform:uppercase;letter-spacing:.04em}
+.sec-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--q4);margin:18px 0 10px;padding-bottom:6px;border-top:1px solid var(--q1);padding-top:16px}
+.sec-title:first-child{border-top:none;padding-top:0;margin-top:0}
+.field-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--q1)}
+.field-row:last-child{border-bottom:none}
+.fr-label{font-size:13px;color:var(--q5)}
+.fr-val{font-size:13.5px;font-weight:700;color:var(--q9)}
+.fr-val.mono2{font-family:var(--fm)}
+.decision-card{border-radius:12px;padding:16px;margin-top:12px}
+.dc-ok{background:var(--ok0);border:1px solid var(--ok2)}
+.dc-r{background:var(--r0);border:1px solid var(--r2)}
+.dc-w{background:var(--w0);border:1px solid var(--w2)}
+.dc-by{font-size:13px;font-weight:700;color:var(--q9);margin-bottom:4px}
+.dc-time{font-size:11.5px;color:var(--q4);font-family:var(--fm);margin-bottom:8px}
+.dc-comment{font-size:13.5px;color:var(--q6);line-height:1.5;font-style:italic}
+
+/* ── REPAYMENT SCHEDULE ──────────────────────────────── */
+.sched-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--q1)}
+.sched-row:last-child{border-bottom:none}
+.sr-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.sr-num.paid{background:var(--ok1);color:var(--ok7)}
+.sr-num.pending{background:var(--q1);color:var(--q5)}
+.sr-month{font-size:13px;font-weight:600;color:var(--q7);flex:1}
+.sr-amount{font-size:13px;font-weight:700;font-family:var(--fm);color:var(--q9);width:90px;text-align:right}
+.sr-ref{font-size:11px;color:var(--q4);font-family:var(--fm);width:130px;overflow:hidden;text-overflow:ellipsis;text-align:right}
+
+/* ── EMPTY ───────────────────────────────────────────── */
+.empty{text-align:center;padding:52px 24px}
+.empty svg{width:52px;height:52px;color:var(--q3);display:block;margin:0 auto 14px}
+.empty-t{font-size:16px;font-weight:700;color:var(--q6);margin-bottom:5px}
+.empty-s{font-size:13.5px;color:var(--q4)}
+
+/* ── MISC ────────────────────────────────────────────── */
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:var(--q3);border-radius:4px}
+.diff-pos{color:var(--ok6);font-family:var(--fm);font-weight:700}
+.diff-neg{color:var(--r6);font-family:var(--fm);font-weight:700}
+.success-box{text-align:center;padding:40px 24px}
+.succ-ico{width:76px;height:76px;background:var(--ok0);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;border:2px solid var(--ok2)}
+.succ-ico svg{width:38px;height:38px;color:var(--ok6)}
+.succ-t{font-size:21px;font-weight:800;color:var(--q9);margin-bottom:8px}
+.succ-s{font-size:14px;color:var(--q5);line-height:1.6;max-width:340px;margin:0 auto 24px}
+@media(max-width:900px){.kpi-row{grid-template-columns:repeat(3,1fr)}.app-cards{grid-template-columns:1fr}.main{padding:16px 16px}}
+@media(max-width:600px){.kpi-row{grid-template-columns:1fr 1fr}.nav-tabs{padding:0 12px}.lh-stats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="tb-l">
+    <span class="tb-logo">CoopFund</span>
+    <div class="tb-sep"></div>
+    <div><div class="tb-title">Loan Management</div><div class="tb-bc">Finance Officer &rarr; Loans</div></div>
+  </div>
+  <div class="tb-r">
+    <div class="tb-avt">FO</div>
+    <div><div class="tb-usr">Finance Officer</div><div class="tb-role">Finance Officer &mdash; Read/Write</div></div>
+  </div>
+</header>
+
+<!-- NAV TABS -->
+<nav class="nav-tabs">
+  <button class="ntab on" id="nt-register" onclick="setView('register',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+    Loan Register <span class="ntab-count" id="ntc-register">9</span>
+  </button>
+  <button class="ntab" id="nt-applications" onclick="setView('applications',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Applications <span class="ntab-count alert" id="ntc-apps">3</span>
+  </button>
+  <button class="ntab" id="nt-active" onclick="setView('active',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    Active Loans <span class="ntab-count warn" id="ntc-active">3</span>
+  </button>
+  <button class="ntab" id="nt-apply" onclick="setView('apply',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    New Application
+  </button>
+</nav>
+
+<div class="main">
+
+<!-- ═══ VIEW: REGISTER ═══ -->
+<div class="view on" id="view-register">
+  <!-- KPI strip -->
+  <div class="kpi-row">
+    <div class="kpi kpi-n"><div class="kpi-label">Active Loans</div><div class="kpi-val sm" id="kpi-active">0</div><div class="kpi-sub">Currently being repaid</div></div>
+    <div class="kpi kpi-r"><div class="kpi-label">Total Outstanding</div><div class="kpi-val sm" id="kpi-outstanding">&mdash;</div><div class="kpi-sub">All active balances</div></div>
+    <div class="kpi kpi-w"><div class="kpi-label">Pending Review</div><div class="kpi-val sm" id="kpi-pending">0</div><div class="kpi-sub">Awaiting committee</div></div>
+    <div class="kpi kpi-g"><div class="kpi-label">Disbursed 2026</div><div class="kpi-val sm" id="kpi-disbursed">&mdash;</div><div class="kpi-sub">Total loans issued</div></div>
+    <div class="kpi kpi-ok"><div class="kpi-label">Fully Repaid</div><div class="kpi-val sm" id="kpi-repaid">0</div><div class="kpi-sub">Closed loans</div></div>
+  </div>
+
+  <!-- Table -->
+  <div class="panel">
+    <div class="ph">
+      <div><div class="ph-title">All Loans</div><div class="ph-sub" id="reg-sub">All records</div></div>
+      <div class="btn-grp">
+        <button class="btn btn-out btn-sm" onclick="exportLoans()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="setView('apply',document.getElementById('nt-apply'))">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Application
+        </button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <select class="tsel" id="reg-type" onchange="renderRegister()"><option value="">All Types</option><option value="salary_advance">Salary Advance</option><option value="emergency">Emergency Loan</option></select>
+      <select class="tsel" id="reg-status" onchange="renderRegister()">
+        <option value="">All Statuses</option>
+        <option value="draft">Draft</option><option value="submitted">Submitted</option><option value="under_review">Under Review</option>
+        <option value="approved">Approved</option><option value="rejected">Rejected</option>
+        <option value="active">Active</option><option value="fully_repaid">Fully Repaid</option><option value="cancelled">Cancelled</option>
+      </select>
+      <div class="srch"><input class="srch-inp" type="text" id="reg-srch" placeholder="Search member, ID, loan ref..." oninput="renderRegister()"></div>
+      <span class="ml-auto" id="reg-total-label" style="font-size:12.5px;color:var(--q5)"></span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Loan Ref</th><th>Member</th><th>Type</th><th>Amount (&#8358;)</th>
+          <th>Monthly (&#8358;)</th><th>Repaid</th><th>Outstanding</th>
+          <th>Progress</th><th>Status</th><th style="text-align:center">Actions</th>
+        </tr></thead>
+        <tbody id="reg-tbody"></tbody>
+      </table>
+    </div>
+    <div style="padding:11px 22px;border-top:1px solid var(--q1);font-size:12.5px;color:var(--q5)" id="reg-footer"></div>
+  </div>
+</div>
+
+<!-- ═══ VIEW: APPLICATIONS ═══ -->
+<div class="view" id="view-applications">
+  <div class="panel">
+    <div class="ph">
+      <div>
+        <div class="ph-title">Loan Applications &mdash; Pending Committee Review</div>
+        <div class="ph-sub">Applications awaiting committee decision. Every decision must include reviewer, date, time and comment.</div>
+      </div>
+    </div>
+    <div class="app-cards" id="app-cards"></div>
+  </div>
+</div>
+
+<!-- ═══ VIEW: ACTIVE LOANS ═══ -->
+<div class="view" id="view-active">
+  <div class="panel">
+    <div class="ph">
+      <div><div class="ph-title">Active Loans &mdash; Repayment Tracking</div><div class="ph-sub">Monthly repayments via payroll deduction. Outstanding balances updated after each payroll cycle.</div></div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Loan Ref</th><th>Member</th><th>Type</th><th>Original (&#8358;)</th>
+          <th>Repaid (&#8358;)</th><th>Outstanding (&#8358;)</th><th>Monthly (&#8358;)</th>
+          <th>Installments</th><th>Repayment Progress</th><th style="text-align:center">Actions</th>
+        </tr></thead>
+        <tbody id="active-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VIEW: NEW APPLICATION ═══ -->
+<div class="view" id="view-apply">
+  <div class="app-form-wrap">
+
+    <!-- Eligibility card -->
+    <div class="eligibility-card" id="elig-card">
+      <div class="ec-title">Member Eligibility</div>
+      <div class="ec-grid">
+        <div class="ec-item"><div class="ec-label">Contribution Balance</div><div class="ec-value" id="ef-balance">Select member</div><div class="ec-sub" id="ef-balance-sub">&nbsp;</div></div>
+        <div class="ec-item"><div class="ec-label">Maximum Eligible Loan</div><div class="ec-value" id="ef-max">—</div><div class="ec-sub">= contribution balance</div></div>
+        <div class="ec-item"><div class="ec-label">Requested Amount</div><div class="ec-value" id="ef-req">—</div><div class="ec-sub" id="ef-req-sub">&nbsp;</div></div>
+        <div class="ec-item"><div class="ec-label">Monthly Repayment</div><div class="ec-value" id="ef-monthly">—</div><div class="ec-sub" id="ef-inst-sub">— installments</div></div>
+      </div>
+      <div class="eligibility-bar-wrap"><div class="eligibility-bar" id="elig-bar" style="width:0%"></div></div>
+      <div class="elg-labels"><span>&#8358;0</span><span id="elg-pct">0% of maximum</span><span id="elg-max">—</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><div class="ph-title">New Loan Application</div><div class="ph-sub">No interest. Repayment by monthly payroll deduction.</div></div>
+      <div style="padding:22px">
+        <div id="apply-form">
+          <div class="fg">
+            <label class="fl">Member *</label>
+            <select class="fsel" id="af-member" onchange="onApplyMember()"><option value="">Select member...</option></select>
+          </div>
+
+          <div class="fg">
+            <label class="fl">Loan Type *</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <label style="cursor:pointer">
+                <div style="border:2px solid var(--q2);border-radius:11px;padding:14px;transition:all .15s" id="lt-sa" onclick="selectLoanType('salary_advance')">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--n7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg><strong style="color:var(--n7)">Salary Advance</strong></div>
+                  <div style="font-size:12.5px;color:var(--q5)">Up to 12 months. For personal or household needs. No interest.</div>
+                </div>
+              </label>
+              <label style="cursor:pointer">
+                <div style="border:2px solid var(--q2);border-radius:11px;padding:14px;transition:all .15s" id="lt-em" onclick="selectLoanType('emergency')">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--r6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><strong style="color:var(--r6)">Emergency Loan</strong></div>
+                  <div style="font-size:12.5px;color:var(--q5)">Up to 6 months. For documented emergency situations. No interest.</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="fg">
+              <label class="fl">Requested Amount (&#8358;) *</label>
+              <input type="number" class="fi" id="af-amount" placeholder="e.g. 100000" min="5000" step="5000" oninput="calcEligibility()">
+              <div class="error-msg" id="err-amount">Amount cannot exceed your contribution balance</div>
+            </div>
+            <div class="fg">
+              <label class="fl">Repayment Period *</label>
+              <select class="fsel" id="af-period" onchange="calcEligibility()">
+                <option value="">Select period...</option>
+                <option value="3">3 months</option>
+                <option value="6">6 months</option>
+                <option value="9">9 months</option>
+                <option value="12">12 months</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="calc-result" id="af-calc" style="display:none">
+            <div class="cr-title">Loan Calculation</div>
+            <div class="cr-row"><span class="cr-label">Loan Amount</span><span class="cr-value" id="c-amount">—</span></div>
+            <div class="cr-row"><span class="cr-label">Interest Rate</span><span class="cr-value" style="color:var(--ok6)">Zero (0%)</span></div>
+            <div class="cr-row"><span class="cr-label">Repayment Period</span><span class="cr-value" id="c-period">—</span></div>
+            <div class="cr-row"><span class="cr-label">Monthly Repayment</span><span class="cr-value" id="c-monthly">—</span></div>
+            <div class="cr-row"><span class="cr-label">Total Repayable</span><span class="cr-value" id="c-total">—</span></div>
+            <div class="cr-row"><span class="cr-label">Repayment Method</span><span class="cr-value">Payroll deduction</span></div>
+          </div>
+
+          <div class="fg">
+            <label class="fl">Purpose / Reason for Loan *</label>
+            <textarea class="fta" id="af-purpose" placeholder="Describe the purpose of this loan application..." rows="3"></textarea>
+          </div>
+
+          <div class="fg">
+            <label class="fl">Application Date</label>
+            <input type="date" class="fi" id="af-date" value="2026-08-14">
+          </div>
+
+          <div class="info-box ib-n">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>The application will be submitted to the committee for review. <strong>No funds will be disbursed</strong> until the committee approves the application. The maximum loan amount is strictly limited to the member's contribution balance.</span>
+          </div>
+
+          <div class="btn-grp">
+            <button class="btn btn-primary" onclick="submitApplication()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Submit Application
+            </button>
+            <button class="btn btn-out" onclick="resetApplyForm()">Clear Form</button>
+          </div>
+        </div>
+
+        <!-- Success -->
+        <div class="success-box" id="apply-success" style="display:none">
+          <div class="succ-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="succ-t">Application Submitted</div>
+          <div class="succ-s">The loan application has been submitted and is now awaiting committee review. The applicant will be notified of the decision.</div>
+          <div class="btn-grp" style="justify-content:center">
+            <button class="btn btn-primary" onclick="goToApplications()">View Applications</button>
+            <button class="btn btn-out" onclick="resetApplyForm()">New Application</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- ═══ DRAWER: LOAN DETAIL ═══ -->
+<div class="overlay" id="ov-detail" onclick="closeDrawer()"></div>
+<div class="drawer" id="dr-detail">
+  <div class="dr-head">
+    <div><div class="dr-title" id="dr-title">Loan Detail</div><div class="dr-sub" id="dr-sub"></div></div>
+    <button class="dr-close" onclick="closeDrawer()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="dr-body" id="dr-body"></div>
+  <div class="dr-foot" id="dr-foot"></div>
+</div>
+
+<!-- ═══ DRAWER: COMMITTEE DECISION ═══ -->
+<div class="overlay" id="ov-decision" onclick="closeDecision()"></div>
+<div class="drawer" id="dr-decision">
+  <div class="dr-head">
+    <div><div class="dr-title" id="dec-title">Committee Decision</div><div class="dr-sub" id="dec-sub"></div></div>
+    <button class="dr-close" onclick="closeDecision()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="dr-body" id="dec-body"></div>
+  <div class="dr-foot" id="dec-foot"></div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────
+const MEMBERS = [{"id":"MF-0001","name":"Akin Adebayo","dept":"Treasury","grade":"GL-14","monthly":25000,"balance":450000,"months":18,"initials":"AA"},{"id":"MF-0002","name":"Fatima Al-Hassan","dept":"Administration","grade":"GL-12","monthly":22500,"balance":405000,"months":18,"initials":"FA"},{"id":"MF-0003","name":"Chiamaka Osei","dept":"Accounts","grade":"GL-10","monthly":18000,"balance":432000,"months":24,"initials":"CO"},{"id":"MF-0004","name":"Babatunde Fadahunsi","dept":"Budget","grade":"GL-13","monthly":25000,"balance":300000,"months":12,"initials":"BF"},{"id":"MF-0005","name":"Ngozi Eze-Williams","dept":"Accounts","grade":"GL-09","monthly":12000,"balance":144000,"months":12,"initials":"NE"},{"id":"MF-0006","name":"Chukwuemeka Obi","dept":"Treasury","grade":"GL-11","monthly":18000,"balance":216000,"months":12,"initials":"CO"},{"id":"MF-0007","name":"Ifeoma Uchenna","dept":"Procurement","grade":"GL-10","monthly":18000,"balance":198000,"months":11,"initials":"IU"},{"id":"MF-0008","name":"Sunday Olawale","dept":"ICT","grade":"GL-09","monthly":12000,"balance":108000,"months":9,"initials":"SO"},{"id":"MF-0009","name":"Blessing Nwosu","dept":"HR","grade":"GL-08","monthly":12000,"balance":96000,"months":8,"initials":"BN"},{"id":"MF-0010","name":"Emmanuel Dare","dept":"Legal","grade":"GL-15","monthly":25000,"balance":900000,"months":36,"initials":"ED"},{"id":"MF-0011","name":"Grace Obiora","dept":"Accounts","grade":"GL-10","monthly":18000,"balance":216000,"months":12,"initials":"GO"},{"id":"MF-0012","name":"Samson Afolabi","dept":"Treasury","grade":"GL-12","monthly":22500,"balance":540000,"months":24,"initials":"SA"},{"id":"MF-0013","name":"Adaeze Okonkwo","dept":"Accounts","grade":"GL-08","monthly":12000,"balance":216000,"months":18,"initials":"AO"},{"id":"MF-0014","name":"Ibrahim Musa","dept":"Administration","grade":"GL-14","monthly":25000,"balance":300000,"months":12,"initials":"IM"},{"id":"MF-0015","name":"Funke Adedayo","dept":"Budget","grade":"GL-11","monthly":18000,"balance":216000,"months":12,"initials":"FA"},{"id":"MF-0016","name":"Tunde Bakare","dept":"Procurement","grade":"GL-09","monthly":12000,"balance":144000,"months":12,"initials":"TB"},{"id":"MF-0017","name":"Chidinma Uche","dept":"Treasury","grade":"GL-10","monthly":18000,"balance":162000,"months":9,"initials":"CU"},{"id":"MF-0018","name":"Moses Ogundele","dept":"ICT","grade":"GL-09","monthly":12000,"balance":144000,"months":12,"initials":"MO"},{"id":"MF-0019","name":"Yetunde Adegbite","dept":"HR","grade":"GL-08","monthly":12000,"balance":120000,"months":10,"initials":"YA"},{"id":"MF-0020","name":"Obinna Chukwu","dept":"Accounts","grade":"GL-10","monthly":18000,"balance":216000,"months":12,"initials":"OC"},{"id":"MF-0021","name":"Kola Adeyemi","dept":"Legal","grade":"GL-13","monthly":25000,"balance":600000,"months":24,"initials":"KA"},{"id":"MF-0022","name":"Amaka Nwachukwu","dept":"Budget","grade":"GL-12","monthly":22500,"balance":270000,"months":12,"initials":"AN"},{"id":"MF-0023","name":"Segun Balogun","dept":"Procurement","grade":"GL-11","monthly":18000,"balance":216000,"months":12,"initials":"SB"},{"id":"MF-0024","name":"Nkechi Okafor","dept":"Accounts","grade":"GL-09","monthly":12000,"balance":108000,"months":9,"initials":"NO"},{"id":"MF-0025","name":"Damilola Ojo","dept":"Treasury","grade":"GL-10","monthly":18000,"balance":216000,"months":12,"initials":"DO"},{"id":"MF-0026","name":"Uche Nweze","dept":"ICT","grade":"GL-08","monthly":12000,"balance":96000,"months":8,"initials":"UN"},{"id":"MF-0027","name":"Taiwo Adeniyi","dept":"HR","grade":"GL-12","monthly":22500,"balance":270000,"months":12,"initials":"TA"},{"id":"MF-0028","name":"Zainab Aliyu","dept":"Administration","grade":"GL-09","monthly":12000,"balance":72000,"months":6,"initials":"ZA"},{"id":"MF-0029","name":"Emeka Anozie","dept":"Budget","grade":"GL-10","monthly":18000,"balance":216000,"months":12,"initials":"EA"},{"id":"MF-0030","name":"Hauwa Garba","dept":"Legal","grade":"GL-11","monthly":18000,"balance":90000,"months":5,"initials":"HG","inactive":true}];
+let LOANS = [{"id":"LN-2026-001","memberId":"MF-0013","type":"salary_advance","requested":120000,"approved":120000,"installments":12,"monthlyRepayment":10000,"repaid":60000,"outstanding":60000,"installmentsCompleted":6,"installmentsRemaining":6,"status":"active","applicationDate":"2026-02-28","approvalDate":"2026-03-04","disbursementDate":"2026-03-08","purpose":"Home renovation and emergency repairs","decision":{"by":"Engr. Bello Usman (Chairman)","date":"2026-03-04","time":"10:45","comment":"Application meets all eligibility criteria. Contribution balance is sufficient. Approved for 12-month repayment."},"repayments":[{"month":"Mar 2026","amount":10000,"method":"payroll","ref":"PAY-2026-03-001","date":"2026-03-01","status":"paid"},{"month":"Apr 2026","amount":10000,"method":"payroll","ref":"PAY-2026-04-001","date":"2026-04-01","status":"paid"},{"month":"May 2026","amount":10000,"method":"payroll","ref":"PAY-2026-05-001","date":"2026-05-01","status":"paid"},{"month":"Jun 2026","amount":10000,"method":"payroll","ref":"PAY-2026-06-001","date":"2026-06-01","status":"paid"},{"month":"Jul 2026","amount":10000,"method":"payroll","ref":"PAY-2026-07-001","date":"2026-07-01","status":"paid"},{"month":"Aug 2026","amount":10000,"method":"payroll","ref":"PAY-2026-08-001","date":"2026-08-01","status":"paid"},{"month":"Sep 2026","amount":10000,"method":"payroll","ref":"","date":"","status":"pending"},{"month":"Oct 2026","amount":10000,"method":"payroll","ref":"","date":"","status":"pending"},{"month":"Nov 2026","amount":10000,"method":"payroll","ref":"","date":"","status":"pending"},{"month":"Dec 2026","amount":10000,"method":"payroll","ref":"","date":"","status":"pending"},{"month":"Jan 2027","amount":10000,"method":"payroll","ref":"","date":"","status":"pending"},{"month":"Feb 2027","amount":10000,"method":"payroll","ref":"","date":"","status":"pending"}]},{"id":"LN-2026-002","memberId":"MF-0021","type":"emergency","requested":150000,"approved":null,"installments":6,"monthlyRepayment":25000,"repaid":0,"outstanding":150000,"installmentsCompleted":0,"installmentsRemaining":6,"status":"under_review","applicationDate":"2026-08-10","approvalDate":null,"disbursementDate":null,"purpose":"Medical treatment for family member","decision":null,"repayments":[]},{"id":"LN-2026-003","memberId":"MF-0016","type":"salary_advance","requested":60000,"approved":null,"installments":6,"monthlyRepayment":10000,"repaid":0,"outstanding":60000,"installmentsCompleted":0,"installmentsRemaining":6,"status":"submitted","applicationDate":"2026-08-12","approvalDate":null,"disbursementDate":null,"purpose":"School fees for children","decision":null,"repayments":[]},{"id":"LN-2026-004","memberId":"MF-0005","type":"emergency","requested":50000,"approved":50000,"installments":6,"monthlyRepayment":8334,"repaid":0,"outstanding":50000,"installmentsCompleted":0,"installmentsRemaining":6,"status":"approved","applicationDate":"2026-08-05","approvalDate":"2026-08-08","disbursementDate":null,"purpose":"Emergency house repair","decision":{"by":"Mrs. Amina Yusuf (Vice Chairman)","date":"2026-08-08","time":"14:20","comment":"Emergency loan criteria satisfied. Member contribution balance of ₦144,000 covers the full loan amount. Approved."},"repayments":[]},{"id":"LN-2026-005","memberId":"MF-0022","type":"salary_advance","requested":300000,"approved":null,"installments":12,"monthlyRepayment":25000,"repaid":0,"outstanding":0,"installmentsCompleted":0,"installmentsRemaining":0,"status":"rejected","applicationDate":"2026-07-20","approvalDate":null,"disbursementDate":null,"purpose":"Business capital","decision":{"by":"Engr. Bello Usman (Chairman)","date":"2026-07-24","time":"09:15","comment":"Requested amount of ₦300,000 exceeds the member's contribution balance of ₦270,000. Application rejected. Member may reapply for up to ₦270,000."},"repayments":[]},{"id":"LN-2025-012","memberId":"MF-0003","type":"emergency","requested":50000,"approved":50000,"installments":6,"monthlyRepayment":8334,"repaid":50000,"outstanding":0,"installmentsCompleted":6,"installmentsRemaining":0,"status":"fully_repaid","applicationDate":"2025-12-01","approvalDate":"2025-12-05","disbursementDate":"2025-12-10","purpose":"Medical emergency","decision":{"by":"Mr. Chidi Eze (Secretary)","date":"2025-12-05","time":"11:00","comment":"Approved. Emergency criteria met. Repayment schedule agreed."},"repayments":[{"month":"Jan 2026","amount":8334,"method":"payroll","ref":"PAY-2026-01-001","date":"2026-01-01","status":"paid"},{"month":"Feb 2026","amount":8334,"method":"payroll","ref":"PAY-2026-02-001","date":"2026-02-01","status":"paid"},{"month":"Mar 2026","amount":8334,"method":"payroll","ref":"PAY-2026-03-001","date":"2026-03-01","status":"paid"},{"month":"Apr 2026","amount":8334,"method":"payroll","ref":"PAY-2026-04-001","date":"2026-04-01","status":"paid"},{"month":"May 2026","amount":8332,"method":"payroll","ref":"PAY-2026-05-001","date":"2026-05-01","status":"paid"},{"month":"Jun 2026","amount":8332,"method":"payroll","ref":"PAY-2026-06-001","date":"2026-06-01","status":"paid"}]},{"id":"LN-2026-007","memberId":"MF-0012","type":"salary_advance","requested":100000,"approved":100000,"installments":12,"monthlyRepayment":8334,"repaid":25000,"outstanding":75000,"installmentsCompleted":3,"installmentsRemaining":9,"status":"active","applicationDate":"2026-05-10","approvalDate":"2026-05-14","disbursementDate":"2026-05-20","purpose":"Home appliances and furnishing","decision":{"by":"Mrs. Amina Yusuf (Vice Chairman)","date":"2026-05-14","time":"15:30","comment":"Salary advance approved. Contribution balance of ₦540,000 is well above the loan amount."},"repayments":[{"month":"Jun 2026","amount":8334,"method":"payroll","ref":"PAY-2026-06-001","date":"2026-06-01","status":"paid"},{"month":"Jul 2026","amount":8334,"method":"payroll","ref":"PAY-2026-07-001","date":"2026-07-01","status":"paid"},{"month":"Aug 2026","amount":8332,"method":"payroll","ref":"PAY-2026-08-001","date":"2026-08-01","status":"paid"},{"month":"Sep 2026","amount":8334,"ref":"","date":"","status":"pending"},{"month":"Oct 2026","amount":8334,"ref":"","date":"","status":"pending"},{"month":"Nov 2026","amount":8334,"ref":"","date":"","status":"pending"},{"month":"Dec 2026","amount":8334,"ref":"","date":"","status":"pending"},{"month":"Jan 2027","amount":8334,"ref":"","date":"","status":"pending"},{"month":"Feb 2027","amount":8334,"ref":"","date":"","status":"pending"},{"month":"Mar 2027","amount":8334,"ref":"","date":"","status":"pending"},{"month":"Apr 2027","amount":8334,"ref":"","date":"","status":"pending"},{"month":"May 2027","amount":8330,"ref":"","date":"","status":"pending"}]},{"id":"LN-2026-009","memberId":"MF-0010","type":"salary_advance","requested":200000,"approved":200000,"installments":12,"monthlyRepayment":16667,"repaid":100000,"outstanding":100000,"installmentsCompleted":6,"installmentsRemaining":6,"status":"active","applicationDate":"2026-02-01","approvalDate":"2026-02-06","disbursementDate":"2026-02-12","purpose":"Personal development and training","decision":{"by":"Engr. Bello Usman (Chairman)","date":"2026-02-06","time":"09:00","comment":"High-value application. Member's contribution balance of ₦900,000 substantially exceeds requested amount. Approved unanimously."},"repayments":[{"month":"Mar 2026","amount":16667,"method":"payroll","ref":"PAY-2026-03-001","date":"2026-03-01","status":"paid"},{"month":"Apr 2026","amount":16667,"method":"payroll","ref":"PAY-2026-04-001","date":"2026-04-01","status":"paid"},{"month":"May 2026","amount":16667,"method":"payroll","ref":"PAY-2026-05-001","date":"2026-05-01","status":"paid"},{"month":"Jun 2026","amount":16667,"method":"payroll","ref":"PAY-2026-06-001","date":"2026-06-01","status":"paid"},{"month":"Jul 2026","amount":16667,"method":"payroll","ref":"PAY-2026-07-001","date":"2026-07-01","status":"paid"},{"month":"Aug 2026","amount":16665,"method":"payroll","ref":"PAY-2026-08-001","date":"2026-08-01","status":"paid"},{"month":"Sep 2026","amount":16667,"ref":"","date":"","status":"pending"},{"month":"Oct 2026","amount":16667,"ref":"","date":"","status":"pending"},{"month":"Nov 2026","amount":16667,"ref":"","date":"","status":"pending"},{"month":"Dec 2026","amount":16667,"ref":"","date":"","status":"pending"},{"month":"Jan 2027","amount":16667,"ref":"","date":"","status":"pending"},{"month":"Feb 2027","amount":16661,"ref":"","date":"","status":"pending"}]},{"id":"LN-2026-010","memberId":"MF-0028","type":"salary_advance","requested":40000,"approved":null,"installments":6,"monthlyRepayment":6667,"repaid":0,"outstanding":40000,"installmentsCompleted":0,"installmentsRemaining":6,"status":"draft","applicationDate":"2026-08-14","approvalDate":null,"disbursementDate":null,"purpose":"Emergency household expenses","decision":null,"repayments":[]}];
+
+const memberMap = {};
+MEMBERS.forEach(m => memberMap[m.id] = m);
+
+const FMT = n => '₦' + Number(n||0).toLocaleString('en-NG');
+
+const STATUS_META = {
+  draft:        { label:'Draft',        cls:'b-z' },
+  submitted:    { label:'Submitted',    cls:'b-n' },
+  under_review: { label:'Under Review', cls:'b-p' },
+  approved:     { label:'Approved',     cls:'b-g' },
+  rejected:     { label:'Rejected',     cls:'b-r' },
+  active:       { label:'Active',       cls:'b-ok' },
+  fully_repaid: { label:'Fully Repaid', cls:'b-ok' },
+  cancelled:    { label:'Cancelled',    cls:'b-z' },
+};
+
+const badge = (s) => {
+  const m = STATUS_META[s] || {label:s,cls:'b-z'};
+  return `<span class="badge ${m.cls}"><span class="bd"></span>${m.label}</span>`;
+};
+
+const typeChip = t => t === 'salary_advance'
+  ? '<span class="type-chip tc-sa"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Salary Advance</span>'
+  : '<span class="type-chip tc-em"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Emergency</span>';
+
+const avColors = ['av0','av1','av2','av3','av4','av5','av6'];
+const avColor = id => avColors[parseInt(id.replace(/D/g,''))%7];
+
+// ── View switching ─────────────────────────────────────────────
+function setView(v, btn) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('on'));
+  document.querySelectorAll('.ntab').forEach(b => b.classList.remove('on'));
+  document.getElementById('view-' + v).classList.add('on');
+  btn.classList.add('on');
+}
+
+// ── KPI ───────────────────────────────────────────────────────
+function renderKPIs() {
+  const active = LOANS.filter(l => l.status === 'active');
+  const pending = LOANS.filter(l => ['submitted','under_review','approved'].includes(l.status));
+  const repaid = LOANS.filter(l => l.status === 'fully_repaid');
+  const outstanding = active.reduce((s,l) => s + l.outstanding, 0);
+  const disbursed2026 = LOANS.filter(l => l.disbursementDate && l.disbursementDate.startsWith('2026')).reduce((s,l) => s + (l.approved||0), 0);
+
+  document.getElementById('kpi-active').textContent = active.length;
+  document.getElementById('kpi-outstanding').textContent = FMT(outstanding);
+  document.getElementById('kpi-pending').textContent = pending.length;
+  document.getElementById('kpi-disbursed').textContent = FMT(disbursed2026);
+  document.getElementById('kpi-repaid').textContent = repaid.length;
+
+  document.getElementById('ntc-apps').textContent = LOANS.filter(l => ['submitted','under_review'].includes(l.status)).length;
+  document.getElementById('ntc-active').textContent = active.length;
+}
+
+// ── REGISTER ──────────────────────────────────────────────────
+function renderRegister() {
+  const typeF = document.getElementById('reg-type').value;
+  const statusF = document.getElementById('reg-status').value;
+  const q = document.getElementById('reg-srch').value.toLowerCase();
+
+  let rows = [...LOANS];
+  if (typeF) rows = rows.filter(l => l.type === typeF);
+  if (statusF) rows = rows.filter(l => l.status === statusF);
+  if (q) rows = rows.filter(l => {
+    const m = memberMap[l.memberId];
+    return (l.id + (m?m.name:'') + (m?m.id:'')).toLowerCase().includes(q);
+  });
+
+  const tbody = document.getElementById('reg-tbody');
+  tbody.innerHTML = rows.map(l => {
+    const m = memberMap[l.memberId];
+    const pct = l.approved ? Math.round(l.repaid / l.approved * 100) : 0;
+    const showProg = ['active','fully_repaid'].includes(l.status);
+    return `<tr>
+      <td class="mono bold">${l.id}</td>
+      <td><div class="mc"><div class="mc-av ${avColor(l.memberId)}">${m?m.initials:'??'}</div><div><div class="mc-name">${m?m.name:'Unknown'}</div><div class="mc-id">${l.memberId}</div></div></div></td>
+      <td>${typeChip(l.type)}</td>
+      <td class="mono bold">${FMT(l.approved||l.requested)}</td>
+      <td class="mono">${FMT(l.monthlyRepayment)}</td>
+      <td class="mono ${l.repaid>0?'diff-pos':''}">${l.repaid>0?FMT(l.repaid):'<span class="muted">—</span>'}</td>
+      <td class="mono ${l.outstanding>0&&l.status==='active'?'diff-neg':''}">${l.outstanding>0&&l.status!=='rejected'&&l.status!=='draft'?FMT(l.outstanding):'<span class="muted">—</span>'}</td>
+      <td style="min-width:120px">${showProg?'<div class="prog-wrap"><div class="prog-fill ' + (pct>=100?'pf-ok':'pf-w') + '" style="width:'+pct+'%"></div></div><div class="prog-label">' + l.installmentsCompleted + '/' + l.installments + ' instalments (' + pct + '%)</div>':'<span class="muted">—</span>'}</td>
+      <td>${badge(l.status)}</td>
+      <td style="text-align:center">
+        <div style="display:flex;gap:4px;justify-content:center">
+          <button class="btn btn-xs btn-out" onclick="openDetail('${l.id}')">View</button>
+          ${['submitted','under_review'].includes(l.status) ? '<button class="btn btn-xs btn-gold" onclick="openDecision('' + l.id + '')">Review</button>' : ''}
+        </div>
+      </td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--q4)">No loans match the current filter</td></tr>';
+
+  const totalOutstanding = rows.filter(l=>l.status==='active').reduce((s,l)=>s+l.outstanding,0);
+  document.getElementById('reg-footer').textContent = rows.length + ' loan' + (rows.length!==1?'s':'') + ' shown · Active outstanding: ' + FMT(totalOutstanding);
+  document.getElementById('reg-sub').textContent = rows.length + ' records';
+}
+
+// ── APPLICATIONS ──────────────────────────────────────────────
+function renderApplications() {
+  const pending = LOANS.filter(l => ['submitted','under_review','approved','draft'].includes(l.status));
+  const container = document.getElementById('app-cards');
+
+  if (!pending.length) {
+    container.innerHTML = '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><div class="empty-t">No pending applications</div><div class="empty-s">All applications have been reviewed.</div></div>';
+    return;
+  }
+
+  container.innerHTML = pending.map(l => {
+    const m = memberMap[l.memberId];
+    const memberBalance = m ? m.balance : 0;
+    return `<div class="app-card">
+      <div class="ac-head">
+        <div>
+          <div class="ac-ref">${l.id} &middot; ${l.applicationDate}</div>
+          <div class="ac-name">${m?m.name:'Unknown Member'}</div>
+          <div class="ac-dept">${m?m.dept+' · '+m.grade:''}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          ${badge(l.status)}
+          ${typeChip(l.type)}
+        </div>
+      </div>
+      <div class="ac-body">
+        <div class="ac-row"><span class="acr-label">Requested Amount</span><span class="acr-val">${FMT(l.requested)}</span></div>
+        <div class="ac-row"><span class="acr-label">Contribution Balance</span><span class="acr-val" style="color:var(--ok6)">${FMT(memberBalance)}</span></div>
+        <div class="ac-row"><span class="acr-label">Monthly Repayment</span><span class="acr-val">${FMT(l.monthlyRepayment)}</span></div>
+        <div class="ac-row"><span class="acr-label">Installments</span><span class="acr-val">${l.installments} months</span></div>
+        <div class="ac-row"><span class="acr-label">Eligibility Check</span><span>${l.requested <= memberBalance ? '<span class="badge b-ok" style="font-size:11px"><span class="bd"></span>Eligible</span>' : '<span class="badge b-r" style="font-size:11px"><span class="bd"></span>Exceeds balance</span>'}</span></div>
+        <div class="ac-purpose">&ldquo;${l.purpose}&rdquo;</div>
+      </div>
+      <div class="ac-foot">
+        ${['submitted','under_review'].includes(l.status) ? '<button class="btn btn-gold" onclick="openDecision('' + l.id + '')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Committee Review</button>' : ''}
+        <button class="btn btn-out" onclick="openDetail('${l.id}')">View Details</button>
+        ${l.status === 'approved' ? '<button class="btn btn-green" onclick="disburseLoan('' + l.id + '')">Disburse Loan</button>' : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── ACTIVE LOANS ──────────────────────────────────────────────
+function renderActive() {
+  const active = LOANS.filter(l => l.status === 'active');
+  const tbody = document.getElementById('active-tbody');
+  tbody.innerHTML = active.map(l => {
+    const m = memberMap[l.memberId];
+    const pct = Math.round(l.repaid / l.approved * 100);
+    return `<tr>
+      <td class="mono bold">${l.id}</td>
+      <td><div class="mc"><div class="mc-av ${avColor(l.memberId)}">${m.initials}</div><div><div class="mc-name">${m.name}</div><div class="mc-id">${m.dept}</div></div></div></td>
+      <td>${typeChip(l.type)}</td>
+      <td class="mono bold">${FMT(l.approved)}</td>
+      <td class="mono diff-pos">${FMT(l.repaid)}</td>
+      <td class="mono diff-neg">${FMT(l.outstanding)}</td>
+      <td class="mono">${FMT(l.monthlyRepayment)}</td>
+      <td class="muted">${l.installmentsCompleted} done / ${l.installmentsRemaining} left</td>
+      <td style="min-width:140px">
+        <div class="prog-wrap"><div class="prog-fill pf-w" style="width:${pct}%"></div></div>
+        <div class="prog-label">${pct}% repaid</div>
+      </td>
+      <td style="text-align:center"><button class="btn btn-xs btn-out" onclick="openDetail('${l.id}')">Schedule</button></td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--q4)">No active loans</td></tr>';
+}
+
+// ── LOAN DETAIL DRAWER ─────────────────────────────────────────
+function openDetail(loanId) {
+  const l = LOANS.find(x => x.id === loanId);
+  const m = memberMap[l.memberId];
+  const pct = l.approved ? Math.round(l.repaid / l.approved * 100) : 0;
+
+  document.getElementById('dr-title').textContent = l.id;
+  document.getElementById('dr-sub').textContent = (l.type === 'salary_advance' ? 'Salary Advance' : 'Emergency Loan') + ' · ' + (m ? m.name : '');
+
+  const decisionColor = l.status === 'rejected' ? 'dc-r' : l.status === 'approved' || l.status === 'active' || l.status === 'fully_repaid' ? 'dc-ok' : 'dc-w';
+
+  document.getElementById('dr-body').innerHTML = `
+    <div class="loan-hero">
+      <div class="lh-type">${l.type === 'salary_advance' ? 'Salary Advance' : 'Emergency Loan'} &middot; ${badge(l.status)}</div>
+      <div class="lh-amount">${FMT(l.approved||l.requested)}</div>
+      ${['active','fully_repaid'].includes(l.status) ? `
+      <div class="lh-bar-wrap"><div class="lh-bar-fill" style="width:${pct}%"></div></div>
+      <div class="lh-bar-labels"><span>${FMT(0)}</span><span>${pct}% repaid</span><span>${FMT(l.approved)}</span></div>` : ''}
+      <div class="lh-stats">
+        <div class="lh-stat"><div class="lhs-val">${FMT(l.approved||l.requested)}</div><div class="lhs-label">Original</div></div>
+        <div class="lh-stat"><div class="lhs-val">${FMT(l.repaid)}</div><div class="lhs-label">Repaid</div></div>
+        <div class="lh-stat"><div class="lhs-val">${FMT(l.outstanding)}</div><div class="lhs-label">Outstanding</div></div>
+        <div class="lh-stat"><div class="lhs-val">${FMT(l.monthlyRepayment)}</div><div class="lhs-label">Monthly</div></div>
+      </div>
+    </div>
+
+    <div class="sec-title">Application Details</div>
+    <div class="field-row"><span class="fr-label">Loan Reference</span><span class="fr-val mono2">${l.id}</span></div>
+    <div class="field-row"><span class="fr-label">Member</span><span class="fr-val">${m?m.name:'Unknown'}</span></div>
+    <div class="field-row"><span class="fr-label">Employee ID</span><span class="fr-val mono2">${l.memberId}</span></div>
+    <div class="field-row"><span class="fr-label">Department</span><span class="fr-val">${m?m.dept:'—'}</span></div>
+    <div class="field-row"><span class="fr-label">Grade</span><span class="fr-val">${m?m.grade:'—'}</span></div>
+    <div class="field-row"><span class="fr-label">Loan Type</span><span>${typeChip(l.type)}</span></div>
+    <div class="field-row"><span class="fr-label">Purpose</span><span class="fr-val" style="max-width:60%;text-align:right;font-size:13px">${l.purpose}</span></div>
+    <div class="field-row"><span class="fr-label">Application Date</span><span class="fr-val">${l.applicationDate}</span></div>
+    <div class="field-row"><span class="fr-label">Interest Rate</span><span class="fr-val" style="color:var(--ok6)">0% (No interest)</span></div>
+    <div class="field-row"><span class="fr-label">Repayment Method</span><span class="fr-val">Monthly Payroll Deduction</span></div>
+    <div class="field-row"><span class="fr-label">Total Installments</span><span class="fr-val">${l.installments} months</span></div>
+    ${l.disbursementDate?'<div class="field-row"><span class="fr-label">Disbursement Date</span><span class="fr-val">'+l.disbursementDate+'</span></div>':''}
+    ${m?'<div class="field-row"><span class="fr-label">Member Balance at Application</span><span class="fr-val mono2">'+FMT(m.balance)+'</span></div>':''}
+
+    ${l.decision ? `
+    <div class="sec-title">Committee Decision</div>
+    <div class="decision-card ${decisionColor}">
+      <div class="dc-by">${l.decision.by}</div>
+      <div class="dc-time">${l.decision.date} at ${l.decision.time} &middot; Decision: <strong>${l.status === 'rejected' ? 'Rejected' : 'Approved'}</strong></div>
+      <div class="dc-comment">&ldquo;${l.decision.comment}&rdquo;</div>
+    </div>` : `
+    <div class="sec-title">Committee Decision</div>
+    <div style="padding:16px;background:var(--q0);border-radius:10px;text-align:center;color:var(--q4);font-size:13.5px">Awaiting committee review</div>`}
+
+    ${l.repayments.length ? `
+    <div class="sec-title">Repayment Schedule</div>
+    ${l.repayments.map((r,i) => `
+      <div class="sched-row">
+        <div class="sr-num ${r.status}"><span>${i+1}</span></div>
+        <div style="flex:1">
+          <div class="sr-month">${r.month}</div>
+          ${r.ref ? '<div style="font-size:11px;color:var(--q4);font-family:var(--fm)">' + r.ref + '</div>' : ''}
+        </div>
+        <div class="sr-amount">${FMT(r.amount)}</div>
+        <div style="width:80px;text-align:right">${r.status === 'paid' ? '<span class="badge b-ok" style="font-size:10.5px;padding:2px 8px"><span class="bd"></span>Paid</span>' : '<span class="badge b-z" style="font-size:10.5px;padding:2px 8px"><span class="bd"></span>Pending</span>'}</div>
+      </div>`).join('')}` : ''}
+  `;
+
+  document.getElementById('dr-foot').innerHTML = ['submitted','under_review'].includes(l.status)
+    ? '<button class="btn btn-gold" onclick="closeDrawer();openDecision('' + l.id + '')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Committee Decision</button><button class="btn btn-out" onclick="closeDrawer()">Close</button>'
+    : l.status === 'approved' ? '<button class="btn btn-green" onclick="disburseLoan('' + l.id + '')">Disburse Loan</button><button class="btn btn-out" onclick="closeDrawer()">Close</button>'
+    : '<button class="btn btn-out" onclick="closeDrawer()">Close</button>';
+
+  document.getElementById('ov-detail').classList.add('open');
+  setTimeout(() => document.getElementById('dr-detail').classList.add('open'), 10);
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDrawer() {
+  document.getElementById('ov-detail').classList.remove('open');
+  document.getElementById('dr-detail').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── COMMITTEE DECISION ─────────────────────────────────────────
+function openDecision(loanId) {
+  const l = LOANS.find(x => x.id === loanId);
+  const m = memberMap[l.memberId];
+  document.getElementById('dec-title').textContent = 'Committee Review — ' + l.id;
+  document.getElementById('dec-sub').textContent = m.name + ' — ' + FMT(l.requested) + ' (' + (l.type==='salary_advance'?'Salary Advance':'Emergency Loan') + ')';
+
+  document.getElementById('dec-body').innerHTML = `
+    <div style="background:var(--q0);border:1px solid var(--q2);border-radius:12px;padding:16px;margin-bottom:18px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--q4);margin-bottom:12px">Application Summary</div>
+      <div class="field-row"><span class="fr-label">Member</span><span class="fr-val">${m.name} (${m.id})</span></div>
+      <div class="field-row"><span class="fr-label">Department / Grade</span><span class="fr-val">${m.dept} &middot; ${m.grade}</span></div>
+      <div class="field-row"><span class="fr-label">Requested Amount</span><span class="fr-val mono2">${FMT(l.requested)}</span></div>
+      <div class="field-row"><span class="fr-label">Contribution Balance</span><span class="fr-val mono2" style="color:var(--ok6)">${FMT(m.balance)}</span></div>
+      <div class="field-row"><span class="fr-label">Eligibility Status</span><span>${l.requested <= m.balance ? '<span class="badge b-ok"><span class="bd"></span>Eligible — balance is sufficient</span>' : '<span class="badge b-r"><span class="bd"></span>INELIGIBLE — exceeds balance</span>'}</span></div>
+      <div class="field-row"><span class="fr-label">Monthly Repayment</span><span class="fr-val mono2">${FMT(l.monthlyRepayment)}</span></div>
+      <div class="field-row"><span class="fr-label">Total Installments</span><span class="fr-val">${l.installments} months</span></div>
+      <div class="field-row"><span class="fr-label">Purpose</span><span class="fr-val" style="font-size:12.5px;max-width:55%;text-align:right">${l.purpose}</span></div>
+    </div>
+
+    <div class="dec-form">
+      <div class="df-title">Record Committee Decision</div>
+      <div class="fg">
+        <label class="fl">Committee Member (Reviewer) *</label>
+        <select class="fsel" id="dec-reviewer">
+          <option value="">Select reviewer...</option>
+          <option>Engr. Bello Usman (Chairman)</option>
+          <option>Mrs. Amina Yusuf (Vice Chairman)</option>
+          <option>Mr. Chidi Eze (Secretary)</option>
+          <option>Dr. Halima Sule (Treasurer)</option>
+          <option>Alhaji Musa Danlami (Member)</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="fl">Decision *</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <button class="btn btn-green" id="dec-approve-btn" style="justify-content:center" onclick="selectDecision('approved')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Approve
+          </button>
+          <button class="btn btn-danger" id="dec-reject-btn" style="justify-content:center" onclick="selectDecision('rejected')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Reject
+          </button>
+        </div>
+        <input type="hidden" id="dec-decision" value="">
+      </div>
+      <div class="fi-row">
+        <div class="fg"><label class="fl">Decision Date *</label><input type="date" class="fi" id="dec-date" value="2026-08-14"></div>
+        <div class="fg"><label class="fl">Decision Time *</label><input type="time" class="fi" id="dec-time" value="09:00"></div>
+      </div>
+      <div class="fg">
+        <label class="fl">Comment / Reason *</label>
+        <textarea class="fta" id="dec-comment" rows="4" placeholder="Provide a detailed comment for the decision record. This is mandatory and will be stored in the audit trail..."></textarea>
+      </div>
+      <div class="info-box ib-n">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>This decision is final and will be recorded with your name, date, time, and comment. If approved, the Finance Officer will record disbursement separately.</span>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('dec-foot').innerHTML = '<button class="btn btn-primary" onclick="submitDecision('' + loanId + '')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Submit Decision</button><button class="btn btn-out" onclick="closeDecision()">Cancel</button>';
+
+  document.getElementById('ov-decision').classList.add('open');
+  setTimeout(() => document.getElementById('dr-decision').classList.add('open'), 10);
+  document.body.style.overflow = 'hidden';
+}
+
+let selectedDecision = '';
+function selectDecision(d) {
+  selectedDecision = d;
+  document.getElementById('dec-decision').value = d;
+  document.getElementById('dec-approve-btn').style.outline = d==='approved' ? '2.5px solid var(--ok6)' : '';
+  document.getElementById('dec-reject-btn').style.outline = d==='rejected' ? '2.5px solid var(--r6)' : '';
+}
+
+function submitDecision(loanId) {
+  const reviewer = document.getElementById('dec-reviewer').value;
+  const decision = selectedDecision;
+  const date = document.getElementById('dec-date').value;
+  const time = document.getElementById('dec-time').value;
+  const comment = document.getElementById('dec-comment').value.trim();
+  if (!reviewer) { alert('Please select a committee member.'); return; }
+  if (!decision) { alert('Please select a decision: Approve or Reject.'); return; }
+  if (!comment) { alert('A comment is mandatory for all decisions.'); return; }
+
+  const l = LOANS.find(x => x.id === loanId);
+  l.status = decision;
+  l.decision = { by: reviewer, date, time, comment };
+  if (decision === 'approved') l.approved = l.requested;
+
+  closeDecision();
+  renderAll();
+  setTimeout(() => alert('Decision recorded: ' + (decision === 'approved' ? 'APPROVED' : 'REJECTED') + '\nReviewer: ' + reviewer + '\n' + date + ' at ' + time), 100);
+}
+
+function closeDecision() {
+  document.getElementById('ov-decision').classList.remove('open');
+  document.getElementById('dr-decision').classList.remove('open');
+  document.body.style.overflow = '';
+  selectedDecision = '';
+}
+
+// ── DISBURSE ──────────────────────────────────────────────────
+function disburseLoan(loanId) {
+  if (!confirm('Confirm disbursement of loan ' + loanId + '? This will change the loan status to ACTIVE and repayment deductions will begin next payroll cycle.')) return;
+  const l = LOANS.find(x => x.id === loanId);
+  l.status = 'active';
+  l.disbursementDate = '2026-08-14';
+  closeDrawer();
+  renderAll();
+}
+
+// ── APPLICATION FORM ───────────────────────────────────────────
+function populateMemberSelect() {
+  const sel = document.getElementById('af-member');
+  sel.innerHTML = '<option value="">Select member...</option>' +
+    MEMBERS.filter(m => !m.inactive).sort((a,b)=>a.name.localeCompare(b.name)).map(m =>
+      `<option value="${m.id}">${m.name} (${m.id} · ${m.grade})</option>`).join('');
+}
+
+let selectedLoanType = '';
+function selectLoanType(t) {
+  selectedLoanType = t;
+  document.getElementById('lt-sa').style.borderColor = t==='salary_advance'?'var(--n7)':'var(--q2)';
+  document.getElementById('lt-em').style.borderColor = t==='emergency'?'var(--r5)':'var(--q2)';
+  calcEligibility();
+}
+
+function onApplyMember() {
+  const id = document.getElementById('af-member').value;
+  if (!id) { resetEligibilityCard(); return; }
+  const m = memberMap[id];
+  document.getElementById('ef-balance').textContent = FMT(m.balance);
+  document.getElementById('ef-balance-sub').textContent = m.months + ' months × ' + FMT(m.monthly);
+  document.getElementById('ef-max').textContent = FMT(m.balance);
+  document.getElementById('elg-max').textContent = FMT(m.balance);
+  calcEligibility();
+}
+
+function calcEligibility() {
+  const id = document.getElementById('af-member').value;
+  const amount = parseFloat(document.getElementById('af-amount').value)||0;
+  const period = parseInt(document.getElementById('af-period').value)||0;
+  if (!id || !amount) { document.getElementById('af-calc').style.display='none'; return; }
+  const m = memberMap[id];
+  const monthly = period ? Math.ceil(amount / period) : 0;
+  const pct = Math.min(100, (amount / m.balance * 100));
+
+  document.getElementById('ef-req').textContent = FMT(amount);
+  document.getElementById('ef-monthly').textContent = monthly ? FMT(monthly) : '—';
+  document.getElementById('ef-inst-sub').textContent = period ? period + ' installments' : '— installments';
+
+  const bar = document.getElementById('elig-bar');
+  bar.style.width = pct + '%';
+  bar.className = 'eligibility-bar' + (pct > 90 ? ' danger' : pct > 70 ? ' warn' : '');
+  document.getElementById('elg-pct').textContent = pct.toFixed(1) + '% of maximum';
+
+  const errEl = document.getElementById('err-amount');
+  if (amount > m.balance) {
+    errEl.classList.add('show');
+    errEl.textContent = 'Cannot exceed contribution balance of ' + FMT(m.balance);
+  } else errEl.classList.remove('show');
+
+  if (amount > 0 && period > 0) {
+    document.getElementById('af-calc').style.display = 'block';
+    document.getElementById('c-amount').textContent = FMT(amount);
+    document.getElementById('c-period').textContent = period + ' months';
+    document.getElementById('c-monthly').textContent = FMT(monthly);
+    document.getElementById('c-total').textContent = FMT(monthly * period);
+  }
+}
+
+function resetEligibilityCard() {
+  ['ef-balance','ef-max','ef-req','ef-monthly'].forEach(id => document.getElementById(id).textContent = '—');
+  document.getElementById('ef-balance-sub').textContent = '\u00a0';
+  document.getElementById('elig-bar').style.width = '0%';
+  document.getElementById('elg-pct').textContent = '0% of maximum';
+}
+
+function submitApplication() {
+  const memberId = document.getElementById('af-member').value;
+  const amount = parseFloat(document.getElementById('af-amount').value)||0;
+  const period = parseInt(document.getElementById('af-period').value)||0;
+  const purpose = document.getElementById('af-purpose').value.trim();
+  const date = document.getElementById('af-date').value;
+
+  if (!memberId) { alert('Please select a member.'); return; }
+  if (!selectedLoanType) { alert('Please select a loan type.'); return; }
+  if (!amount || amount < 5000) { alert('Please enter a valid loan amount.'); return; }
+  if (!period) { alert('Please select a repayment period.'); return; }
+  if (!purpose) { alert('Please describe the purpose of the loan.'); return; }
+
+  const m = memberMap[memberId];
+  if (amount > m.balance) { alert('Loan amount exceeds contribution balance. Application cannot proceed.'); return; }
+
+  const newLoan = {
+    id: 'LN-2026-0' + (LOANS.length + 10),
+    memberId, type: selectedLoanType,
+    requested: amount, approved: null,
+    installments: period,
+    monthlyRepayment: Math.ceil(amount / period),
+    repaid: 0, outstanding: amount,
+    installmentsCompleted: 0, installmentsRemaining: period,
+    status: 'submitted',
+    applicationDate: date,
+    purpose, decision: null, repayments: []
+  };
+  LOANS.unshift(newLoan);
+
+  document.getElementById('apply-form').style.display = 'none';
+  document.getElementById('apply-success').style.display = 'block';
+  renderAll();
+}
+
+function goToApplications() {
+  resetApplyForm();
+  setView('applications', document.getElementById('nt-applications'));
+}
+
+function resetApplyForm() {
+  document.getElementById('apply-form').style.display = 'block';
+  document.getElementById('apply-success').style.display = 'none';
+  document.getElementById('af-member').value = '';
+  document.getElementById('af-amount').value = '';
+  document.getElementById('af-period').value = '';
+  document.getElementById('af-purpose').value = '';
+  selectedLoanType = '';
+  ['lt-sa','lt-em'].forEach(id => document.getElementById(id).style.borderColor = 'var(--q2)');
+  document.getElementById('af-calc').style.display = 'none';
+  document.getElementById('err-amount').classList.remove('show');
+  resetEligibilityCard();
+}
+
+function exportLoans() {
+  const lines = ['CoopFund Loan Register','','Loan ID,Member,Type,Amount,Monthly Repayment,Repaid,Outstanding,Installments,Status'];
+  LOANS.forEach(l => {
+    const m = memberMap[l.memberId];
+    lines.push([l.id,m?m.name:'',l.type,l.approved||l.requested,l.monthlyRepayment,l.repaid,l.outstanding,l.installments,l.status].join(','));
+  });
+  const blob = new Blob([lines.join('\n')],{type:'text/csv'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='loans.csv'; a.click();
+}
+
+// ── RENDER ALL ─────────────────────────────────────────────────
+function renderAll() {
+  renderKPIs();
+  renderRegister();
+  renderApplications();
+  renderActive();
+}
+
+// ── INIT ───────────────────────────────────────────────────────
+populateMemberSelect();
+renderAll();
+</script>
+</body>
+</html>

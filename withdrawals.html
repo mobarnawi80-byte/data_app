@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Withdrawal Management &mdash; CoopFund Admin</title>
+<meta name="description" content="Cooperative fund withdrawal management system">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --n9:#071526;--n8:#0f2240;--n7:#1e3a5f;--n6:#264d7a;--n5:#3465a0;--n4:#5480b8;--n3:#7da0cc;--n1:#d6e4f3;--n0:#eef4fa;
+  --g6:#b88d13;--g5:#c9a227;--g4:#d4b245;--g3:#e0c870;--g1:#f5ecd0;--g0:#faf5e8;
+  --ok7:#14532d;--ok6:#166534;--ok5:#16a34a;--ok2:#bbf7d0;--ok1:#dcfce7;--ok0:#f0fdf4;
+  --w7:#92400e;--w6:#b45309;--w5:#d97706;--w2:#fde68a;--w1:#fef3c7;--w0:#fffbeb;
+  --r7:#991b1b;--r6:#b91c1c;--r5:#dc2626;--r2:#fca5a5;--r1:#fee2e2;--r0:#fff5f5;
+  --p6:#6d28d9;--p5:#7c3aed;--p2:#ddd6fe;--p1:#ede9fe;--p0:#f5f3ff;
+  --c6:#0e7490;--c1:#cffafe;--c0:#ecfeff;
+  --q9:#111827;--q8:#1f2937;--q7:#374151;--q6:#4b5563;--q5:#6b7280;--q4:#9ca3af;--q3:#d1d5db;--q2:#e5e7eb;--q15:#eff0f3;--q1:#f3f4f6;--q0:#f9fafb;
+  --ff:'Inter',-apple-system,sans-serif;--fm:'JetBrains Mono',monospace;
+  --s2:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --s3:0 4px 16px rgba(0,0,0,.09);--s4:0 12px 36px rgba(0,0,0,.15);
+}
+html{font-size:15px}
+body{font-family:var(--ff);background:#eef2f7;color:var(--q8);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* TOPBAR */
+.topbar{background:var(--n7);height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;box-shadow:0 2px 12px rgba(0,0,0,.22);position:sticky;top:0;z-index:90}
+.tb-l{display:flex;align-items:center;gap:14px}
+.tb-logo{font-size:17px;font-weight:800;color:var(--g5)}
+.tb-sep{width:1px;height:20px;background:rgba(255,255,255,.2)}
+.tb-title{font-size:14px;font-weight:600;color:rgba(255,255,255,.88)}
+.tb-bc{font-size:11.5px;color:rgba(255,255,255,.38);margin-top:1px}
+.tb-r{display:flex;align-items:center;gap:10px}
+.tb-avt{width:32px;height:32px;background:linear-gradient(135deg,var(--n5),var(--n3));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff}
+.tb-usr{font-size:13px;color:rgba(255,255,255,.65)}
+.tb-role{font-size:11px;color:rgba(255,255,255,.35)}
+
+/* NAV TABS */
+.nav-tabs{background:#fff;border-bottom:1px solid var(--q2);padding:0 28px;display:flex;gap:0;box-shadow:var(--s2);position:sticky;top:62px;z-index:80;overflow-x:auto;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.ntab{display:flex;align-items:center;gap:7px;padding:14px 18px;font-size:13.5px;font-weight:600;color:var(--q5);cursor:pointer;border:none;background:none;font-family:var(--ff);border-bottom:2.5px solid transparent;transition:all .15s;white-space:nowrap}
+.ntab:hover{color:var(--q7);background:var(--q0)}
+.ntab.on{color:var(--n7);border-bottom-color:var(--n7)}
+.ntab svg{width:15px;height:15px}
+.nc{background:var(--q1);color:var(--q6);border-radius:20px;font-size:11px;font-weight:700;padding:1px 7px}
+.nc.on{background:var(--n0);color:var(--n7)}
+.nc.alert{background:var(--r1);color:var(--r7)}
+.nc.warn{background:var(--w1);color:var(--w7)}
+.nc.ok{background:var(--ok1);color:var(--ok7)}
+
+/* MAIN */
+.main{max-width:1280px;margin:0 auto;padding:24px 28px}
+.view{display:none;animation:fu .2s ease}
+.view.on{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.kpi{background:#fff;border-radius:14px;padding:16px 18px;border:1px solid var(--q15);box-shadow:var(--s2);position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.kpi-n::before{background:linear-gradient(90deg,var(--n7),var(--n4))}
+.kpi-ok::before{background:linear-gradient(90deg,var(--ok6),var(--ok5))}
+.kpi-w::before{background:linear-gradient(90deg,var(--w6),var(--w5))}
+.kpi-r::before{background:linear-gradient(90deg,var(--r6),var(--r5))}
+.kpi-g::before{background:linear-gradient(90deg,var(--g6),var(--g4))}
+.kpi-p::before{background:linear-gradient(90deg,var(--c6),#06b6d4)}
+.kpi-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--q4);margin-bottom:7px}
+.kpi-val{font-size:22px;font-weight:800;color:var(--q9);letter-spacing:-.025em;line-height:1;font-family:var(--fm)}
+.kpi-val.sm{font-size:18px}
+.kpi-sub{font-size:11.5px;color:var(--q4);margin-top:5px}
+
+/* PANEL */
+.panel{background:#fff;border-radius:16px;box-shadow:var(--s2);border:1px solid var(--q15);margin-bottom:16px;overflow:hidden}
+.ph{padding:16px 22px;border-bottom:1px solid var(--q1);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.ph-title{font-size:15px;font-weight:700;color:var(--q9)}
+.ph-sub{font-size:12.5px;color:var(--q5);margin-top:2px}
+
+/* TOOLBAR */
+.tbar{display:flex;align-items:center;gap:10px;padding:12px 22px;border-bottom:1px solid var(--q1);background:var(--q0);flex-wrap:wrap}
+.tsel{border:1.5px solid var(--q2);border-radius:9px;padding:7px 12px;font-size:13px;font-family:var(--ff);color:var(--q8);outline:none;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 9px center;padding-right:28px;transition:border-color .15s}
+.tsel:focus{border-color:var(--n4)}
+.srch{flex:1;max-width:280px}
+.srch-inp{width:100%;border:1.5px solid var(--q2);border-radius:9px;padding:7px 12px 7px 32px;font-size:13px;font-family:var(--ff);color:var(--q8);outline:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2.5'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 10px center;transition:border-color .15s}
+.srch-inp:focus{border-color:var(--n4)}
+.ml-a{margin-left:auto}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;transition:all .15s;border:none;font-family:var(--ff);white-space:nowrap}
+.btn svg{width:14px;height:14px;flex-shrink:0}
+.btn-primary{background:var(--n7);color:#fff}.btn-primary:hover{background:var(--n6)}
+.btn-green{background:var(--ok6);color:#fff}.btn-green:hover{background:var(--ok7)}
+.btn-gold{background:var(--g5);color:var(--n9)}.btn-gold:hover{background:var(--g4)}
+.btn-out{background:#fff;color:var(--q7);border:1.5px solid var(--q2)}.btn-out:hover{background:var(--q0)}
+.btn-danger{background:var(--r0);color:var(--r6);border:1.5px solid var(--r1)}.btn-danger:hover{background:var(--r1)}
+.btn-cyan{background:var(--c0);color:var(--c6);border:1.5px solid var(--c1)}.btn-cyan:hover{background:var(--c1)}
+.btn-sm{padding:6px 12px;font-size:12.5px}
+.btn-xs{padding:4px 10px;font-size:12px;border-radius:7px}
+.btn-grp{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead{background:var(--q0)}
+thead tr{border-bottom:2px solid var(--q2)}
+th{padding:10px 14px;text-align:left;font-size:10.5px;font-weight:700;color:var(--q4);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+td{padding:12px 14px;border-bottom:1px solid var(--q1);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--q0)}
+.mono{font-family:var(--fm);font-size:12.5px}
+.bold{font-weight:700;color:var(--q9)}
+.muted{color:var(--q4);font-size:12px}
+
+/* MEMBER CELL */
+.mc{display:flex;align-items:center;gap:10px}
+.mc-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0}
+.mc-name{font-size:13.5px;font-weight:600;color:var(--q9)}
+.mc-id{font-size:11px;color:var(--q4);font-family:var(--fm)}
+.av0{background:#1e3a5f}.av1{background:#166534}.av2{background:#b45309}.av3{background:#6d28d9}.av4{background:#b91c1c}.av5{background:#0e7490}.av6{background:#9f1239}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap}
+.bd{width:5px;height:5px;border-radius:50%}
+.b-ok{background:var(--ok1);color:var(--ok7)}.b-ok .bd{background:var(--ok5)}
+.b-w{background:var(--w1);color:var(--w7)}.b-w .bd{background:var(--w5)}
+.b-r{background:var(--r1);color:var(--r7)}.b-r .bd{background:var(--r5)}
+.b-g{background:var(--g1);color:#7c5a0a}.b-g .bd{background:var(--g5)}
+.b-p{background:var(--p1);color:var(--p6)}.b-p .bd{background:var(--p5)}
+.b-n{background:var(--n0);color:var(--n7)}.b-n .bd{background:var(--n5)}
+.b-c{background:var(--c0);color:var(--c6)}.b-c .bd{background:#06b6d4}
+.b-z{background:var(--q1);color:var(--q6)}.b-z .bd{background:var(--q4)}
+
+/* MEMBER STATUS */
+.ms-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:600}
+.ms-active{background:var(--ok0);color:var(--ok7)}
+.ms-resigned{background:var(--w1);color:var(--w7)}
+.ms-retired{background:var(--p1);color:var(--p6)}
+.ms-inactive{background:var(--q1);color:var(--q5)}
+
+/* PENDING CARDS */
+.pend-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;padding:20px}
+.pend-card{border:1px solid var(--q2);border-radius:14px;overflow:hidden;transition:all .2s;background:#fff}
+.pend-card:hover{box-shadow:var(--s3);border-color:var(--q3)}
+.pc-head{padding:14px 18px;border-bottom:1px solid var(--q1);display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.pc-ref{font-size:11px;font-family:var(--fm);color:var(--q4);margin-bottom:3px}
+.pc-name{font-size:15px;font-weight:700;color:var(--q9)}
+.pc-dept{font-size:12.5px;color:var(--q5);margin-top:2px}
+.pc-body{padding:14px 18px}
+.pc-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.pc-row:last-child{margin-bottom:0}
+.pcr-l{font-size:13px;color:var(--q5)}
+.pcr-v{font-size:13.5px;font-weight:700;color:var(--q9);font-family:var(--fm)}
+.pc-reason{font-size:12.5px;color:var(--q5);background:var(--q0);border-radius:8px;padding:10px;margin-top:10px;line-height:1.5;font-style:italic}
+.pc-foot{padding:12px 18px;border-top:1px solid var(--q1);display:flex;gap:8px;flex-wrap:wrap}
+.eligibility-ok{background:var(--ok0);border:1px solid var(--ok2);border-radius:8px;padding:8px 12px;font-size:12.5px;color:var(--ok7);display:flex;align-items:center;gap:7px;margin-top:10px}
+.eligibility-warn{background:var(--w0);border:1px solid var(--w2);border-radius:8px;padding:8px 12px;font-size:12.5px;color:var(--w7);display:flex;align-items:center;gap:7px;margin-top:10px}
+.eligibility-err{background:var(--r0);border:1px solid var(--r2);border-radius:8px;padding:8px 12px;font-size:12.5px;color:var(--r7);display:flex;align-items:center;gap:7px;margin-top:10px}
+.eligibility-ok svg,.eligibility-warn svg,.eligibility-err svg{width:14px;height:14px;flex-shrink:0}
+
+/* PAYMENT QUEUE */
+.pay-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px;padding:20px}
+.pay-card{border:1.5px solid var(--ok2);border-radius:14px;overflow:hidden;background:var(--ok0)}
+.pay-card:hover{box-shadow:var(--s3)}
+
+/* APPLICATION FORM */
+.form-wrap{max-width:680px;margin:0 auto}
+.elig-card{background:linear-gradient(135deg,var(--n7),var(--n9));border-radius:16px;padding:24px;color:#fff;margin-bottom:20px}
+.ec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:16px}
+.ec-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.ec-item{background:rgba(255,255,255,.08);border-radius:10px;padding:14px}
+.ec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.35);margin-bottom:5px}
+.ec-val{font-size:20px;font-weight:800;color:#fff;font-family:var(--fm);letter-spacing:-.02em;line-height:1}
+.ec-sub{font-size:11px;color:rgba(255,255,255,.35);margin-top:3px}
+.elig-bar-wrap{background:rgba(255,255,255,.1);border-radius:20px;height:8px;overflow:hidden;margin-bottom:8px}
+.elig-bar{height:100%;border-radius:20px;background:linear-gradient(90deg,#4ade80,#22c55e);transition:width .4s}
+.elig-bar.warn{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+.elig-bar.danger{background:linear-gradient(90deg,#ef4444,#f87171)}
+.elig-labels{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.3)}
+
+/* FORM */
+.fg{margin-bottom:16px}
+.fl{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--q5);margin-bottom:6px}
+.fi{width:100%;border:1.5px solid var(--q2);border-radius:10px;padding:10px 13px;font-size:14px;font-family:var(--ff);color:var(--q9);outline:none;background:#fff;transition:border-color .15s,box-shadow .15s}
+.fi:focus{border-color:var(--n4);box-shadow:0 0 0 3px rgba(84,128,184,.15)}
+.fi.err{border-color:var(--r5)}
+.fi-mono{font-family:var(--fm)}
+.fsel{width:100%;border:1.5px solid var(--q2);border-radius:10px;padding:10px 13px;font-size:14px;font-family:var(--ff);color:var(--q9);outline:none;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 12px center;transition:border-color .15s}
+.fsel:focus{border-color:var(--n4)}
+.fta{width:100%;border:1.5px solid var(--q2);border-radius:10px;padding:10px 13px;font-size:14px;font-family:var(--ff);color:var(--q9);outline:none;resize:none;min-height:80px;transition:border-color .15s}
+.fta:focus{border-color:var(--n4)}
+.ferr{font-size:12px;color:var(--r6);margin-top:4px;display:none}
+.ferr.show{display:block}
+.fi-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* INFO BOX */
+.info-box{display:flex;gap:10px;padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.5;margin-bottom:14px}
+.info-box svg{width:15px;height:15px;flex-shrink:0;margin-top:2px}
+.ib-n{background:var(--n0);border:1px solid var(--n1);color:var(--n7)}.ib-n svg{color:var(--n5)}
+.ib-w{background:var(--w0);border:1px solid var(--w1);color:var(--w7)}.ib-w svg{color:var(--w6)}
+.ib-r{background:var(--r0);border:1px solid var(--r1);color:var(--r7)}.ib-r svg{color:var(--r6)}
+.ib-ok{background:var(--ok0);border:1px solid var(--ok2);color:var(--ok7)}.ib-ok svg{color:var(--ok5)}
+
+/* CALC RESULT */
+.calc-card{background:var(--n0);border:1px solid var(--n1);border-radius:12px;padding:16px;margin-bottom:16px}
+.cc-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--n6);margin-bottom:12px}
+.cc-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(30,58,95,.08)}
+.cc-row:last-child{border-bottom:none}
+.cc-l{font-size:13px;color:var(--n6)}
+.cc-v{font-size:14px;font-weight:700;color:var(--n7);font-family:var(--fm)}
+
+/* RULES */
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;padding:18px}
+.rule-card{border:1px solid var(--q2);border-radius:12px;padding:16px;background:#fff}
+.rc-title{font-size:14px;font-weight:700;color:var(--q9);margin-bottom:5px}
+.rc-desc{font-size:13px;color:var(--q5);line-height:1.55}
+.rc-elig{margin-top:10px;display:flex;gap:5px;flex-wrap:wrap}
+.rc-tag{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px}
+
+/* DRAWER */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;backdrop-filter:blur(2px)}
+.overlay.open{display:block}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(580px,100vw);background:#fff;box-shadow:var(--s4);z-index:210;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .28s cubic-bezier(.32,1,.27,1)}
+.drawer.open{transform:none}
+.dr-head{padding:20px 24px;border-bottom:1px solid var(--q1);display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;gap:12px}
+.dr-title{font-size:17px;font-weight:700;color:var(--q9)}
+.dr-sub{font-size:13px;color:var(--q5);margin-top:3px}
+.dr-close{background:none;border:none;cursor:pointer;color:var(--q4);display:flex;padding:4px;transition:color .15s}
+.dr-close:hover{color:var(--q7)}
+.dr-close svg{width:20px;height:20px}
+.dr-body{flex:1;overflow-y:auto;padding:22px 24px}
+.dr-foot{padding:16px 24px;border-top:1px solid var(--q1);flex-shrink:0;display:flex;gap:10px;flex-wrap:wrap}
+
+/* DETAIL SECTIONS */
+.wd-hero{background:linear-gradient(135deg,var(--n7),var(--n9));border-radius:14px;padding:22px;margin-bottom:20px;color:#fff}
+.wdh-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:6px}
+.wdh-amount{font-size:36px;font-weight:800;letter-spacing:-.03em;font-family:var(--fm);line-height:1;margin-bottom:14px}
+.wdh-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.wdg-item{background:rgba(255,255,255,.08);border-radius:8px;padding:10px;text-align:center}
+.wdg-val{font-size:15px;font-weight:800;color:#fff;font-family:var(--fm)}
+.wdg-lbl{font-size:10px;color:rgba(255,255,255,.35);margin-top:2px;text-transform:uppercase;letter-spacing:.04em}
+.sec-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--q4);margin:18px 0 10px;padding-top:16px;border-top:1px solid var(--q1)}
+.sec-title:first-child{border-top:none;padding-top:0;margin-top:0}
+.fr{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--q1)}
+.fr:last-child{border-bottom:none}
+.fr-l{font-size:13px;color:var(--q5)}
+.fr-v{font-size:13.5px;font-weight:700;color:var(--q9);text-align:right;max-width:55%}
+.fr-v.mono2{font-family:var(--fm)}
+.decision-card{border-radius:12px;padding:16px;margin-top:10px}
+.dc-ok{background:var(--ok0);border:1px solid var(--ok2)}
+.dc-r{background:var(--r0);border:1px solid var(--r2)}
+.dc-w{background:var(--w0);border:1px solid var(--w2)}
+.dc-by{font-size:13px;font-weight:700;color:var(--q9);margin-bottom:3px}
+.dc-time{font-size:11.5px;color:var(--q4);font-family:var(--fm);margin-bottom:8px}
+.dc-comment{font-size:13.5px;color:var(--q6);line-height:1.55;font-style:italic}
+
+/* DEC FORM */
+.dec-form{background:var(--q0);border:1px solid var(--q2);border-radius:12px;padding:18px;margin-top:14px}
+.df-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--q5);margin-bottom:14px}
+
+/* PAY FORM */
+.pay-form{background:var(--ok0);border:1px solid var(--ok2);border-radius:12px;padding:18px;margin-top:14px}
+.pf-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ok7);margin-bottom:14px}
+
+/* SUCCESS */
+.succ-box{text-align:center;padding:40px 24px}
+.succ-ico{width:76px;height:76px;background:var(--ok0);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;border:2px solid var(--ok2)}
+.succ-ico svg{width:38px;height:38px;color:var(--ok6)}
+.succ-t{font-size:21px;font-weight:800;color:var(--q9);margin-bottom:8px}
+.succ-s{font-size:14px;color:var(--q5);line-height:1.6;max-width:360px;margin:0 auto 24px}
+
+/* EMPTY */
+.empty{text-align:center;padding:52px 24px}
+.empty svg{width:48px;height:48px;color:var(--q3);display:block;margin:0 auto 14px}
+.empty-t{font-size:16px;font-weight:700;color:var(--q6);margin-bottom:5px}
+.empty-s{font-size:13.5px;color:var(--q4)}
+
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:var(--q3);border-radius:4px}
+@media(max-width:900px){.kpi-row{grid-template-columns:repeat(3,1fr)}.pend-grid,.pay-cards{grid-template-columns:1fr}.main{padding:16px}}
+@media(max-width:600px){.kpi-row{grid-template-columns:repeat(2,1fr)}.fi-row{grid-template-columns:1fr}.wdh-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="tb-l">
+    <span class="tb-logo">CoopFund</span>
+    <div class="tb-sep"></div>
+    <div><div class="tb-title">Withdrawal Management</div><div class="tb-bc">Finance Officer &rarr; Withdrawals</div></div>
+  </div>
+  <div class="tb-r">
+    <div class="tb-avt">FO</div>
+    <div><div class="tb-usr">Finance Officer</div><div class="tb-role">Finance Officer &mdash; Read/Write</div></div>
+  </div>
+</header>
+
+<!-- NAV TABS -->
+<nav class="nav-tabs">
+  <button class="ntab on" id="nt-register" onclick="setView('register',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+    Withdrawal Register <span class="nc" id="nc-reg">0</span>
+  </button>
+  <button class="ntab" id="nt-pending" onclick="setView('pending',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Pending Review <span class="nc alert" id="nc-pend">0</span>
+  </button>
+  <button class="ntab" id="nt-payment" onclick="setView('payment',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+    Payment Queue <span class="nc warn" id="nc-pay">0</span>
+  </button>
+  <button class="ntab" id="nt-rules" onclick="setView('rules',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Eligibility Rules
+  </button>
+  <button class="ntab" id="nt-new" onclick="setView('new',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    New Request
+  </button>
+</nav>
+
+<div class="main">
+
+<!-- ═══ REGISTER ═══ -->
+<div class="view on" id="view-register">
+  <div class="kpi-row">
+    <div class="kpi kpi-n"><div class="kpi-label">Total Requests</div><div class="kpi-val" id="k-total">0</div><div class="kpi-sub">All time</div></div>
+    <div class="kpi kpi-w"><div class="kpi-label">Pending Review</div><div class="kpi-val" id="k-pend">0</div><div class="kpi-sub">Awaiting committee</div></div>
+    <div class="kpi kpi-p"><div class="kpi-label">Payment Queue</div><div class="kpi-val" id="k-pay-q">0</div><div class="kpi-sub">Approved &amp; processing</div></div>
+    <div class="kpi kpi-ok"><div class="kpi-label">Total Paid</div><div class="kpi-val sm" id="k-paid-amt">&mdash;</div><div class="kpi-sub" id="k-paid-ct">0 payments</div></div>
+    <div class="kpi kpi-r"><div class="kpi-label">Rejected</div><div class="kpi-val" id="k-rej">0</div><div class="kpi-sub">Not approved</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="ph">
+      <div><div class="ph-title">Withdrawal Register</div><div class="ph-sub" id="reg-sub">All records</div></div>
+      <div class="btn-grp">
+        <button class="btn btn-out btn-sm" onclick="exportWD()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="setView('new',document.getElementById('nt-new'))">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Request
+        </button>
+      </div>
+    </div>
+    <div class="tbar">
+      <select class="tsel" id="reg-status" onchange="renderRegister()">
+        <option value="">All Statuses</option>
+        <option value="draft">Draft</option><option value="submitted">Submitted</option>
+        <option value="under_review">Under Review</option><option value="approved">Approved</option>
+        <option value="rejected">Rejected</option><option value="processing">Processing</option>
+        <option value="paid">Paid</option><option value="cancelled">Cancelled</option>
+      </select>
+      <select class="tsel" id="reg-cat" onchange="renderRegister()">
+        <option value="">All Categories</option>
+        <option value="resignation">Resignation</option>
+        <option value="retirement">Retirement</option>
+        <option value="hardship">Hardship</option>
+        <option value="death">Death Benefit</option>
+      </select>
+      <div class="srch"><input class="srch-inp" type="text" id="reg-q" placeholder="Search member, ID, reference..." oninput="renderRegister()"></div>
+      <span class="ml-a" id="reg-total" style="font-size:12.5px;color:var(--q5)"></span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Ref</th><th>Member</th><th>Category</th>
+          <th>Requested (&#8358;)</th><th>Approved (&#8358;)</th>
+          <th>Request Date</th><th>Approver</th><th>Status</th>
+          <th style="text-align:center">Actions</th>
+        </tr></thead>
+        <tbody id="reg-tbody"></tbody>
+      </table>
+    </div>
+    <div style="padding:11px 22px;border-top:1px solid var(--q1);font-size:12.5px;color:var(--q5)" id="reg-foot"></div>
+  </div>
+</div>
+
+<!-- ═══ PENDING REVIEW ═══ -->
+<div class="view" id="view-pending">
+  <div class="panel">
+    <div class="ph">
+      <div><div class="ph-title">Pending Committee Review</div><div class="ph-sub">Withdrawal requests awaiting a committee decision. Every decision requires reviewer, date, time and comment.</div></div>
+    </div>
+    <div class="pend-grid" id="pend-cards"></div>
+  </div>
+</div>
+
+<!-- ═══ PAYMENT QUEUE ═══ -->
+<div class="view" id="view-payment">
+  <div class="panel">
+    <div class="ph">
+      <div><div class="ph-title">Payment Queue &mdash; Approved Withdrawals</div><div class="ph-sub">Approved requests ready for payment processing. Record payment reference and date after bank transfer is completed.</div></div>
+    </div>
+    <div class="info-box ib-n" style="margin:16px 22px 0">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Member balances are <strong>not reduced</strong> until the Finance Officer confirms payment here. Recording a payment is final and updates the member's contribution balance in the financial ledger.</span>
+    </div>
+    <div class="pay-cards" id="pay-cards"></div>
+  </div>
+</div>
+
+<!-- ═══ ELIGIBILITY RULES ═══ -->
+<div class="view" id="view-rules">
+  <div class="panel">
+    <div class="ph"><div class="ph-title">Withdrawal Eligibility Rules</div><div class="ph-sub">Cooperative rules governing member withdrawal rights.</div></div>
+    <div class="rules-grid" id="rules-grid"></div>
+  </div>
+  <div class="panel">
+    <div class="ph"><div class="ph-title">How Net Available Balance is Calculated</div></div>
+    <div style="padding:20px 22px">
+      <div style="background:var(--n0);border:1px solid var(--n1);border-radius:12px;padding:20px;font-family:var(--fm);font-size:14px;color:var(--n7);line-height:2">
+        <div>Contribution Balance &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = <strong>₦X,XXX</strong></div>
+        <div style="border-top:1px dashed var(--n3);margin:8px 0;padding-top:8px">Less: Outstanding Loan Balance &nbsp; = <strong style="color:var(--r6)">₦X,XXX</strong></div>
+        <div style="border-top:2px solid var(--n5);margin:8px 0;padding-top:8px;font-size:16px"><strong>Net Available for Withdrawal &nbsp; = ₦X,XXX</strong></div>
+      </div>
+      <div class="info-box ib-w" style="margin-top:14px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span>A member cannot withdraw funds that are pledged against an active loan. The outstanding loan balance is always deducted first. To withdraw the full balance, the member must first repay all outstanding loans.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NEW REQUEST ═══ -->
+<div class="view" id="view-new">
+  <div class="form-wrap">
+    <div class="elig-card">
+      <div class="ec-title">Member Eligibility Check</div>
+      <div class="ec-grid">
+        <div class="ec-item"><div class="ec-label">Contribution Balance</div><div class="ec-val" id="ef-balance">Select member</div><div class="ec-sub" id="ef-bsub">&nbsp;</div></div>
+        <div class="ec-item"><div class="ec-label">Outstanding Loan</div><div class="ec-val" id="ef-loan">—</div><div class="ec-sub">Deducted from balance</div></div>
+        <div class="ec-item"><div class="ec-label">Net Available</div><div class="ec-val" id="ef-net">—</div><div class="ec-sub">Maximum withdrawal</div></div>
+        <div class="ec-item"><div class="ec-label">Requested Amount</div><div class="ec-val" id="ef-req">—</div><div class="ec-sub" id="ef-rsub">&nbsp;</div></div>
+      </div>
+      <div class="elig-bar-wrap"><div class="elig-bar" id="elig-bar" style="width:0%"></div></div>
+      <div class="elig-labels"><span>&#8358;0</span><span id="elig-pct">0% of net available</span><span id="elig-max">—</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><div class="ph-title">New Withdrawal Request</div><div class="ph-sub">Member balance is not updated until the request is approved and payment is processed.</div></div>
+      <div style="padding:22px">
+        <div id="new-form">
+          <div class="fg">
+            <label class="fl">Member *</label>
+            <select class="fsel" id="af-member" onchange="onMember()"><option value="">Select member...</option></select>
+          </div>
+
+          <div id="af-member-info" style="display:none;background:var(--q0);border:1px solid var(--q2);border-radius:10px;padding:14px;margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <span style="font-size:13.5px;font-weight:700;color:var(--q9)" id="mi-name">—</span>
+              <span id="mi-mstatus"></span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:13px">
+              <div><span style="color:var(--q5)">Balance: </span><span id="mi-bal" style="font-weight:700;color:var(--ok6);font-family:var(--fm)"></span></div>
+              <div><span style="color:var(--q5)">Loan: </span><span id="mi-loan" style="font-weight:700;color:var(--r6);font-family:var(--fm)"></span></div>
+              <div><span style="color:var(--q5)">Net: </span><span id="mi-net" style="font-weight:700;color:var(--n7);font-family:var(--fm)"></span></div>
+            </div>
+            <div id="mi-elig-status" style="margin-top:10px"></div>
+          </div>
+
+          <div class="fi-row">
+            <div class="fg">
+              <label class="fl">Requested Amount (&#8358;) *</label>
+              <input type="number" class="fi fi-mono" id="af-amount" placeholder="e.g. 90000" min="1000" step="1000" oninput="calcWD()">
+              <div class="ferr" id="err-amount">Amount exceeds net available balance</div>
+            </div>
+            <div class="fg">
+              <label class="fl">Request Date *</label>
+              <input type="date" class="fi" id="af-date" value="2026-08-14">
+            </div>
+          </div>
+
+          <div class="fg">
+            <label class="fl">Category *</label>
+            <select class="fsel" id="af-cat">
+              <option value="">Select category...</option>
+              <option value="resignation">Resignation</option>
+              <option value="retirement">Retirement</option>
+              <option value="hardship">Hardship / Special Circumstances</option>
+              <option value="death">Death Benefit (Beneficiary)</option>
+            </select>
+          </div>
+
+          <div class="fg">
+            <label class="fl">Reason / Justification *</label>
+            <textarea class="fta" id="af-reason" rows="3" placeholder="Describe the reason for this withdrawal request..."></textarea>
+          </div>
+
+          <div class="calc-card" id="af-calc" style="display:none">
+            <div class="cc-title">Withdrawal Summary</div>
+            <div class="cc-row"><span class="cc-l">Member</span><span class="cc-v" id="c-name">—</span></div>
+            <div class="cc-row"><span class="cc-l">Contribution Balance</span><span class="cc-v" id="c-bal">—</span></div>
+            <div class="cc-row"><span class="cc-l">Less: Outstanding Loan</span><span class="cc-v" id="c-loan" style="color:var(--r6)">—</span></div>
+            <div class="cc-row"><span class="cc-l">Net Available</span><span class="cc-v" id="c-net">—</span></div>
+            <div class="cc-row"><span class="cc-l">Requested Withdrawal</span><span class="cc-v" id="c-req">—</span></div>
+            <div class="cc-row"><span class="cc-l">Balance After Withdrawal</span><span class="cc-v" id="c-after">—</span></div>
+          </div>
+
+          <div class="info-box ib-n">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Submitting this request does <strong>not</strong> reduce the member's balance. The request will go to the committee for review. The financial ledger is only updated after the committee approves the request and the Finance Officer confirms payment.</span>
+          </div>
+
+          <div class="btn-grp">
+            <button class="btn btn-primary" onclick="submitRequest()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Submit Request
+            </button>
+            <button class="btn btn-out" onclick="resetForm()">Clear</button>
+          </div>
+        </div>
+
+        <div class="succ-box" id="new-success" style="display:none">
+          <div class="succ-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="succ-t">Request Submitted</div>
+          <div class="succ-s">The withdrawal request has been submitted and is now pending committee review. The member's balance has not been changed.</div>
+          <div class="btn-grp" style="justify-content:center">
+            <button class="btn btn-primary" onclick="goToPending()">View Pending</button>
+            <button class="btn btn-out" onclick="resetForm()">New Request</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- DRAWER: DETAIL -->
+<div class="overlay" id="ov-det" onclick="closeDet()"></div>
+<div class="drawer" id="dr-det">
+  <div class="dr-head">
+    <div><div class="dr-title" id="dr-det-title">Withdrawal Detail</div><div class="dr-sub" id="dr-det-sub"></div></div>
+    <button class="dr-close" onclick="closeDet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="dr-body" id="dr-det-body"></div>
+  <div class="dr-foot" id="dr-det-foot"></div>
+</div>
+
+<!-- DRAWER: COMMITTEE DECISION -->
+<div class="overlay" id="ov-dec" onclick="closeDec()"></div>
+<div class="drawer" id="dr-dec">
+  <div class="dr-head">
+    <div><div class="dr-title" id="dr-dec-title">Committee Review</div><div class="dr-sub" id="dr-dec-sub"></div></div>
+    <button class="dr-close" onclick="closeDec()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="dr-body" id="dr-dec-body"></div>
+  <div class="dr-foot" id="dr-dec-foot"></div>
+</div>
+
+<!-- DRAWER: PAYMENT PROCESSING -->
+<div class="overlay" id="ov-pay" onclick="closePay()"></div>
+<div class="drawer" id="dr-pay">
+  <div class="dr-head">
+    <div><div class="dr-title" id="dr-pay-title">Process Payment</div><div class="dr-sub" id="dr-pay-sub"></div></div>
+    <button class="dr-close" onclick="closePay()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="dr-body" id="dr-pay-body"></div>
+  <div class="dr-foot" id="dr-pay-foot"></div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────
+const MEMBERS = [{"id":"MF-0001","name":"Akin Adebayo","dept":"Treasury","grade":"GL-14","balance":450000,"loanOutstanding":0,"initials":"AA","status":"active"},{"id":"MF-0002","name":"Fatima Al-Hassan","dept":"Administration","grade":"GL-12","balance":405000,"loanOutstanding":0,"initials":"FA","status":"active"},{"id":"MF-0003","name":"Chiamaka Osei","dept":"Accounts","grade":"GL-10","balance":432000,"loanOutstanding":0,"initials":"CO","status":"active"},{"id":"MF-0004","name":"Babatunde Fadahunsi","dept":"Budget","grade":"GL-13","balance":300000,"loanOutstanding":0,"initials":"BF","status":"active"},{"id":"MF-0005","name":"Ngozi Eze-Williams","dept":"Accounts","grade":"GL-09","balance":144000,"loanOutstanding":50000,"initials":"NE","status":"active"},{"id":"MF-0006","name":"Chukwuemeka Obi","dept":"Treasury","grade":"GL-11","balance":216000,"loanOutstanding":0,"initials":"CO","status":"active"},{"id":"MF-0007","name":"Ifeoma Uchenna","dept":"Procurement","grade":"GL-10","balance":198000,"loanOutstanding":0,"initials":"IU","status":"active"},{"id":"MF-0008","name":"Sunday Olawale","dept":"ICT","grade":"GL-09","balance":108000,"loanOutstanding":0,"initials":"SO","status":"active"},{"id":"MF-0009","name":"Blessing Nwosu","dept":"HR","grade":"GL-08","balance":96000,"loanOutstanding":0,"initials":"BN","status":"resigned"},{"id":"MF-0010","name":"Emmanuel Dare","dept":"Legal","grade":"GL-15","balance":900000,"loanOutstanding":100000,"initials":"ED","status":"active"},{"id":"MF-0011","name":"Grace Obiora","dept":"Accounts","grade":"GL-10","balance":216000,"loanOutstanding":0,"initials":"GO","status":"active"},{"id":"MF-0012","name":"Samson Afolabi","dept":"Treasury","grade":"GL-12","balance":540000,"loanOutstanding":75000,"initials":"SA","status":"active"},{"id":"MF-0013","name":"Adaeze Okonkwo","dept":"Accounts","grade":"GL-08","balance":216000,"loanOutstanding":60000,"initials":"AO","status":"active"},{"id":"MF-0014","name":"Ibrahim Musa","dept":"Administration","grade":"GL-14","balance":300000,"loanOutstanding":0,"initials":"IM","status":"active"},{"id":"MF-0015","name":"Funke Adedayo","dept":"Budget","grade":"GL-11","balance":216000,"loanOutstanding":0,"initials":"FA","status":"active"},{"id":"MF-0016","name":"Tunde Bakare","dept":"Procurement","grade":"GL-09","balance":144000,"loanOutstanding":0,"initials":"TB","status":"active"},{"id":"MF-0017","name":"Chidinma Uche","dept":"Treasury","grade":"GL-10","balance":162000,"loanOutstanding":0,"initials":"CU","status":"active"},{"id":"MF-0018","name":"Moses Ogundele","dept":"ICT","grade":"GL-09","balance":144000,"loanOutstanding":0,"initials":"MO","status":"active"},{"id":"MF-0019","name":"Yetunde Adegbite","dept":"HR","grade":"GL-08","balance":120000,"loanOutstanding":0,"initials":"YA","status":"resigned"},{"id":"MF-0020","name":"Obinna Chukwu","dept":"Accounts","grade":"GL-10","balance":216000,"loanOutstanding":0,"initials":"OC","status":"active"},{"id":"MF-0021","name":"Kola Adeyemi","dept":"Legal","grade":"GL-13","balance":600000,"loanOutstanding":150000,"initials":"KA","status":"active"},{"id":"MF-0022","name":"Amaka Nwachukwu","dept":"Budget","grade":"GL-12","balance":270000,"loanOutstanding":0,"initials":"AN","status":"active"},{"id":"MF-0023","name":"Segun Balogun","dept":"Procurement","grade":"GL-11","balance":216000,"loanOutstanding":0,"initials":"SB","status":"active"},{"id":"MF-0024","name":"Nkechi Okafor","dept":"Accounts","grade":"GL-09","balance":108000,"loanOutstanding":0,"initials":"NO","status":"retired"},{"id":"MF-0025","name":"Damilola Ojo","dept":"Treasury","grade":"GL-10","balance":216000,"loanOutstanding":0,"initials":"DO","status":"active"},{"id":"MF-0026","name":"Uche Nweze","dept":"ICT","grade":"GL-08","balance":96000,"loanOutstanding":0,"initials":"UN","status":"active"},{"id":"MF-0027","name":"Taiwo Adeniyi","dept":"HR","grade":"GL-12","balance":270000,"loanOutstanding":0,"initials":"TA","status":"active"},{"id":"MF-0028","name":"Zainab Aliyu","dept":"Administration","grade":"GL-09","balance":72000,"loanOutstanding":40000,"initials":"ZA","status":"active"},{"id":"MF-0029","name":"Emeka Anozie","dept":"Budget","grade":"GL-10","balance":216000,"loanOutstanding":0,"initials":"EA","status":"active"},{"id":"MF-0030","name":"Hauwa Garba","dept":"Legal","grade":"GL-11","balance":90000,"loanOutstanding":0,"initials":"HG","status":"resigned"}];
+let WITHDRAWALS = [{"id":"WD-2026-001","memberId":"MF-0030","requestedAmount":90000,"approvedAmount":null,"reason":"Resignation from ministry — full balance withdrawal","category":"resignation","requestDate":"2026-08-10","approvalDate":null,"paymentDate":null,"paymentRef":"","approver":"","status":"under_review","netAvailable":90000,"decision":{"by":"Mrs. Amina Yusuf (Vice Chairman)","date":null,"time":null,"comment":""},"notes":"Member confirmed resignation effective August 1, 2026. Supporting document attached."},{"id":"WD-2026-002","memberId":"MF-0019","requestedAmount":80000,"approvedAmount":80000,"reason":"Resignation — partial withdrawal, leaving balance as savings","category":"resignation","requestDate":"2026-08-02","approvalDate":"2026-08-06","paymentDate":null,"paymentRef":"","approver":"Engr. Bello Usman (Chairman)","status":"approved","netAvailable":120000,"decision":{"by":"Engr. Bello Usman (Chairman)","date":"2026-08-06","time":"10:30","comment":"Approved. Member has resigned. Net available balance of ₦120,000 is sufficient. Partial withdrawal of ₦80,000 approved as requested."},"notes":""},{"id":"WD-2026-003","memberId":"MF-0009","requestedAmount":90000,"approvedAmount":90000,"reason":"Resignation from government service","category":"resignation","requestDate":"2026-06-15","approvalDate":"2026-06-20","paymentDate":"2026-06-25","paymentRef":"GTB/TRF/2026/06/4471","approver":"Engr. Bello Usman (Chairman)","status":"paid","netAvailable":96000,"decision":{"by":"Engr. Bello Usman (Chairman)","date":"2026-06-20","time":"11:15","comment":"Approved. Member has resigned and all eligibility criteria are met. Payment to be processed to member's registered bank account."},"notes":"Bank transfer completed. Closing balance: ₦6,000 (retained per cooperative rules)."},{"id":"WD-2026-004","memberId":"MF-0026","requestedAmount":96000,"approvedAmount":null,"reason":"Personal financial difficulty","category":"hardship","requestDate":"2026-07-18","approvalDate":null,"paymentDate":null,"paymentRef":"","approver":"","status":"rejected","netAvailable":96000,"decision":{"by":"Mr. Chidi Eze (Secretary)","date":"2026-07-22","time":"09:00","comment":"Rejected. Member is currently an active contributor and does not meet the withdrawal eligibility criteria. Withdrawals are only permitted upon resignation, retirement, or death of a beneficiary. Member may apply for a loan instead."},"notes":""},{"id":"WD-2026-005","memberId":"MF-0008","requestedAmount":100000,"approvedAmount":null,"reason":"Voluntary withdrawal — relocating to another state","category":"resignation","requestDate":"2026-08-13","approvalDate":null,"paymentDate":null,"paymentRef":"","approver":"","status":"submitted","netAvailable":108000,"decision":null,"notes":""},{"id":"WD-2026-006","memberId":"MF-0024","requestedAmount":108000,"approvedAmount":108000,"reason":"Retirement — full balance withdrawal","category":"retirement","requestDate":"2026-08-01","approvalDate":"2026-08-05","paymentDate":null,"paymentRef":"","approver":"Dr. Halima Sule (Treasurer)","status":"processing","netAvailable":108000,"decision":{"by":"Dr. Halima Sule (Treasurer)","date":"2026-08-05","time":"14:45","comment":"Approved. Member has retired from service. Full withdrawal of ₦108,000 (net available balance) approved."},"notes":"Awaiting finance officer to process bank transfer."},{"id":"WD-2026-007","memberId":"MF-0019","requestedAmount":40000,"approvedAmount":null,"reason":"Draft — balance of savings withdrawal","category":"resignation","requestDate":"2026-08-14","approvalDate":null,"paymentDate":null,"paymentRef":"","approver":"","status":"draft","netAvailable":40000,"decision":null,"notes":"Second withdrawal — remaining balance after first payment"}];
+const RULES = [{"title":"Resignation","desc":"Member who has resigned from the ministry may withdraw their full contribution balance, less any outstanding loan balance.","eligible":["resigned","inactive"]},{"title":"Retirement","desc":"Members retiring from government service are entitled to withdraw their full accumulated balance.","eligible":["retired","inactive"]},{"title":"Death of Member","desc":"Registered beneficiaries may claim the deceased member's full balance. Requires death certificate and beneficiary verification.","eligible":["deceased"]},{"title":"Hardship / Special Circumstances","desc":"Active members may apply for hardship withdrawal with documentary evidence. Subject to committee discretion. Not guaranteed.","eligible":["active"]},{"title":"Loan Offset","desc":"Outstanding loan balance is always deducted from the available withdrawal amount. Members cannot withdraw funds pledged against an active loan.","eligible":[]}];
+
+const memberMap = {};
+MEMBERS.forEach(m => memberMap[m.id] = m);
+
+const FMT = n => '₦' + Number(n||0).toLocaleString('en-NG');
+
+const STATUS_META = {
+  draft:        {label:'Draft',        cls:'b-z'},
+  submitted:    {label:'Submitted',    cls:'b-n'},
+  under_review: {label:'Under Review', cls:'b-p'},
+  approved:     {label:'Approved',     cls:'b-g'},
+  rejected:     {label:'Rejected',     cls:'b-r'},
+  processing:   {label:'Processing',   cls:'b-c'},
+  paid:         {label:'Paid',         cls:'b-ok'},
+  cancelled:    {label:'Cancelled',    cls:'b-z'},
+};
+const badge = s => { const m=STATUS_META[s]||{label:s,cls:'b-z'}; return `<span class="badge ${m.cls}"><span class="bd"></span>${m.label}</span>`; };
+
+const avColors = ['av0','av1','av2','av3','av4','av5','av6'];
+const avC = id => avColors[parseInt(id.replace(/D/g,''))%7];
+
+const memberStatusChip = s => ({
+  active:   '<span class="ms-chip ms-active">Active</span>',
+  resigned: '<span class="ms-chip ms-resigned">Resigned</span>',
+  retired:  '<span class="ms-chip ms-retired">Retired</span>',
+  inactive: '<span class="ms-chip ms-inactive">Inactive</span>',
+}[s] || '<span class="ms-chip ms-inactive">Unknown</span>');
+
+const catLabel = c => ({resignation:'Resignation',retirement:'Retirement',hardship:'Hardship',death:'Death Benefit'}[c]||c);
+
+// ── View switching ─────────────────────────────────────────────
+function setView(v, btn) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('on'));
+  document.querySelectorAll('.ntab').forEach(b => b.classList.remove('on'));
+  document.getElementById('view-' + v).classList.add('on');
+  btn.classList.add('on');
+}
+
+// ── KPIs ──────────────────────────────────────────────────────
+function renderKPIs() {
+  const pending = WITHDRAWALS.filter(w => ['submitted','under_review'].includes(w.status));
+  const payQ    = WITHDRAWALS.filter(w => ['approved','processing'].includes(w.status));
+  const paid    = WITHDRAWALS.filter(w => w.status === 'paid');
+  const rej     = WITHDRAWALS.filter(w => w.status === 'rejected');
+  const totalPaid = paid.reduce((s,w) => s + (w.approvedAmount||0), 0);
+
+  document.getElementById('k-total').textContent   = WITHDRAWALS.length;
+  document.getElementById('k-pend').textContent    = pending.length;
+  document.getElementById('k-pay-q').textContent   = payQ.length;
+  document.getElementById('k-paid-amt').textContent = FMT(totalPaid);
+  document.getElementById('k-paid-ct').textContent  = paid.length + ' payment' + (paid.length!==1?'s':'');
+  document.getElementById('k-rej').textContent      = rej.length;
+
+  document.getElementById('nc-reg').textContent  = WITHDRAWALS.length;
+  document.getElementById('nc-pend').textContent  = pending.length;
+  document.getElementById('nc-pay').textContent   = payQ.length;
+}
+
+// ── REGISTER ──────────────────────────────────────────────────
+function renderRegister() {
+  const sf = document.getElementById('reg-status').value;
+  const cf = document.getElementById('reg-cat').value;
+  const q  = document.getElementById('reg-q').value.toLowerCase();
+  let rows = [...WITHDRAWALS];
+  if (sf) rows = rows.filter(w => w.status === sf);
+  if (cf) rows = rows.filter(w => w.category === cf);
+  if (q)  rows = rows.filter(w => {
+    const m = memberMap[w.memberId]; return (w.id + (m?m.name:'') + (m?m.id:'')).toLowerCase().includes(q);
+  });
+  const tbody = document.getElementById('reg-tbody');
+  tbody.innerHTML = rows.map(w => {
+    const m = memberMap[w.memberId];
+    return `<tr>
+      <td class="mono bold">${w.id}</td>
+      <td><div class="mc"><div class="mc-av ${avC(w.memberId)}">${m?m.initials:'??'}</div><div><div class="mc-name">${m?m.name:'Unknown'}</div><div class="mc-id">${w.memberId}</div></div></div></td>
+      <td><span style="font-size:12.5px;font-weight:600;color:var(--q6)">${catLabel(w.category)}</span></td>
+      <td class="mono bold">${FMT(w.requestedAmount)}</td>
+      <td class="mono ${w.approvedAmount?'':'muted'}">${w.approvedAmount ? FMT(w.approvedAmount) : '—'}</td>
+      <td class="muted">${w.requestDate}</td>
+      <td style="font-size:12.5px;color:var(--q6);${w.approver?'':'color:var(--q4)'}">${w.approver||'—'}</td>
+      <td>${badge(w.status)}</td>
+      <td style="text-align:center"><div style="display:flex;gap:4px;justify-content:center">
+        <button class="btn btn-xs btn-out" onclick="openDet('${w.id}')">View</button>
+        ${['submitted','under_review'].includes(w.status)?'<button class="btn btn-xs btn-gold" onclick="openDec('' + w.id + '')">Review</button>':''}
+        ${['approved','processing'].includes(w.status)?'<button class="btn btn-xs btn-cyan" onclick="openPay('' + w.id + '')">Pay</button>':''}
+      </div></td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--q4)">No records match filter</td></tr>';
+  document.getElementById('reg-sub').textContent = rows.length + ' records';
+  document.getElementById('reg-foot').textContent = rows.length + ' record' + (rows.length!==1?'s':'') + ' shown';
+}
+
+// ── PENDING CARDS ──────────────────────────────────────────────
+function renderPending() {
+  const pending = WITHDRAWALS.filter(w => ['submitted','under_review'].includes(w.status));
+  const container = document.getElementById('pend-cards');
+  if (!pending.length) {
+    container.innerHTML = '<div class="empty" style="grid-column:1/-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><div class="empty-t">No pending requests</div><div class="empty-s">All withdrawal requests have been reviewed.</div></div>';
+    return;
+  }
+  container.innerHTML = pending.map(w => {
+    const m = memberMap[w.memberId];
+    const net = m ? m.balance - m.loanOutstanding : 0;
+    const eligible = w.requestedAmount <= net;
+    const eligHtml = eligible
+      ? '<div class="eligibility-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Eligible &mdash; Net available: ' + FMT(net) + '</div>'
+      : '<div class="eligibility-err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Exceeds net available of ' + FMT(net) + '</div>';
+    const loanWarn = m && m.loanOutstanding > 0
+      ? '<div class="eligibility-warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Outstanding loan of ' + FMT(m.loanOutstanding) + ' deducted from balance</div>' : '';
+    return `<div class="pend-card">
+      <div class="pc-head">
+        <div>
+          <div class="pc-ref">${w.id} &middot; ${w.requestDate}</div>
+          <div class="pc-name">${m?m.name:'Unknown'}</div>
+          <div class="pc-dept">${m?m.dept+' · '+m.grade:''}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          ${badge(w.status)}
+          ${memberStatusChip(m?m.status:'')}
+        </div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-row"><span class="pcr-l">Requested</span><span class="pcr-v">${FMT(w.requestedAmount)}</span></div>
+        <div class="pc-row"><span class="pcr-l">Contribution Balance</span><span class="pcr-v" style="color:var(--ok6)">${FMT(m?m.balance:0)}</span></div>
+        ${m && m.loanOutstanding > 0 ? '<div class="pc-row"><span class="pcr-l">Outstanding Loan</span><span class="pcr-v" style="color:var(--r6)">- ' + FMT(m.loanOutstanding) + '</span></div>' : ''}
+        <div class="pc-row"><span class="pcr-l">Net Available</span><span class="pcr-v" style="color:var(--n7)">${FMT(net)}</span></div>
+        <div class="pc-row"><span class="pcr-l">Category</span><span style="font-size:13px;font-weight:600;color:var(--q6)">${catLabel(w.category)}</span></div>
+        ${loanWarn}
+        ${eligHtml}
+        <div class="pc-reason">&ldquo;${w.reason}&rdquo;</div>
+      </div>
+      <div class="pc-foot">
+        <button class="btn btn-gold" onclick="openDec('${w.id}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Committee Review
+        </button>
+        <button class="btn btn-out" onclick="openDet('${w.id}')">Details</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── PAYMENT QUEUE ──────────────────────────────────────────────
+function renderPaymentQueue() {
+  const payQ = WITHDRAWALS.filter(w => ['approved','processing'].includes(w.status));
+  const container = document.getElementById('pay-cards');
+  if (!payQ.length) {
+    container.innerHTML = '<div class="empty" style="grid-column:1/-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg><div class="empty-t">No payments pending</div><div class="empty-s">Approved withdrawals ready for payment will appear here.</div></div>';
+    return;
+  }
+  container.innerHTML = payQ.map(w => {
+    const m = memberMap[w.memberId];
+    return `<div class="pay-card">
+      <div class="pc-head" style="background:var(--ok0)">
+        <div>
+          <div class="pc-ref">${w.id} &middot; Approved: ${w.approvalDate||'—'}</div>
+          <div class="pc-name">${m?m.name:'Unknown'}</div>
+          <div class="pc-dept">${m?m.dept+' · '+m.grade:''}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          ${badge(w.status)}
+        </div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-row"><span class="pcr-l">Approved Amount</span><span class="pcr-v" style="color:var(--ok7);font-size:18px">${FMT(w.approvedAmount)}</span></div>
+        <div class="pc-row"><span class="pcr-l">Category</span><span style="font-size:13px;font-weight:600;color:var(--q6)">${catLabel(w.category)}</span></div>
+        <div class="pc-row"><span class="pcr-l">Approved by</span><span style="font-size:13px;color:var(--q7)">${w.approver}</span></div>
+        <div class="pc-row"><span class="pcr-l">Reason</span><span style="font-size:12.5px;color:var(--q5);text-align:right;max-width:60%">${w.reason.substring(0,60) + (w.reason.length>60?'...':'')}</span></div>
+      </div>
+      <div class="pc-foot" style="border-top:1px solid var(--ok2)">
+        <button class="btn btn-green" onclick="openPay('${w.id}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Record Payment
+        </button>
+        <button class="btn btn-out" onclick="openDet('${w.id}')">Details</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── RULES ─────────────────────────────────────────────────────
+function renderRules() {
+  const colors = ['b-w','b-p','b-r','b-n','b-z'];
+  document.getElementById('rules-grid').innerHTML = RULES.map((r,i) => `
+    <div class="rule-card">
+      <div class="rc-title">${r.title}</div>
+      <div class="rc-desc">${r.desc}</div>
+      ${r.eligible.length ? '<div class="rc-elig">' + r.eligible.map(e => '<span class="rc-tag badge ' + colors[i%colors.length] + '">' + e + '</span>').join('') + '</div>' : ''}
+    </div>`).join('');
+}
+
+// ── DETAIL DRAWER ──────────────────────────────────────────────
+function openDet(id) {
+  const w = WITHDRAWALS.find(x => x.id === id);
+  const m = memberMap[w.memberId];
+  document.getElementById('dr-det-title').textContent = w.id;
+  document.getElementById('dr-det-sub').textContent = (m?m.name:'') + ' · ' + catLabel(w.category);
+
+  const decCls = w.status==='rejected'?'dc-r':['approved','paid','processing'].includes(w.status)?'dc-ok':'dc-w';
+
+  document.getElementById('dr-det-body').innerHTML = `
+    <div class="wd-hero">
+      <div class="wdh-label">${catLabel(w.category)} &middot; ${badge(w.status)}</div>
+      <div class="wdh-amount">${FMT(w.approvedAmount||w.requestedAmount)}</div>
+      <div class="wdh-grid">
+        <div class="wdg-item"><div class="wdg-val">${FMT(w.requestedAmount)}</div><div class="wdg-lbl">Requested</div></div>
+        <div class="wdg-item"><div class="wdg-val">${w.approvedAmount?FMT(w.approvedAmount):'—'}</div><div class="wdg-lbl">Approved</div></div>
+        <div class="wdg-item"><div class="wdg-val">${FMT(w.netAvailable)}</div><div class="wdg-lbl">Net Available</div></div>
+      </div>
+    </div>
+
+    <div class="sec-title">Request Details</div>
+    <div class="fr"><span class="fr-l">Reference</span><span class="fr-v mono2">${w.id}</span></div>
+    <div class="fr"><span class="fr-l">Member</span><span class="fr-v">${m?m.name:'Unknown'}</span></div>
+    <div class="fr"><span class="fr-l">Employee ID</span><span class="fr-v mono2">${w.memberId}</span></div>
+    <div class="fr"><span class="fr-l">Department</span><span class="fr-v">${m?m.dept:'—'}</span></div>
+    <div class="fr"><span class="fr-l">Member Status</span><span>${memberStatusChip(m?m.status:'')}</span></div>
+    <div class="fr"><span class="fr-l">Category</span><span class="fr-v">${catLabel(w.category)}</span></div>
+    <div class="fr"><span class="fr-l">Request Date</span><span class="fr-v">${w.requestDate}</span></div>
+    <div class="fr"><span class="fr-l">Reason</span><span class="fr-v" style="font-size:13px;font-style:italic">${w.reason}</span></div>
+
+    <div class="sec-title">Financial Snapshot at Request</div>
+    <div class="fr"><span class="fr-l">Contribution Balance</span><span class="fr-v mono2" style="color:var(--ok6)">${FMT(m?m.balance:0)}</span></div>
+    <div class="fr"><span class="fr-l">Outstanding Loan</span><span class="fr-v mono2" style="color:var(--r6)">- ${FMT(m?m.loanOutstanding:0)}</span></div>
+    <div class="fr"><span class="fr-l">Net Available</span><span class="fr-v mono2" style="color:var(--n7)">${FMT(w.netAvailable)}</span></div>
+    <div class="fr"><span class="fr-l">Requested Amount</span><span class="fr-v mono2">${FMT(w.requestedAmount)}</span></div>
+
+    ${w.decision ? `
+    <div class="sec-title">Committee Decision</div>
+    <div class="decision-card ${decCls}">
+      <div class="dc-by">${w.decision.by}</div>
+      <div class="dc-time">${w.decision.date||'—'} ${w.decision.time?'at '+w.decision.time:''} &middot; <strong>${['approved','paid','processing'].includes(w.status)?'Approved':'Rejected'}</strong></div>
+      <div class="dc-comment">&ldquo;${w.decision.comment}&rdquo;</div>
+    </div>` : '<div class="sec-title">Committee Decision</div><div style="padding:14px;background:var(--q0);border-radius:10px;text-align:center;color:var(--q4);font-size:13.5px">Awaiting committee review</div>'}
+
+    ${w.approvedAmount ? `
+    <div class="sec-title">Payment Record</div>
+    <div class="fr"><span class="fr-l">Approved Amount</span><span class="fr-v mono2" style="color:var(--ok6)">${FMT(w.approvedAmount)}</span></div>
+    <div class="fr"><span class="fr-l">Approval Date</span><span class="fr-v">${w.approvalDate||'—'}</span></div>
+    <div class="fr"><span class="fr-l">Payment Date</span><span class="fr-v">${w.paymentDate||'—'}</span></div>
+    <div class="fr"><span class="fr-l">Payment Reference</span><span class="fr-v mono2" style="font-size:12.5px">${w.paymentRef||'Pending'}</span></div>
+    <div class="fr"><span class="fr-l">Approver</span><span class="fr-v">${w.approver||'—'}</span></div>
+    <div class="fr"><span class="fr-l">Balance Updated</span><span>${w.status==='paid'?'<span class="badge b-ok"><span class="bd"></span>Yes &mdash; ledger posted</span>':'<span class="badge b-w"><span class="bd"></span>Pending payment</span>'}</span></div>
+    ${w.notes ? '<div class="fr"><span class="fr-l">Notes</span><span class="fr-v" style="font-size:12.5px">'+w.notes+'</span></div>' : ''}` : ''}
+  `;
+
+  const inReview = ['submitted','under_review'].includes(w.status);
+  const inPay = ['approved','processing'].includes(w.status);
+  document.getElementById('dr-det-foot').innerHTML =
+    (inReview ? '<button class="btn btn-gold" onclick="closeDet();openDec(''+w.id+'')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Committee Review</button>' : '') +
+    (inPay ? '<button class="btn btn-green" onclick="closeDet();openPay(''+w.id+'')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Record Payment</button>' : '') +
+    '<button class="btn btn-out" onclick="closeDet()">Close</button>';
+
+  openDrawer('det');
+}
+function closeDet() { closeDrawer('det'); }
+
+// ── COMMITTEE DECISION ─────────────────────────────────────────
+let decChoice = '';
+function openDec(id) {
+  const w = WITHDRAWALS.find(x => x.id === id);
+  const m = memberMap[w.memberId];
+  const net = m ? m.balance - m.loanOutstanding : 0;
+  document.getElementById('dr-dec-title').textContent = 'Committee Review — ' + w.id;
+  document.getElementById('dr-dec-sub').textContent = (m?m.name:'') + ' · ' + FMT(w.requestedAmount);
+  decChoice = '';
+
+  document.getElementById('dr-dec-body').innerHTML = `
+    <div style="background:var(--q0);border:1px solid var(--q2);border-radius:12px;padding:16px;margin-bottom:18px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--q4);margin-bottom:12px">Request Summary</div>
+      <div class="fr"><span class="fr-l">Member</span><span class="fr-v">${m?m.name:''} (${w.memberId})</span></div>
+      <div class="fr"><span class="fr-l">Member Status</span><span>${memberStatusChip(m?m.status:'')}</span></div>
+      <div class="fr"><span class="fr-l">Category</span><span class="fr-v">${catLabel(w.category)}</span></div>
+      <div class="fr"><span class="fr-l">Requested Amount</span><span class="fr-v mono2">${FMT(w.requestedAmount)}</span></div>
+      <div class="fr"><span class="fr-l">Contribution Balance</span><span class="fr-v mono2" style="color:var(--ok6)">${FMT(m?m.balance:0)}</span></div>
+      ${m && m.loanOutstanding > 0 ? '<div class="fr"><span class="fr-l">Outstanding Loan</span><span class="fr-v mono2" style="color:var(--r6)">- ' + FMT(m.loanOutstanding) + '</span></div>' : ''}
+      <div class="fr"><span class="fr-l">Net Available</span><span class="fr-v mono2" style="color:var(--n7)">${FMT(net)}</span></div>
+      <div class="fr"><span class="fr-l">Eligibility</span><span>${w.requestedAmount <= net ? '<span class="badge b-ok"><span class="bd"></span>Eligible</span>' : '<span class="badge b-r"><span class="bd"></span>Exceeds net available</span>'}</span></div>
+      <div class="fr"><span class="fr-l">Reason</span><span class="fr-v" style="font-size:12.5px;font-style:italic">${w.reason}</span></div>
+    </div>
+
+    <div class="dec-form">
+      <div class="df-title">Record Committee Decision</div>
+      <div class="fg">
+        <label class="fl">Committee Member (Reviewer) *</label>
+        <select class="fsel" id="dec-reviewer">
+          <option value="">Select reviewer...</option>
+          <option>Engr. Bello Usman (Chairman)</option>
+          <option>Mrs. Amina Yusuf (Vice Chairman)</option>
+          <option>Mr. Chidi Eze (Secretary)</option>
+          <option>Dr. Halima Sule (Treasurer)</option>
+          <option>Alhaji Musa Danlami (Member)</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="fl">Decision *</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <button class="btn btn-green" id="dec-app-btn" style="justify-content:center" onclick="pickDec('approved')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Approve
+          </button>
+          <button class="btn btn-danger" id="dec-rej-btn" style="justify-content:center" onclick="pickDec('rejected')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Reject
+          </button>
+        </div>
+      </div>
+      <div class="fg" id="approved-amount-fg" style="display:none">
+        <label class="fl">Approved Amount (&#8358;) *</label>
+        <input type="number" class="fi fi-mono" id="dec-amt" placeholder="Leave blank to approve full requested amount">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="fg"><label class="fl">Decision Date *</label><input type="date" class="fi" id="dec-date" value="2026-08-14"></div>
+        <div class="fg"><label class="fl">Decision Time *</label><input type="time" class="fi" id="dec-time" value="09:00"></div>
+      </div>
+      <div class="fg">
+        <label class="fl">Comment / Reason *</label>
+        <textarea class="fta" id="dec-comment" rows="4" placeholder="Provide a detailed reason for this decision. This is mandatory and permanently recorded in the audit trail..."></textarea>
+      </div>
+      <div class="info-box ib-n">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>This decision is <strong>final and permanent</strong>. All fields are required and stored in the audit log with your name, date, time, and comment. If approved, proceed to the Payment Queue to record the bank transfer.</span>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('dr-dec-foot').innerHTML = '<button class="btn btn-primary" onclick="submitDec('' + id + '')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Submit Decision</button><button class="btn btn-out" onclick="closeDec()">Cancel</button>';
+  openDrawer('dec');
+}
+
+function pickDec(v) {
+  decChoice = v;
+  document.getElementById('dec-app-btn').style.outline = v==='approved'?'2.5px solid var(--ok6)':'';
+  document.getElementById('dec-rej-btn').style.outline = v==='rejected'?'2.5px solid var(--r6)':'';
+  document.getElementById('approved-amount-fg').style.display = v==='approved'?'block':'none';
+}
+
+function submitDec(id) {
+  const reviewer = document.getElementById('dec-reviewer').value;
+  const date     = document.getElementById('dec-date').value;
+  const time     = document.getElementById('dec-time').value;
+  const comment  = document.getElementById('dec-comment').value.trim();
+  if (!reviewer) { alert('Please select a committee member.'); return; }
+  if (!decChoice) { alert('Please select Approve or Reject.'); return; }
+  if (!comment)  { alert('A comment is mandatory for every decision.'); return; }
+
+  const w = WITHDRAWALS.find(x => x.id === id);
+  const amtInput = document.getElementById('dec-amt').value;
+  w.status = decChoice;
+  w.decision = { by: reviewer, date, time, comment };
+  w.approver = reviewer;
+  w.approvalDate = date;
+  if (decChoice === 'approved') {
+    w.approvedAmount = amtInput ? parseFloat(amtInput) : w.requestedAmount;
+  }
+  closeDec();
+  renderAll();
+  setTimeout(() => alert('Decision recorded: ' + decChoice.toUpperCase() + '\nReviewer: ' + reviewer), 50);
+}
+function closeDec() { closeDrawer('dec'); decChoice = ''; }
+
+// ── PAYMENT PROCESSING ─────────────────────────────────────────
+function openPay(id) {
+  const w = WITHDRAWALS.find(x => x.id === id);
+  const m = memberMap[w.memberId];
+  document.getElementById('dr-pay-title').textContent = 'Process Payment — ' + w.id;
+  document.getElementById('dr-pay-sub').textContent = (m?m.name:'') + ' · ' + FMT(w.approvedAmount);
+
+  document.getElementById('dr-pay-body').innerHTML = `
+    <div class="info-box ib-ok">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Recording payment here is <strong>final</strong>. The member's contribution balance will be reduced by the approved amount and the financial ledger updated permanently.</span>
+    </div>
+
+    <div style="background:var(--q0);border:1px solid var(--q2);border-radius:12px;padding:16px;margin-bottom:18px">
+      <div class="fr"><span class="fr-l">Member</span><span class="fr-v">${m?m.name:''}</span></div>
+      <div class="fr"><span class="fr-l">Approved Amount</span><span class="fr-v mono2" style="font-size:18px;color:var(--ok7)">${FMT(w.approvedAmount)}</span></div>
+      <div class="fr"><span class="fr-l">Current Balance</span><span class="fr-v mono2">${FMT(m?m.balance:0)}</span></div>
+      <div class="fr"><span class="fr-l">Balance After Payment</span><span class="fr-v mono2" style="color:var(--n7)">${FMT((m?m.balance:0)-(w.approvedAmount||0))}</span></div>
+      <div class="fr"><span class="fr-l">Approved by</span><span class="fr-v">${w.approver}</span></div>
+    </div>
+
+    <div class="pay-form">
+      <div class="pf-title">Payment Details</div>
+      <div class="fg">
+        <label class="fl">Payment Date *</label>
+        <input type="date" class="fi" id="pay-date" value="2026-08-14">
+      </div>
+      <div class="fg">
+        <label class="fl">Bank / Payment Reference * <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--q4)">(Bank transfer ref, USSD, teller no.)</span></label>
+        <input type="text" class="fi fi-mono" id="pay-ref" placeholder="e.g. GTB/TRF/2026/08/91234">
+      </div>
+      <div class="fg">
+        <label class="fl">Payment Method *</label>
+        <select class="fsel" id="pay-method">
+          <option value="">Select...</option>
+          <option value="bank_transfer">Bank Transfer</option>
+          <option value="cheque">Cheque</option>
+          <option value="cash">Cash</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="fl">Payment Notes</label>
+        <textarea class="fta" id="pay-notes" rows="2" placeholder="Additional notes..."></textarea>
+      </div>
+    </div>
+    <div class="info-box ib-w" style="margin-top:14px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>This action cannot be undone. Ensure the bank transfer has been completed before recording payment.</span>
+    </div>
+  `;
+
+  document.getElementById('dr-pay-foot').innerHTML = '<button class="btn btn-green" onclick="confirmPay('' + id + '')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Confirm Payment</button><button class="btn btn-out" onclick="closePay()">Cancel</button>';
+  openDrawer('pay');
+}
+
+function confirmPay(id) {
+  const date   = document.getElementById('pay-date').value;
+  const ref    = document.getElementById('pay-ref').value.trim();
+  const method = document.getElementById('pay-method').value;
+  if (!date)   { alert('Payment date is required.'); return; }
+  if (!ref)    { alert('Payment reference is required.'); return; }
+  if (!method) { alert('Please select a payment method.'); return; }
+
+  const w = WITHDRAWALS.find(x => x.id === id);
+  const m = memberMap[w.memberId];
+  w.status       = 'paid';
+  w.paymentDate  = date;
+  w.paymentRef   = ref;
+  w.notes        = (document.getElementById('pay-notes').value.trim()) || w.notes;
+
+  // Update member balance (ledger post)
+  if (m) m.balance = Math.max(0, m.balance - w.approvedAmount);
+
+  closePay();
+  renderAll();
+  setTimeout(() => alert('Payment recorded successfully.
+Reference: ' + ref + '
+Member balance has been updated.'), 50);
+}
+function closePay() { closeDrawer('pay'); }
+
+// ── FORM ───────────────────────────────────────────────────────
+function populateMembers() {
+  const sel = document.getElementById('af-member');
+  sel.innerHTML = '<option value="">Select member...</option>' +
+    MEMBERS.sort((a,b)=>a.name.localeCompare(b.name)).map(m =>
+      `<option value="${m.id}">${m.name} (${m.id} · ${m.status})</option>`).join('');
+}
+
+function onMember() {
+  const id = document.getElementById('af-member').value;
+  if (!id) { document.getElementById('af-member-info').style.display='none'; resetElig(); return; }
+  const m = memberMap[id];
+  const net = m.balance - m.loanOutstanding;
+  document.getElementById('af-member-info').style.display = 'block';
+  document.getElementById('mi-name').textContent = m.name + ' — ' + m.dept;
+  document.getElementById('mi-mstatus').innerHTML = memberStatusChip(m.status);
+  document.getElementById('mi-bal').textContent = FMT(m.balance);
+  document.getElementById('mi-loan').textContent = m.loanOutstanding > 0 ? '- ' + FMT(m.loanOutstanding) : FMT(0);
+  document.getElementById('mi-net').textContent = FMT(net);
+
+  const eligEl = document.getElementById('mi-elig-status');
+  if (m.status === 'active') {
+    eligEl.innerHTML = '<div class="eligibility-warn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Active member. Withdrawal requires committee approval with documented justification.</div>';
+  } else {
+    eligEl.innerHTML = '<div class="eligibility-ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' + (m.status.charAt(0).toUpperCase()+m.status.slice(1)) + ' member &mdash; eligible to apply. Net available: ' + FMT(net) + '</div>';
+  }
+
+  document.getElementById('ef-balance').textContent = FMT(m.balance);
+  document.getElementById('ef-loan').textContent = m.loanOutstanding > 0 ? FMT(m.loanOutstanding) : '—';
+  document.getElementById('ef-net').textContent = FMT(net);
+  document.getElementById('elig-max').textContent = FMT(net);
+  calcWD();
+}
+
+function calcWD() {
+  const id = document.getElementById('af-member').value;
+  const amt = parseFloat(document.getElementById('af-amount').value)||0;
+  if (!id || !amt) { document.getElementById('af-calc').style.display='none'; return; }
+  const m = memberMap[id];
+  const net = m.balance - m.loanOutstanding;
+  const pct = Math.min(100, (amt/net*100));
+
+  document.getElementById('ef-req').textContent = FMT(amt);
+  const bar = document.getElementById('elig-bar');
+  bar.style.width = pct + '%';
+  bar.className = 'elig-bar' + (pct>90?' danger':pct>70?' warn':'');
+  document.getElementById('elig-pct').textContent = pct.toFixed(1) + '% of net available';
+
+  const errEl = document.getElementById('err-amount');
+  if (amt > net) { errEl.classList.add('show'); errEl.textContent='Amount exceeds net available balance of ' + FMT(net); }
+  else errEl.classList.remove('show');
+
+  document.getElementById('af-calc').style.display = 'block';
+  document.getElementById('c-name').textContent    = m.name;
+  document.getElementById('c-bal').textContent     = FMT(m.balance);
+  document.getElementById('c-loan').textContent    = m.loanOutstanding > 0 ? '- ' + FMT(m.loanOutstanding) : '—';
+  document.getElementById('c-net').textContent     = FMT(net);
+  document.getElementById('c-req').textContent     = FMT(amt);
+  document.getElementById('c-after').textContent   = FMT(Math.max(0, net - amt));
+}
+
+function resetElig() {
+  ['ef-balance','ef-loan','ef-net','ef-req'].forEach(i => { const el=document.getElementById(i); if(el) el.textContent='—'; });
+  const bar = document.getElementById('elig-bar'); if(bar) bar.style.width='0%';
+  document.getElementById('elig-pct').textContent = '0% of net available';
+}
+
+function submitRequest() {
+  const memberId = document.getElementById('af-member').value;
+  const amt      = parseFloat(document.getElementById('af-amount').value)||0;
+  const date     = document.getElementById('af-date').value;
+  const cat      = document.getElementById('af-cat').value;
+  const reason   = document.getElementById('af-reason').value.trim();
+  if (!memberId) { alert('Please select a member.'); return; }
+  if (!amt)      { alert('Please enter a valid amount.'); return; }
+  if (!cat)      { alert('Please select a category.'); return; }
+  if (!reason)   { alert('Please provide a reason.'); return; }
+  const m = memberMap[memberId];
+  const net = m.balance - m.loanOutstanding;
+  if (amt > net) { alert('Requested amount exceeds net available balance of ' + FMT(net) + '. Cannot submit.'); return; }
+
+  WITHDRAWALS.unshift({
+    id: 'WD-2026-' + String(WITHDRAWALS.length+1).padStart(3,'0'),
+    memberId, requestedAmount: amt, approvedAmount: null,
+    reason, category: cat, requestDate: date,
+    approvalDate: null, paymentDate: null, paymentRef: '', approver: '',
+    status: 'submitted', netAvailable: net, decision: null, notes: ''
+  });
+
+  document.getElementById('new-form').style.display = 'none';
+  document.getElementById('new-success').style.display = 'block';
+  renderAll();
+}
+
+function goToPending() {
+  resetForm();
+  setView('pending', document.getElementById('nt-pending'));
+}
+function resetForm() {
+  document.getElementById('new-form').style.display = 'block';
+  document.getElementById('new-success').style.display = 'none';
+  document.getElementById('af-member').value = '';
+  document.getElementById('af-amount').value = '';
+  document.getElementById('af-cat').value = '';
+  document.getElementById('af-reason').value = '';
+  document.getElementById('af-member-info').style.display = 'none';
+  document.getElementById('af-calc').style.display = 'none';
+  document.getElementById('err-amount').classList.remove('show');
+  resetElig();
+}
+
+// ── DRAWER UTIL ────────────────────────────────────────────────
+function openDrawer(name) {
+  document.getElementById('ov-'+name).classList.add('open');
+  setTimeout(() => document.getElementById('dr-'+name).classList.add('open'), 10);
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer(name) {
+  document.getElementById('ov-'+name).classList.remove('open');
+  document.getElementById('dr-'+name).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── EXPORT ─────────────────────────────────────────────────────
+function exportWD() {
+  const lines = ['CoopFund Withdrawal Register','','Ref,Member,Category,Requested,Approved,Request Date,Approval Date,Payment Date,Payment Ref,Approver,Status'];
+  WITHDRAWALS.forEach(w => {
+    const m = memberMap[w.memberId];
+    lines.push([w.id,m?m.name:'',w.category,w.requestedAmount,w.approvedAmount||'',w.requestDate,w.approvalDate||'',w.paymentDate||'',w.paymentRef||'',w.approver||'',w.status].join(','));
+  });
+  const blob = new Blob([lines.join('\n')],{type:'text/csv'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='withdrawals.csv'; a.click();
+}
+
+// ── RENDER ALL ─────────────────────────────────────────────────
+function renderAll() {
+  renderKPIs();
+  renderRegister();
+  renderPending();
+  renderPaymentQueue();
+}
+
+// ── INIT ───────────────────────────────────────────────────────
+populateMembers();
+renderRules();
+renderAll();
+</script>
+</body>
+</html>

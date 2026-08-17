@@ -66,7 +66,27 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateToPu
 
         {/* Balance Card */}
         <View style={styles.balanceCard}>
-          <Text style={styles.balanceLabel}>Wallet Balance</Text>
+          <View style={styles.balanceHeaderRow}>
+            <Text style={styles.balanceLabel}>Wallet Balance</Text>
+            <TouchableOpacity
+              style={styles.topUpBadge}
+              onPress={() => {
+                Alert.alert(
+                  '💳 Quick Wallet Top-Up',
+                  'Select an amount to test funding your wallet:',
+                  [
+                    { text: '+₦1,000', onPress: () => useStore.getState().topUpWallet(1000) },
+                    { text: '+₦2,500', onPress: () => useStore.getState().topUpWallet(2500) },
+                    { text: '+₦5,000', onPress: () => useStore.getState().topUpWallet(5000) },
+                    { text: 'Cancel', style: 'cancel' },
+                  ]
+                );
+              }}
+            >
+              <Text style={styles.topUpBadgeText}>+ Add Money</Text>
+            </TouchableOpacity>
+          </View>
+
           <View style={styles.balanceRow}>
             <Text style={styles.balanceAmount}>
               {isBalanceVisible ? formatBalance(wallet?.balance) : '₦ ••••••'}
@@ -79,7 +99,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateToPu
           {/* Virtual Account */}
           {wallet?.virtual_account_number && (
             <View style={styles.virtualAccount}>
-              <Text style={styles.vaLabel}>Fund Your Wallet</Text>
+              <Text style={styles.vaLabel}>Fund via Dedicated Virtual Bank</Text>
               <Text style={styles.vaBankName}>
                 {wallet.virtual_bank_name ?? 'Sterling Bank (Strowallet)'}
               </Text>
@@ -159,7 +179,22 @@ const styles = StyleSheet.create({
     borderColor: '#1A2035',
     marginBottom: 28,
   },
-  balanceLabel: { fontSize: 13, color: '#718096', fontWeight: '500', marginBottom: 6 },
+  balanceHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  balanceLabel: { fontSize: 13, color: '#718096', fontWeight: '500' },
+  topUpBadge: {
+    backgroundColor: '#1E1B4B',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#6C63FF',
+  },
+  topUpBadgeText: { color: '#818CF8', fontSize: 12, fontWeight: '700' },
   balanceRow: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Payroll Import &amp; Reconciliation &mdash; CoopFund Admin</title>
+<meta name="description" content="Payroll contribution import and reconciliation module for cooperative fund">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --n9:#071526;--n8:#0f2240;--n7:#1e3a5f;--n6:#264d7a;--n5:#3465a0;--n4:#5480b8;--n3:#7da0cc;--n1:#d6e4f3;--n0:#eef4fa;
+  --g6:#b88d13;--g5:#c9a227;--g4:#d4b245;--g3:#e0c870;--g1:#f5ecd0;--g0:#faf5e8;
+  --ok7:#14532d;--ok6:#166534;--ok5:#16a34a;--ok1:#dcfce7;--ok0:#f0fdf4;
+  --w7:#92400e;--w6:#b45309;--w5:#d97706;--w1:#fef3c7;--w0:#fffbeb;
+  --r7:#991b1b;--r6:#b91c1c;--r5:#dc2626;--r1:#fee2e2;--r0:#fff5f5;
+  --q9:#111827;--q8:#1f2937;--q7:#374151;--q6:#4b5563;--q5:#6b7280;--q4:#9ca3af;--q3:#d1d5db;--q2:#e5e7eb;--q15:#eff0f3;--q1:#f3f4f6;--q0:#f9fafb;
+  --ff:'Inter',-apple-system,sans-serif;--fm:'JetBrains Mono',monospace;
+  --s2:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --s3:0 4px 12px rgba(0,0,0,.08);--s4:0 10px 28px rgba(0,0,0,.12);
+}
+html{font-size:15px;scroll-behavior:smooth}
+body{font-family:var(--ff);background:#eef2f7;color:var(--q8);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* TOPBAR */
+.topbar{background:var(--n7);color:#fff;padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,.2);position:sticky;top:0;z-index:100}
+.tb-l{display:flex;align-items:center;gap:14px}
+.tb-logo{font-size:17px;font-weight:800;color:var(--g5)}
+.tb-sep{width:1px;height:20px;background:rgba(255,255,255,.2)}
+.tb-title{font-size:14px;font-weight:600;color:rgba(255,255,255,.85)}
+.tb-bc{font-size:12px;color:rgba(255,255,255,.4);margin-top:1px}
+.tb-r{display:flex;align-items:center;gap:10px}
+.tb-badge{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.75);border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600}
+.tb-usr{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.7)}
+.tb-avt{width:32px;height:32px;background:linear-gradient(135deg,var(--n5),var(--n3));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0}
+
+/* WORKFLOW STEPS */
+.wf-wrap{background:#fff;border-bottom:1px solid var(--q2);padding:0 28px;box-shadow:var(--s2)}
+.wf{display:flex;align-items:center;overflow-x:auto;padding:16px 0;gap:0;scrollbar-width:none}
+.wf::-webkit-scrollbar{display:none}
+.step{display:flex;align-items:center;gap:0;flex-shrink:0}
+.step-node{display:flex;align-items:center;gap:8px;padding:7px 14px;border-radius:10px;transition:all .2s;cursor:default}
+.step-node.done{cursor:pointer}.step-node.done:hover{background:var(--ok0)}
+.step-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;transition:all .2s}
+.step-lbl{font-size:12.5px;font-weight:600;transition:color .2s;white-space:nowrap}
+.step-sub{font-size:10.5px;font-weight:400;display:block;margin-top:1px;white-space:nowrap}
+.step.pending .step-num{background:var(--q1);color:var(--q4)}
+.step.pending .step-lbl{color:var(--q4)}
+.step.pending .step-sub{color:var(--q3)}
+.step.active .step-num{background:var(--n7);color:#fff;box-shadow:0 0 0 3px rgba(30,58,95,.2)}
+.step.active .step-lbl{color:var(--n7)}
+.step.active .step-sub{color:var(--n4)}
+.step.done .step-num{background:var(--ok6);color:#fff}
+.step.done .step-lbl{color:var(--ok7)}
+.step.done .step-sub{color:var(--ok5)}
+.step.error .step-num{background:var(--r6);color:#fff}
+.step.error .step-lbl{color:var(--r7)}
+.step-conn{width:32px;height:2px;background:var(--q2);flex-shrink:0;transition:background .3s}
+.step.done+.step .step-conn,.step-conn.done{background:var(--ok5)}
+.step-conn-wrap{display:flex;align-items:center;padding:0 2px}
+
+/* MAIN */
+.main{max-width:1200px;margin:0 auto;padding:28px}
+
+/* PANELS */
+.panel{background:#fff;border-radius:16px;box-shadow:var(--s2);border:1px solid var(--q15);margin-bottom:20px;overflow:hidden}
+.ph{padding:20px 24px;border-bottom:1px solid var(--q1);display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.ph-l .ph-title{font-size:16px;font-weight:700;color:var(--q9);letter-spacing:-.01em}
+.ph-l .ph-sub{font-size:13px;color:var(--q5);margin-top:3px}
+.ph-r{display:flex;align-items:center;gap:8px;flex-shrink:0}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;font-size:13.5px;font-weight:600;cursor:pointer;transition:all .15s;border:none;font-family:var(--ff);white-space:nowrap}
+.btn svg{width:15px;height:15px}
+.btn-primary{background:var(--n7);color:#fff}.btn-primary:hover{background:var(--n6)}
+.btn-green{background:var(--ok6);color:#fff}.btn-green:hover{background:var(--ok7)}
+.btn-gold{background:var(--g5);color:var(--n9)}.btn-gold:hover{background:var(--g4)}
+.btn-out{background:#fff;color:var(--q7);border:1px solid var(--q2)}.btn-out:hover{background:var(--q0);border-color:var(--q3)}
+.btn-navy-out{background:#fff;color:var(--n7);border:1.5px solid var(--n7)}.btn-navy-out:hover{background:var(--n0)}
+.btn-danger{background:var(--r0);color:var(--r6);border:1px solid var(--r1)}.btn-danger:hover{background:var(--r1)}
+.btn-sm{padding:6px 14px;font-size:12.5px}
+.btn-xs{padding:4px 10px;font-size:12px;border-radius:8px}
+.btn-grp{display:flex;gap:8px;flex-wrap:wrap}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-link{background:none;border:none;color:var(--n5);font-size:13px;font-weight:600;cursor:pointer;padding:0;font-family:var(--ff);text-decoration:underline}
+
+/* UPLOAD ZONE */
+.upload-outer{padding:24px}
+.drop-zone{border:2px dashed var(--q3);border-radius:16px;padding:52px 24px;text-align:center;transition:all .2s;cursor:pointer;background:var(--q0)}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--n4);background:var(--n0)}
+.drop-zone.drag{border-style:solid}
+.dz-icon{width:56px;height:56px;background:var(--n0);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--n6)}
+.dz-icon svg{width:28px;height:28px}
+.dz-title{font-size:18px;font-weight:700;color:var(--q9);margin-bottom:6px}
+.dz-sub{font-size:14px;color:var(--q5);margin-bottom:20px}
+.dz-fmt{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.fmt-tag{background:var(--q1);color:var(--q6);border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600;font-family:var(--fm)}
+.dz-sep{font-size:13px;color:var(--q4);margin:16px 0}
+.upload-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.meta-row{display:flex;flex-direction:column;gap:4px}
+.meta-lbl{font-size:12px;font-weight:600;color:var(--q5);text-transform:uppercase;letter-spacing:.04em}
+.meta-sel{border:1.5px solid var(--q2);border-radius:10px;padding:9px 12px;font-size:14px;font-family:var(--ff);color:var(--q8);outline:none;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 10px center;width:100%}
+.meta-sel:focus{border-color:var(--n4)}
+.file-info{background:var(--ok0);border:1px solid var(--ok1);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-top:16px}
+.fi-icon{width:38px;height:38px;background:var(--ok1);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--ok6);flex-shrink:0}
+.fi-icon svg{width:18px;height:18px}
+.fi-name{font-size:14px;font-weight:700;color:var(--q9)}
+.fi-meta{font-size:12px;color:var(--q5);margin-top:1px}
+.fi-clear{margin-left:auto;background:none;border:none;color:var(--q4);cursor:pointer;padding:4px;transition:color .15s}
+.fi-clear:hover{color:var(--r5)}
+.fi-clear svg{width:18px;height:18px}
+
+/* COLUMN MAP */
+.col-map{padding:20px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.cm-item{background:var(--q0);border:1px solid var(--q2);border-radius:10px;padding:12px 14px}
+.cm-expected{font-size:11px;font-weight:700;color:var(--q4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.cm-found{font-size:13.5px;font-weight:600;color:var(--ok6)}
+.cm-found.miss{color:var(--r6)}
+.cm-idx{font-size:11px;color:var(--q4);margin-top:2px;font-family:var(--fm)}
+
+/* PROGRESS */
+.progress-wrap{padding:32px 24px;text-align:center}
+.prog-title{font-size:20px;font-weight:700;color:var(--q9);margin-bottom:6px}
+.prog-sub{font-size:14px;color:var(--q5);margin-bottom:32px}
+.prog-bar-outer{background:var(--q1);border-radius:20px;height:10px;overflow:hidden;margin-bottom:10px;max-width:480px;margin-left:auto;margin-right:auto}
+.prog-bar-fill{height:100%;background:linear-gradient(90deg,var(--n7),var(--n4));border-radius:20px;transition:width .4s ease}
+.prog-pct{font-size:13px;font-weight:700;color:var(--n7);text-align:center;margin-bottom:28px}
+.check-list{max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.check-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--q0);border-radius:10px;border:1px solid var(--q1)}
+.check-item.done2{border-color:var(--ok1);background:var(--ok0)}
+.check-item.err{border-color:var(--r1);background:var(--r0)}
+.check-item.run{border-color:var(--n1);background:var(--n0)}
+.chk-ico{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chk-ico.ok2{background:var(--ok1);color:var(--ok6)}
+.chk-ico.err{background:var(--r1);color:var(--r6)}
+.chk-ico.run{background:var(--n1);color:var(--n7)}
+.chk-ico.pend{background:var(--q1);color:var(--q4)}
+.chk-ico svg{width:14px;height:14px}
+.chk-lbl{font-size:13.5px;font-weight:600;color:var(--q9);flex:1}
+.chk-detail{font-size:12px;font-weight:500}
+.chk-detail.ok2{color:var(--ok6)}.chk-detail.err{color:var(--r6)}.chk-detail.run{color:var(--n5)}
+.spin{animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:20px 24px 8px}
+.kpi{border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;border:1px solid transparent;transition:box-shadow .2s}
+.kpi:hover{box-shadow:var(--s3)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.kpi-n{background:#fff;border-color:var(--q15)}.kpi-n::before{background:linear-gradient(90deg,var(--n7),var(--n4))}
+.kpi-ok{background:#fff;border-color:var(--q15)}.kpi-ok::before{background:linear-gradient(90deg,var(--ok6),var(--ok5))}
+.kpi-w{background:#fff;border-color:var(--q15)}.kpi-w::before{background:linear-gradient(90deg,var(--w6),var(--w5))}
+.kpi-r{background:#fff;border-color:var(--q15)}.kpi-r::before{background:linear-gradient(90deg,var(--r6),var(--r5))}
+.kpi-g{background:#fff;border-color:var(--q15)}.kpi-g::before{background:linear-gradient(90deg,var(--g6),var(--g4))}
+.kpi-lbl{font-size:10.5px;font-weight:700;color:var(--q4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.kpi-val{font-size:24px;font-weight:800;color:var(--q9);letter-spacing:-.02em;line-height:1;margin-bottom:6px;font-family:var(--fm)}
+.kpi-val.mono{font-family:var(--fm);font-size:20px}
+.kpi-val.big{font-size:28px}
+.kpi-ft{font-size:11.5px;color:var(--q4)}
+.kpi-ft.ok2{color:var(--ok6)}.kpi-ft.warn{color:var(--w6)}.kpi-ft.err{color:var(--r6)}
+.kpi-diff-row{grid-column:span 2;background:linear-gradient(135deg,var(--n0),#fff);border:1.5px solid var(--n1)}
+.kpi-diff-row::before{background:linear-gradient(90deg,var(--n7),var(--n5))}
+.diff-inner{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center}
+.diff-eq{font-size:24px;font-weight:800;color:var(--q3);text-align:center}
+.diff-bad .kpi-val{color:var(--r6)}.diff-ok .kpi-val{color:var(--ok6)}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--q0)}
+th{padding:10px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--q4);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--q2);white-space:nowrap}
+td{padding:11px 16px;border-bottom:1px solid var(--q1);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--q0)}
+.tp{font-weight:600;color:var(--q9)}.tm{font-family:var(--fm);font-size:12px}.ts{color:var(--q4);font-size:11.5px}
+.tr-ok{background:rgba(22,163,74,.03)}.tr-w{background:rgba(217,119,6,.04)}.tr-r{background:rgba(220,38,38,.04)}.tr-dup{background:rgba(201,162,39,.05)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap}
+.bd{width:5px;height:5px;border-radius:50%}
+.b-ok{background:var(--ok1);color:var(--ok7)}.b-ok .bd{background:var(--ok5)}
+.b-w{background:var(--w1);color:var(--w7)}.b-w .bd{background:var(--w5)}
+.b-r{background:var(--r1);color:var(--r7)}.b-r .bd{background:var(--r5)}
+.b-n{background:var(--n0);color:var(--n7)}.b-n .bd{background:var(--n5)}
+.b-g{background:var(--g1);color:#7c5a0a}.b-g .bd{background:var(--g5)}
+.b-z{background:var(--q1);color:var(--q6)}.b-z .bd{background:var(--q4)}
+
+/* TABS */
+.tab-bar{display:flex;gap:4px;padding:14px 24px 0;border-bottom:1px solid var(--q1);background:var(--q0)}
+.tab-btn{background:none;border:none;padding:8px 16px;font-size:13.5px;font-weight:600;color:var(--q5);cursor:pointer;border-radius:8px 8px 0 0;font-family:var(--ff);transition:all .15s;position:relative;bottom:-1px;border:1px solid transparent}
+.tab-btn.on{background:#fff;color:var(--n7);border-color:var(--q2);border-bottom-color:#fff}
+.tab-btn:hover:not(.on){color:var(--q7);background:var(--q1)}
+.tab-count{display:inline-flex;align-items:center;justify-content:center;background:var(--q2);color:var(--q6);border-radius:20px;font-size:11px;font-weight:700;padding:1px 7px;margin-left:5px}
+.tab-count.red{background:var(--r1);color:var(--r7)}.tab-count.warn{background:var(--w1);color:var(--w7)}.tab-count.ok2{background:var(--ok1);color:var(--ok7)}
+.tab-panel{display:none}.tab-panel.on{display:block}
+
+/* EXCEPTION ITEM */
+.ex-item{border:1px solid var(--q2);border-radius:12px;margin:14px 24px;overflow:hidden;transition:box-shadow .15s}
+.ex-item:hover{box-shadow:var(--s3)}
+.ex-item.resolved{border-color:var(--ok2,#bbf7d0);background:var(--ok0)}
+.ex-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;gap:10px}
+.ex-head-l{display:flex;align-items:center;gap:12px}
+.ex-type-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ex-type-ico svg{width:16px;height:16px}
+.ex-type-ico.r{background:var(--r0);color:var(--r6)}
+.ex-type-ico.w{background:var(--w0);color:var(--w6)}
+.ex-type-ico.g{background:var(--g0);color:var(--g6)}
+.ex-type-ico.n{background:var(--n0);color:var(--n6)}
+.ex-member{font-size:14px;font-weight:700;color:var(--q9)}
+.ex-ref{font-size:12px;color:var(--q4);margin-top:1px}
+.ex-head-r{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.ex-body{border-top:1px solid var(--q1);padding:14px 16px;background:var(--q0);display:none}
+.ex-body.open{display:block}
+.ex-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:12px}
+.ex-field{background:#fff;border:1px solid var(--q2);border-radius:8px;padding:10px 12px}
+.ef-lbl{font-size:10.5px;font-weight:700;color:var(--q4);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.ef-val{font-size:14px;font-weight:600;color:var(--q9)}
+.ef-val.ok2{color:var(--ok6)}.ef-val.err{color:var(--r6)}.ef-val.mono{font-family:var(--fm)}
+.ex-corr{background:var(--n0);border:1px solid var(--n1);border-radius:10px;padding:12px 14px;margin-top:10px}
+.ec-title{font-size:12px;font-weight:700;color:var(--n7);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+.ec-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ec-inp{border:1.5px solid var(--n1);border-radius:8px;padding:8px 12px;font-size:14px;font-family:var(--ff);color:var(--q9);outline:none;font-family:var(--fm);width:160px}
+.ec-inp:focus{border-color:var(--n4)}
+.ec-note{border:1.5px solid var(--n1);border-radius:8px;padding:8px 12px;font-size:13px;font-family:var(--ff);color:var(--q9);outline:none;width:100%;margin-top:8px;resize:none;height:56px}
+.ec-note:focus{border-color:var(--n4)}
+
+/* VERIFY */
+.verify-wrap{padding:24px}
+.verify-header{text-align:center;margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--q1)}
+.ver-ico{width:64px;height:64px;background:var(--n0);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--n7)}
+.ver-ico svg{width:30px;height:30px}
+.ver-title{font-size:20px;font-weight:700;color:var(--q9);margin-bottom:6px}
+.ver-sub{font-size:14px;color:var(--q5);line-height:1.5}
+.ver-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.ver-stat{background:var(--q0);border:1px solid var(--q2);border-radius:12px;padding:14px 16px;text-align:center}
+.vs-val{font-size:20px;font-weight:800;color:var(--q9);font-family:var(--fm);margin-bottom:4px}
+.vs-lbl{font-size:12px;color:var(--q5)}
+.ver-form{display:flex;flex-direction:column;gap:12px}
+.vf-label{font-size:12.5px;font-weight:700;color:var(--q6);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.vf-input{border:1.5px solid var(--q2);border-radius:10px;padding:11px 14px;font-size:14.5px;font-family:var(--ff);color:var(--q9);outline:none;width:100%;transition:border-color .15s}
+.vf-input:focus{border-color:var(--n4)}
+.ver-chk{display:flex;gap:10px;align-items:flex-start;padding:14px;background:var(--w0);border:1px solid var(--w1);border-radius:10px}
+.ver-chk input{width:18px;height:18px;margin-top:1px;flex-shrink:0;cursor:pointer;accent-color:var(--n7)}
+.ver-chk-txt{font-size:13.5px;color:var(--w7);line-height:1.4}
+
+/* AUDIT TRAIL */
+.audit-wrap{padding:20px 24px}
+.audit-row{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--q1)}
+.audit-row:last-child{border-bottom:none}
+.aud-ico{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.aud-ico.ok2{background:var(--ok0);color:var(--ok6)}.aud-ico.n{background:var(--n0);color:var(--n6)}.aud-ico.w{background:var(--w0);color:var(--w6)}.aud-ico svg{width:15px;height:15px}
+.aud-b{flex:1}
+.aud-t{font-size:13.5px;color:var(--q7);line-height:1.4}
+.aud-t strong{color:var(--q9);font-weight:600}
+.aud-m{font-size:11px;color:var(--q4);margin-top:3px;font-family:var(--fm)}
+
+/* SUCCESS */
+.succ-wrap{text-align:center;padding:52px 24px}
+.succ-ico{width:88px;height:88px;background:var(--ok0);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;border:3px solid var(--ok1)}
+.succ-ico svg{width:44px;height:44px;color:var(--ok6)}
+.succ-title{font-size:26px;font-weight:800;color:var(--q9);letter-spacing:-.02em;margin-bottom:8px}
+.succ-sub{font-size:15px;color:var(--q5);line-height:1.6;max-width:520px;margin:0 auto 28px}
+.succ-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:480px;margin:0 auto 32px}
+.ss-item{background:var(--ok0);border:1px solid var(--ok1);border-radius:12px;padding:14px;text-align:center}
+.ss-val{font-size:22px;font-weight:800;color:var(--ok7);font-family:var(--fm)}
+.ss-lbl{font-size:11px;color:var(--ok6);text-transform:uppercase;letter-spacing:.05em;margin-top:3px}
+
+/* EXISTING IMPORTS */
+.imp-row{display:flex;align-items:center;gap:14px;padding:12px 24px;border-bottom:1px solid var(--q1)}
+.imp-row:last-child{border-bottom:none}.imp-row:hover{background:var(--q0)}
+.imp-ico{width:36px;height:36px;background:var(--n0);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--n6);flex-shrink:0}
+.imp-ico svg{width:16px;height:16px}
+.imp-info{flex:1;min-width:0}
+.imp-name{font-size:13.5px;font-weight:700;color:var(--q9)}
+.imp-meta{font-size:12px;color:var(--q4);margin-top:1px}
+.imp-r{text-align:right;flex-shrink:0}
+.imp-amt{font-size:13.5px;font-weight:700;color:var(--q9);font-family:var(--fm)}
+
+/* DIFF INDICATOR */
+.diff-pos{color:var(--ok6)}.diff-neg{color:var(--r6)}.diff-zero{color:var(--q4)}
+
+/* SEARCH */
+.srch-bar{display:flex;gap:10px;padding:14px 24px;border-bottom:1px solid var(--q1);align-items:center;background:var(--q0)}
+.srch-inp{flex:1;border:1px solid var(--q2);border-radius:9px;padding:8px 12px 8px 36px;font-size:13.5px;font-family:var(--ff);color:var(--q8);outline:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2.5'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 12px center;max-width:340px;transition:border-color .15s}
+.srch-inp:focus{border-color:var(--n4)}
+
+/* MISC */
+.info-banner{display:flex;gap:12px;padding:14px 18px;background:var(--n0);border:1px solid var(--n1);border-radius:12px;margin:16px 24px;align-items:flex-start}
+.info-banner.warn{background:var(--w0);border-color:var(--w1)}
+.info-banner svg{width:18px;height:18px;flex-shrink:0;margin-top:1px;color:var(--n5)}
+.info-banner.warn svg{color:var(--w6)}
+.info-banner p{font-size:13.5px;color:var(--n7);line-height:1.5}.info-banner.warn p{color:var(--w7)}
+.empty{text-align:center;padding:40px;color:var(--q5)}
+.empty svg{width:44px;height:44px;color:var(--q3);margin:0 auto 12px;display:block}
+.empty p{font-size:14px;font-weight:600;margin-bottom:4px;color:var(--q6)}
+.empty span{font-size:13px}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:var(--q3);border-radius:4px}
+@media(max-width:1000px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.ver-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.kpi-grid{grid-template-columns:1fr 1fr}.upload-meta{grid-template-columns:1fr}.wf{gap:0}.step-conn{width:20px}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-l">
+    <span class="tb-logo">CoopFund</span>
+    <div class="tb-sep"></div>
+    <div>
+      <div class="tb-title">Payroll Import &amp; Reconciliation</div>
+      <div class="tb-bc">Finance Officer &rarr; Contributions &rarr; Payroll Import</div>
+    </div>
+  </div>
+  <div class="tb-r">
+    <span class="tb-badge" id="period-label">No period selected</span>
+    <div class="tb-usr"><div class="tb-avt">FO</div>Finance Officer</div>
+  </div>
+</div>
+
+<!-- WORKFLOW STEPS -->
+<div class="wf-wrap">
+  <div class="wf" id="wf-steps">
+    <div class="step active" id="s-upload"><div class="step-node"><div class="step-num">1</div><div><span class="step-lbl">Upload</span><span class="step-sub">Select file</span></div></div></div>
+    <div class="step-conn-wrap"><div class="step-conn" id="c1"></div></div>
+    <div class="step pending" id="s-validate"><div class="step-node"><div class="step-num">2</div><div><span class="step-lbl">Validate</span><span class="step-sub">Check file</span></div></div></div>
+    <div class="step-conn-wrap"><div class="step-conn" id="c2"></div></div>
+    <div class="step pending" id="s-match"><div class="step-node"><div class="step-num">3</div><div><span class="step-lbl">Match</span><span class="step-sub">Find members</span></div></div></div>
+    <div class="step-conn-wrap"><div class="step-conn" id="c3"></div></div>
+    <div class="step pending" id="s-reconcile"><div class="step-node"><div class="step-num">4</div><div><span class="step-lbl">Reconcile</span><span class="step-sub">Review results</span></div></div></div>
+    <div class="step-conn-wrap"><div class="step-conn" id="c4"></div></div>
+    <div class="step pending" id="s-exceptions"><div class="step-node"><div class="step-num">5</div><div><span class="step-lbl">Exceptions</span><span class="step-sub">Review &amp; correct</span></div></div></div>
+    <div class="step-conn-wrap"><div class="step-conn" id="c5"></div></div>
+    <div class="step pending" id="s-verify"><div class="step-node"><div class="step-num">6</div><div><span class="step-lbl">Verify</span><span class="step-sub">Authorise</span></div></div></div>
+    <div class="step-conn-wrap"><div class="step-conn" id="c6"></div></div>
+    <div class="step pending" id="s-post"><div class="step-node"><div class="step-num">7</div><div><span class="step-lbl">Post</span><span class="step-sub">Update accounts</span></div></div></div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ═══ STEP 1: UPLOAD ═══ -->
+<div id="view-upload">
+  <div class="panel">
+    <div class="ph"><div class="ph-l"><div class="ph-title">Upload Payroll Contribution File</div><div class="ph-sub">Supported formats: CSV, Excel (.xlsx, .xls). Required columns: Employee ID, Name, Department, Grade Level, Contribution, Month.</div></div></div>
+    <div class="upload-outer">
+      <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()" ondragover="onDrag(event)" ondragleave="offDrag(event)" ondrop="onDrop(event)">
+        <div class="dz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+        <div class="dz-title">Drop your payroll file here</div>
+        <div class="dz-sub">or click to browse from your computer</div>
+        <div class="dz-fmt"><span class="fmt-tag">.csv</span><span class="fmt-tag">.xlsx</span><span class="fmt-tag">.xls</span></div>
+        <div class="dz-sep">— or —</div>
+        <button class="btn btn-navy-out" onclick="event.stopPropagation();loadSample()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Load Sample Data (Demo)</button>
+      </div>
+      <input type="file" id="file-input" accept=".csv,.xlsx,.xls" style="display:none" onchange="handleFile(this.files[0])">
+      <div id="file-info-box" style="display:none" class="file-info">
+        <div class="fi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <div><div class="fi-name" id="fname"></div><div class="fi-meta" id="fmeta"></div></div>
+        <button class="fi-clear" onclick="clearFile()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="upload-meta">
+        <div class="meta-row"><label class="meta-lbl">Contribution Month</label>
+          <select class="meta-sel" id="sel-month">
+            <option value="">Select month...</option>
+            <option value="2026-08" selected>August 2026</option>
+            <option value="2026-07">July 2026</option>
+            <option value="2026-06">June 2026</option>
+            <option value="2026-05">May 2026</option>
+          </select>
+        </div>
+        <div class="meta-row"><label class="meta-lbl">Import Type</label>
+          <select class="meta-sel" id="sel-type">
+            <option value="regular">Regular Monthly Payroll</option>
+            <option value="adjustment">Adjustment / Correction</option>
+            <option value="backdated">Backdated Entry</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 24px 24px"><div class="btn-grp"><button class="btn btn-primary" id="btn-process" onclick="startProcessing()" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 12 5 19 12"/><polyline points="5 18 12 11 19 18"/></svg>Validate &amp; Process</button><button class="btn btn-out btn-sm" onclick="loadSample()">Load Sample</button></div></div>
+  </div>
+
+  <!-- Previous imports -->
+  <div class="panel">
+    <div class="ph"><div class="ph-l"><div class="ph-title">Recent Payroll Imports</div><div class="ph-sub">Last 6 imports for audit reference</div></div></div>
+    <div class="imp-row"><div class="imp-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="imp-info"><div class="imp-name">Payroll Jul 2026 <span class="badge b-ok" style="margin-left:6px">Posted</span></div><div class="imp-meta">PAY-2026-07-001 &middot; Posted by Finance Officer &middot; 2 Jul 2026, 08:30 &middot; 287 records</div></div><div class="imp-r"><div class="imp-amt">&#8358;4,500,000</div><div class="ts">0 exceptions</div></div></div>
+    <div class="imp-row"><div class="imp-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="imp-info"><div class="imp-name">Payroll Jun 2026 <span class="badge b-ok" style="margin-left:6px">Posted</span></div><div class="imp-meta">PAY-2026-06-001 &middot; Posted by Finance Officer &middot; 4 Jun 2026, 09:15 &middot; 283 records</div></div><div class="imp-r"><div class="imp-amt">&#8358;4,300,000</div><div class="ts">0 exceptions</div></div></div>
+    <div class="imp-row"><div class="imp-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="imp-info"><div class="imp-name">Payroll May 2026 <span class="badge b-ok" style="margin-left:6px">Posted</span></div><div class="imp-meta">PAY-2026-05-001 &middot; Posted by Finance Officer &middot; 3 May 2026, 10:00 &middot; 282 records</div></div><div class="imp-r"><div class="imp-amt">&#8358;5,100,000</div><div class="ts">2 exceptions resolved</div></div></div>
+  </div>
+
+  <!-- Format guide -->
+  <div class="panel">
+    <div class="ph"><div class="ph-l"><div class="ph-title">Required File Format</div><div class="ph-sub">Your payroll file must include the following columns in any order</div></div><button class="btn btn-out btn-sm" onclick="downloadTemplate()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download Template</button></div>
+    <div class="tbl-wrap" style="padding:16px 24px">
+      <table><thead><tr><th>Column</th><th>Required</th><th>Example Value</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="tp">Employee ID</td><td><span class="badge b-r">Required</span></td><td class="tm">MF-0001</td><td class="ts">Must match registered member ID</td></tr>
+        <tr><td class="tp">Name</td><td><span class="badge b-w">Optional</span></td><td class="tm">Akin Adebayo</td><td class="ts">Used for cross-validation only</td></tr>
+        <tr><td class="tp">Department</td><td><span class="badge b-w">Optional</span></td><td class="tm">Treasury</td><td class="ts">Used for cross-validation only</td></tr>
+        <tr><td class="tp">Grade Level</td><td><span class="badge b-w">Optional</span></td><td class="tm">GL-14</td><td class="ts">Validated against member record</td></tr>
+        <tr><td class="tp">Contribution</td><td><span class="badge b-r">Required</span></td><td class="tm">25000</td><td class="ts">Numeric, no currency symbols</td></tr>
+        <tr><td class="tp">Month</td><td><span class="badge b-r">Required</span></td><td class="tm">2026-08</td><td class="ts">Format: YYYY-MM</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STEP 2: VALIDATING ═══ -->
+<div id="view-validate" style="display:none">
+  <div class="panel">
+    <div class="ph"><div class="ph-l"><div class="ph-title" id="val-title">Validating File...</div><div class="ph-sub" id="val-sub">Please wait while the file is being processed</div></div></div>
+    <div class="progress-wrap">
+      <div class="prog-bar-outer"><div class="prog-bar-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="prog-pct" id="prog-pct">0%</div>
+      <div class="check-list" id="check-list">
+        <div class="check-item" id="chk-format"><div class="chk-ico pend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg></div><span class="chk-lbl">Checking file format</span><span class="chk-detail" id="d-format"></span></div>
+        <div class="check-item" id="chk-cols"><div class="chk-ico pend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg></div><span class="chk-lbl">Validating column headers</span><span class="chk-detail" id="d-cols"></span></div>
+        <div class="check-item" id="chk-rows"><div class="chk-ico pend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg></div><span class="chk-lbl">Reading data rows</span><span class="chk-detail" id="d-rows"></span></div>
+        <div class="check-item" id="chk-dups"><div class="chk-ico pend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg></div><span class="chk-lbl">Detecting duplicate records</span><span class="chk-detail" id="d-dups"></span></div>
+        <div class="check-item" id="chk-match"><div class="chk-ico pend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg></div><span class="chk-lbl">Matching against member registry</span><span class="chk-detail" id="d-match"></span></div>
+        <div class="check-item" id="chk-amts"><div class="chk-ico pend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg></div><span class="chk-lbl">Verifying contribution amounts</span><span class="chk-detail" id="d-amts"></span></div>
+        <div class="check-item" id="chk-miss"><div class="chk-ico pend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg></div><span class="chk-lbl">Identifying missing members</span><span class="chk-detail" id="d-miss"></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STEP 3: RECONCILE ═══ -->
+<div id="view-reconcile" style="display:none">
+  <div class="info-banner warn" id="warn-banner" style="display:none">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <p id="warn-text"></p>
+  </div>
+
+  <!-- KPI Summary -->
+  <div class="panel">
+    <div class="ph"><div class="ph-l"><div class="ph-title">Reconciliation Summary</div><div class="ph-sub" id="rec-period-label">Import period: —</div></div><div class="ph-r"><button class="btn btn-out btn-sm" onclick="exportReport()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export Report</button></div></div>
+    <div class="kpi-grid">
+      <div class="kpi kpi-n"><div class="kpi-lbl">Expected Contribution</div><div class="kpi-val mono" id="k-expected">&#8358;0</div><div class="kpi-ft">From registered members</div></div>
+      <div class="kpi kpi-g"><div class="kpi-lbl">Imported Contribution</div><div class="kpi-val mono" id="k-imported">&#8358;0</div><div class="kpi-ft">Total in payroll file</div></div>
+      <div class="kpi kpi-diff-row" id="k-diff-card">
+        <div class="diff-inner">
+          <div><div class="kpi-lbl">Expected</div><div class="kpi-val mono" id="k-exp2">&#8358;0</div></div>
+          <div class="diff-eq">&minus;</div>
+          <div class="diff-bad" id="diff-side"><div class="kpi-lbl">Difference</div><div class="kpi-val mono" id="k-diff">&#8358;0</div><div class="kpi-ft" id="k-diff-ft"></div></div>
+        </div>
+      </div>
+      <div class="kpi kpi-ok"><div class="kpi-lbl">Matched Members</div><div class="kpi-val big" id="k-matched">0</div><div class="kpi-ft ok2" id="k-matched-ft"></div></div>
+      <div class="kpi kpi-r"><div class="kpi-lbl">Unmatched Employees</div><div class="kpi-val big" id="k-unmatched">0</div><div class="kpi-ft err" id="k-unmatched-ft">Not in member registry</div></div>
+      <div class="kpi kpi-w"><div class="kpi-lbl">Missing Contributions</div><div class="kpi-val big" id="k-missing">0</div><div class="kpi-ft warn" id="k-missing-ft">Members not in payroll</div></div>
+      <div class="kpi kpi-r"><div class="kpi-lbl">Duplicate Records</div><div class="kpi-val big" id="k-dups">0</div><div class="kpi-ft err">Same ID appears twice</div></div>
+      <div class="kpi kpi-w"><div class="kpi-lbl">Wrong Amounts</div><div class="kpi-val big" id="k-wrong">0</div><div class="kpi-ft warn">Amount differs from expected</div></div>
+      <div class="kpi kpi-n"><div class="kpi-lbl">Total Rows in File</div><div class="kpi-val big" id="k-rows">0</div><div class="kpi-ft">Excluding header row</div></div>
+      <div class="kpi kpi-ok"><div class="kpi-lbl">Clean Records</div><div class="kpi-val big" id="k-clean">0</div><div class="kpi-ft ok2">Ready to post</div></div>
+    </div>
+    <div style="padding:16px 24px;border-top:1px solid var(--q1)"><div class="btn-grp">
+      <button class="btn btn-primary" onclick="goToExceptions()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Review Exceptions</button>
+      <button class="btn btn-out" onclick="switchStep('upload')">Upload Different File</button>
+    </div></div>
+  </div>
+
+  <!-- All records table -->
+  <div class="panel">
+    <div class="tab-bar">
+      <button class="tab-btn on" onclick="showRecTab('all',this)">All Records<span class="tab-count" id="tc-all">0</span></button>
+      <button class="tab-btn" onclick="showRecTab('ok',this)">Matched &amp; Clean<span class="tab-count ok2" id="tc-ok">0</span></button>
+      <button class="tab-btn" onclick="showRecTab('wrong',this)">Wrong Amount<span class="tab-count warn" id="tc-wrong">0</span></button>
+      <button class="tab-btn" onclick="showRecTab('dup',this)">Duplicates<span class="tab-count red" id="tc-dup">0</span></button>
+      <button class="tab-btn" onclick="showRecTab('nomatch',this)">Unmatched<span class="tab-count red" id="tc-nomatch">0</span></button>
+      <button class="tab-btn" onclick="showRecTab('missing',this)">Missing<span class="tab-count warn" id="tc-missing">0</span></button>
+    </div>
+    <div class="srch-bar">
+      <input class="srch-inp" type="text" placeholder="Search by ID, name or department..." oninput="filterTable(this.value)">
+    </div>
+    <div class="tbl-wrap">
+      <table id="rec-table">
+        <thead><tr><th>#</th><th>Employee ID</th><th>Name</th><th>Department</th><th>Grade</th><th>Imported (&#8358;)</th><th>Expected (&#8358;)</th><th>Difference</th><th>Status</th></tr></thead>
+        <tbody id="rec-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STEP 4: EXCEPTIONS ═══ -->
+<div id="view-exceptions" style="display:none">
+  <div class="panel">
+    <div class="ph"><div class="ph-l"><div class="ph-title">Review Exceptions</div><div class="ph-sub">Review and resolve each exception before verification. All corrections are logged for the audit trail.</div></div><div class="ph-r"><span class="badge b-w" id="ex-remaining-badge">0 unresolved</span></div></div>
+    <div class="info-banner">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <p>All corrections made here are recorded in the audit trail with your name, timestamp, and reason. You may only correct amounts within permitted thresholds. Structural corrections (member registration, grade changes) must be done separately.</p>
+    </div>
+    <div id="exceptions-list"></div>
+    <div style="padding:16px 24px;border-top:1px solid var(--q1)"><div class="btn-grp">
+      <button class="btn btn-gold" id="btn-to-verify" onclick="goToVerify()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Proceed to Verification</button>
+      <button class="btn btn-out" onclick="switchStep('reconcile')">Back to Summary</button>
+    </div></div>
+  </div>
+</div>
+
+<!-- ═══ STEP 5: VERIFY ═══ -->
+<div id="view-verify" style="display:none">
+  <div class="panel">
+    <div class="verify-wrap">
+      <div class="verify-header">
+        <div class="ver-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="ver-title">Authorise &amp; Submit for Verification</div>
+        <div class="ver-sub">Review the final summary before submitting. Member accounts will <strong>not</strong> be updated until this import is independently verified and approved by an authorised officer.</div>
+      </div>
+      <div class="ver-grid">
+        <div class="ver-stat"><div class="vs-val" id="vk-records">0</div><div class="vs-lbl">Records to Post</div></div>
+        <div class="ver-stat"><div class="vs-val" id="vk-amount">&#8358;0</div><div class="vs-lbl">Total Amount</div></div>
+        <div class="ver-stat"><div class="vs-val" id="vk-exceptions">0</div><div class="vs-lbl">Exceptions Resolved</div></div>
+        <div class="ver-stat"><div class="vs-val" id="vk-excluded">0</div><div class="vs-lbl">Records Excluded</div></div>
+      </div>
+      <div class="ver-form">
+        <div><div class="vf-label">Verification Notes</div><textarea class="vf-input" id="ver-notes" rows="3" placeholder="Optional: add notes for the approving officer..."></textarea></div>
+        <div><div class="vf-label">Finance Officer PIN / Password</div><input type="password" class="vf-input" id="ver-pin" placeholder="Enter your access PIN to authenticate"></div>
+        <div class="ver-chk"><input type="checkbox" id="ver-chk1"><label class="ver-chk-txt" for="ver-chk1">I confirm that I have reviewed all exceptions, applied authorised corrections, and this payroll import is accurate to the best of my knowledge. I understand that member accounts will be updated only after independent verification.</label></div>
+      </div>
+    </div>
+    <div style="padding:0 24px 24px"><div class="btn-grp">
+      <button class="btn btn-primary" id="btn-submit-verify" onclick="submitVerification()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Submit for Verification</button>
+      <button class="btn btn-out" onclick="switchStep('exceptions')">Back to Exceptions</button>
+    </div></div>
+  </div>
+</div>
+
+<!-- ═══ STEP 6: POSTED ═══ -->
+<div id="view-post" style="display:none">
+  <div class="panel">
+    <div class="succ-wrap">
+      <div class="succ-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="succ-title">Import Submitted for Verification</div>
+      <div class="succ-sub">The payroll import has been submitted and is awaiting independent verification. Member contribution accounts will be updated only after the approving officer verifies and posts the import.<br><br><strong id="import-ref-display" style="font-family:var(--fm);color:var(--n7)"></strong></div>
+      <div class="succ-stats">
+        <div class="ss-item"><div class="ss-val" id="p-records">0</div><div class="ss-lbl">Records</div></div>
+        <div class="ss-item"><div class="ss-val" id="p-amount">&#8358;0</div><div class="ss-lbl">Amount</div></div>
+        <div class="ss-item"><div class="ss-val" id="p-exc">0</div><div class="ss-lbl">Exceptions</div></div>
+      </div>
+      <div class="btn-grp" style="justify-content:center"><button class="btn btn-primary" onclick="startFresh()">Import Another File</button><button class="btn btn-out" onclick="exportReport()">Download Report</button></div>
+    </div>
+  </div>
+  <!-- Audit trail -->
+  <div class="panel">
+    <div class="ph"><div class="ph-l"><div class="ph-title">Audit Trail</div><div class="ph-sub">Complete record of all actions taken during this import session</div></div></div>
+    <div class="audit-wrap" id="audit-list"></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+// ── Data ──────────────────────────────────────────────────────
+const MEMBERS = [{"id":"MF-0001","name":"Akin Adebayo","dept":"Treasury","grade":"GL-14","expected":25000,"status":"active"},{"id":"MF-0002","name":"Fatima Al-Hassan","dept":"Administration","grade":"GL-12","expected":22500,"status":"active"},{"id":"MF-0003","name":"Chiamaka Osei","dept":"Accounts","grade":"GL-10","expected":18000,"status":"active"},{"id":"MF-0004","name":"Babatunde Fadahunsi","dept":"Budget","grade":"GL-13","expected":25000,"status":"active"},{"id":"MF-0005","name":"Ngozi Eze-Williams","dept":"Accounts","grade":"GL-09","expected":15000,"status":"active"},{"id":"MF-0006","name":"Chukwuemeka Obi","dept":"Treasury","grade":"GL-11","expected":20000,"status":"active"},{"id":"MF-0007","name":"Ifeoma Uchenna","dept":"Procurement","grade":"GL-10","expected":18000,"status":"active"},{"id":"MF-0008","name":"Sunday Olawale","dept":"ICT","grade":"GL-09","expected":15000,"status":"active"},{"id":"MF-0009","name":"Blessing Nwosu","dept":"HR","grade":"GL-08","expected":12000,"status":"active"},{"id":"MF-0010","name":"Emmanuel Dare","dept":"Legal","grade":"GL-15","expected":30000,"status":"active"},{"id":"MF-0011","name":"Grace Obiora","dept":"Accounts","grade":"GL-10","expected":18000,"status":"active"},{"id":"MF-0012","name":"Samson Afolabi","dept":"Treasury","grade":"GL-12","expected":22500,"status":"active"},{"id":"MF-0013","name":"Adaeze Okonkwo","dept":"Accounts","grade":"GL-08","expected":12000,"status":"active"},{"id":"MF-0014","name":"Ibrahim Musa","dept":"Administration","grade":"GL-14","expected":25000,"status":"active"},{"id":"MF-0015","name":"Funke Adedayo","dept":"Budget","grade":"GL-11","expected":20000,"status":"active"},{"id":"MF-0016","name":"Tunde Bakare","dept":"Procurement","grade":"GL-09","expected":15000,"status":"active"},{"id":"MF-0017","name":"Chidinma Uche","dept":"Treasury","grade":"GL-10","expected":18000,"status":"active"},{"id":"MF-0018","name":"Moses Ogundele","dept":"ICT","grade":"GL-09","expected":15000,"status":"active"},{"id":"MF-0019","name":"Yetunde Adegbite","dept":"HR","grade":"GL-08","expected":12000,"status":"active"},{"id":"MF-0020","name":"Obinna Chukwu","dept":"Accounts","grade":"GL-10","expected":18000,"status":"active"},{"id":"MF-0021","name":"Kola Adeyemi","dept":"Legal","grade":"GL-13","expected":25000,"status":"active"},{"id":"MF-0022","name":"Amaka Nwachukwu","dept":"Budget","grade":"GL-12","expected":22500,"status":"active"},{"id":"MF-0023","name":"Segun Balogun","dept":"Procurement","grade":"GL-11","expected":20000,"status":"active"},{"id":"MF-0024","name":"Nkechi Okafor","dept":"Accounts","grade":"GL-09","expected":15000,"status":"active"},{"id":"MF-0025","name":"Damilola Ojo","dept":"Treasury","grade":"GL-10","expected":18000,"status":"active"},{"id":"MF-0026","name":"Uche Nweze","dept":"ICT","grade":"GL-08","expected":12000,"status":"active"},{"id":"MF-0027","name":"Taiwo Adeniyi","dept":"HR","grade":"GL-12","expected":22500,"status":"active"},{"id":"MF-0028","name":"Zainab Aliyu","dept":"Administration","grade":"GL-09","expected":15000,"status":"active"},{"id":"MF-0029","name":"Emeka Anozie","dept":"Budget","grade":"GL-10","expected":18000,"status":"active"},{"id":"MF-0030","name":"Hauwa Garba","dept":"Legal","grade":"GL-11","expected":20000,"status":"inactive"}];
+const SAMPLE_CSV = `Employee ID,Name,Department,Grade Level,Contribution,Month
+MF-0001,Akin Adebayo,Treasury,GL-14,25000,2026-08
+MF-0002,Fatima Al-Hassan,Administration,GL-12,22500,2026-08
+MF-0003,Chiamaka Osei,Accounts,GL-10,18000,2026-08
+MF-0004,Babatunde Fadahunsi,Budget,GL-13,25000,2026-08
+MF-0005,Ngozi Eze-Williams,Accounts,GL-09,9000,2026-08
+MF-0006,Chukwuemeka Obi,Treasury,GL-11,20000,2026-08
+MF-0007,Ifeoma Uchenna,Procurement,GL-10,18000,2026-08
+MF-0008,Sunday Olawale,ICT,GL-09,15000,2026-08
+MF-0009,Blessing Nwosu,HR,GL-08,12000,2026-08
+MF-0009,Blessing Nwosu,HR,GL-08,12000,2026-08
+MF-0010,Emmanuel Dare,Legal,GL-15,30000,2026-08
+MF-0011,Grace Obiora,Accounts,GL-10,18000,2026-08
+MF-0012,Samson Afolabi,Treasury,GL-12,22500,2026-08
+MF-0014,Ibrahim Musa,Administration,GL-14,25000,2026-08
+MF-0015,Funke Adedayo,Budget,GL-11,20000,2026-08
+MF-0016,Tunde Bakare,Procurement,GL-09,15000,2026-08
+MF-0017,Chidinma Uche,Treasury,GL-10,18000,2026-08
+MF-0018,Moses Ogundele,ICT,GL-09,15000,2026-08
+MF-0019,Yetunde Adegbite,HR,GL-08,12000,2026-08
+MF-0020,Obinna Chukwu,Accounts,GL-10,18000,2026-08
+MF-0021,Kola Adeyemi,Legal,GL-13,25000,2026-08
+MF-0022,Amaka Nwachukwu,Budget,GL-12,22500,2026-08
+MF-0023,Segun Balogun,Procurement,GL-11,20000,2026-08
+MF-0024,Nkechi Okafor,Accounts,GL-09,15000,2026-08
+MF-0025,Damilola Ojo,Treasury,GL-10,18000,2026-08
+MF-0026,Uche Nweze,ICT,GL-08,12000,2026-08
+MF-0027,Taiwo Adeniyi,HR,GL-12,22500,2026-08
+MF-0028,Zainab Aliyu,Administration,GL-09,15000,2026-08
+MF-0029,Emeka Anozie,Budget,GL-10,18000,2026-08
+MF-0472,Olumide Rasheed,Procurement,GL-10,18000,2026-08
+MF-0388,Juliet Eze,Accounts,GL-09,15000,2026-08`;
+const memberMap = {};
+MEMBERS.forEach(m => memberMap[m.id] = m);
+
+// ── State ─────────────────────────────────────────────────────
+let state = {
+  file: null, fileName: '', fileSize: 0,
+  rawRows: [], parsedRows: [],
+  results: [], exceptions: [], corrections: {},
+  period: '', importRef: '',
+  auditLog: [],
+  stats: {}
+};
+
+// ── Helpers ───────────────────────────────────────────────────
+const fmt = n => '₦' + Number(n).toLocaleString('en-NG');
+const el = id => document.getElementById(id);
+const show = id => { el(id).style.display = 'block'; };
+const hide = id => { el(id).style.display = 'none'; };
+
+function addAudit(icon, text, detail='') {
+  const now = new Date();
+  state.auditLog.push({ icon, text, detail, time: now.toLocaleTimeString('en-NG', {hour:'2-digit',minute:'2-digit',second:'2-digit'}) + ' ' + now.toLocaleDateString('en-NG') });
+}
+
+// ── Step switching ────────────────────────────────────────────
+function switchStep(name) {
+  ['upload','validate','reconcile','exceptions','verify','post'].forEach(v => hide('view-' + v));
+  show('view-' + name);
+  const map = {upload:1,validate:2,reconcile:[3,4],exceptions:5,verify:6,post:7};
+  document.querySelectorAll('.step').forEach((s,i) => {
+    const n = i/2|0; // every other is connector
+  });
+  // Update workflow step indicators
+  const steps = ['upload','validate','match','reconcile','exceptions','verify','post'];
+  const cur = {upload:0,validate:1,reconcile:3,exceptions:4,verify:5,post:6}[name];
+  steps.forEach((s,i) => {
+    const el2 = el('s-' + s);
+    if (!el2) return;
+    el2.className = 'step ' + (i < cur ? 'done' : i === cur ? 'active' : 'pending');
+  });
+  if (name === 'reconcile') {
+    el('s-validate').className = 'step done';
+    el('s-match').className = 'step done';
+    el('c1').classList.add('done'); el('c2').classList.add('done'); el('c3').classList.add('done');
+  }
+}
+
+// ── File handling ─────────────────────────────────────────────
+function onDrag(e) { e.preventDefault(); el('drop-zone').classList.add('drag'); }
+function offDrag(e) { el('drop-zone').classList.remove('drag'); }
+function onDrop(e) { e.preventDefault(); offDrag(e); const f = e.dataTransfer.files[0]; if(f) handleFile(f); }
+
+function handleFile(file) {
+  if (!file) return;
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (!['csv','xlsx','xls'].includes(ext)) { alert('Unsupported file format. Please use CSV or Excel.'); return; }
+  state.file = file; state.fileName = file.name; state.fileSize = file.size;
+  el('fname').textContent = file.name;
+  el('fmeta').textContent = (file.size/1024).toFixed(1) + ' KB · ' + ext.toUpperCase() + ' file';
+  show('file-info-box');
+  el('btn-process').disabled = false;
+  addAudit('n', 'File selected: <strong>' + file.name + '</strong>', (file.size/1024).toFixed(1) + ' KB');
+}
+
+function clearFile() { state.file = null; hide('file-info-box'); el('btn-process').disabled = true; el('file-input').value = ''; }
+
+function loadSample() {
+  state.rawRows = parseCsvText(SAMPLE_CSV);
+  state.fileName = 'payroll_aug_2026_sample.csv';
+  el('fname').textContent = state.fileName;
+  el('fmeta').textContent = 'Sample data · ' + state.rawRows.length + ' rows (includes demo exceptions)';
+  show('file-info-box');
+  el('btn-process').disabled = false;
+  addAudit('n', 'Sample payroll file loaded for demonstration');
+}
+
+function parseCsvText(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim());
+  return lines.slice(1).map(line => {
+    const vals = line.split(',').map(v => v.trim());
+    const row = {};
+    headers.forEach((h, i) => row[h] = vals[i] || '');
+    return row;
+  });
+}
+
+// ── Processing ────────────────────────────────────────────────
+async function startProcessing() {
+  const month = el('sel-month').value;
+  if (!month) { alert('Please select a contribution month.'); return; }
+  state.period = month;
+  el('period-label').textContent = 'August 2026';
+
+  if (state.rawRows.length === 0 && state.file) {
+    // Parse real file
+    const reader = new FileReader();
+    reader.onload = e => {
+      const ext = state.fileName.split('.').pop().toLowerCase();
+      if (ext === 'csv') {
+        state.rawRows = parseCsvText(e.target.result);
+      } else {
+        const wb = XLSX.read(e.target.result, {type:'binary'});
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const data = XLSX.utils.sheet_to_json(ws, {raw:true});
+        state.rawRows = data.map(row => {
+          const r = {};
+          Object.keys(row).forEach(k => r[k.trim()] = String(row[k]).trim());
+          return r;
+        });
+      }
+      runValidation();
+    };
+    if (state.file.name.endsWith('.csv')) reader.readAsText(state.file);
+    else reader.readAsBinaryString(state.file);
+  } else {
+    runValidation();
+  }
+}
+
+async function runValidation() {
+  switchStep('validate');
+  addAudit('n', 'Validation started for <strong>' + state.fileName + '</strong>', 'Period: ' + state.period);
+
+  const setChk = (id, status, detail) => {
+    const item = el('chk-' + id);
+    item.className = 'check-item ' + (status === 'ok' ? 'done2' : status === 'err' ? 'err' : status === 'run' ? 'run' : '');
+    const ico = item.querySelector('.chk-ico');
+    if (status === 'ok') ico.className='chk-ico ok2', ico.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    else if (status === 'err') ico.className='chk-ico err', ico.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    else if (status === 'run') ico.className='chk-ico run', ico.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>';
+    if (detail) { const d = item.querySelector('.chk-detail'); d.textContent = detail; d.className = 'chk-detail ' + status; }
+  };
+
+  const setProgress = (pct) => { el('prog-fill').style.width = pct+'%'; el('prog-pct').textContent = pct+'%'; };
+
+  const delay = ms => new Promise(r => setTimeout(r, ms));
+
+  // 1. Format
+  setChk('format','run',''); await delay(400);
+  setProgress(14); setChk('format','ok','Valid CSV/Excel format'); await delay(300);
+
+  // 2. Columns
+  setChk('cols','run',''); await delay(350);
+  setProgress(28);
+  const rows = state.rawRows;
+  const firstRow = rows[0] || {};
+  const keys = Object.keys(firstRow).map(k => k.trim().toLowerCase());
+  const hasId = keys.some(k => k.includes('employee') || k === 'id');
+  const hasAmt = keys.some(k => k.includes('contribution') || k.includes('amount'));
+  if (!hasId || !hasAmt) { setChk('cols','err','Missing required columns'); return; }
+  setChk('cols','ok','All required columns found'); await delay(300);
+
+  // 3. Rows
+  setChk('rows','run',''); await delay(400);
+  setProgress(42);
+  setChk('rows','ok', rows.length + ' data rows read'); await delay(300);
+
+  // 4. Duplicates
+  setChk('dups','run',''); await delay(450);
+  setProgress(56);
+  const idCounts = {};
+  rows.forEach(r => {
+    const id = (r['Employee ID'] || r['employee id'] || r['ID'] || '').trim();
+    idCounts[id] = (idCounts[id] || 0) + 1;
+  });
+  const dupCount = Object.values(idCounts).filter(c => c > 1).length;
+  setChk('dups', dupCount > 0 ? 'err' : 'ok', dupCount > 0 ? dupCount + ' duplicate IDs found' : 'No duplicates'); await delay(300);
+
+  // 5. Match
+  setChk('match','run',''); await delay(500);
+  setProgress(70);
+  const uniqueIds = new Set(rows.map(r => (r['Employee ID']||'').trim()));
+  const matched = [...uniqueIds].filter(id => memberMap[id]).length;
+  const unmatched = [...uniqueIds].filter(id => !memberMap[id] && id).length;
+  setChk('match', unmatched > 0 ? 'err' : 'ok', matched + ' matched, ' + unmatched + ' not found'); await delay(300);
+
+  // 6. Amounts
+  setChk('amts','run',''); await delay(400);
+  setProgress(84);
+  let wrongAmt = 0;
+  rows.forEach(r => {
+    const id = (r['Employee ID']||'').trim();
+    const amt = parseFloat(r['Contribution']||'0');
+    const member = memberMap[id];
+    if (member && Math.abs(amt - member.expected) > 0.01 && idCounts[id] === 1) wrongAmt++;
+  });
+  setChk('amts', wrongAmt > 0 ? 'err' : 'ok', wrongAmt > 0 ? wrongAmt + ' amount discrepancies' : 'All amounts correct'); await delay(300);
+
+  // 7. Missing
+  setChk('miss','run',''); await delay(400);
+  setProgress(100);
+  const idsInFile = new Set(rows.map(r => (r['Employee ID']||'').trim()));
+  const missingMembers = MEMBERS.filter(m => m.status === 'active' && !idsInFile.has(m.id));
+  setChk('miss', missingMembers.length > 0 ? 'err' : 'ok', missingMembers.length + ' members not in payroll'); await delay(500);
+
+  el('val-title').textContent = 'Validation Complete';
+  el('val-sub').textContent = 'Processing results...';
+  await delay(700);
+
+  // Build results
+  buildResults(rows, idCounts, missingMembers);
+  addAudit('ok', 'Validation complete. <strong>' + rows.length + ' records</strong> processed.', matched + ' matched, ' + unmatched + ' unmatched, ' + dupCount + ' duplicates, ' + missingMembers.length + ' missing');
+  switchStep('reconcile');
+  renderReconcile();
+}
+
+function buildResults(rows, idCounts, missingMembers) {
+  state.results = [];
+  state.exceptions = [];
+  const seen = {};
+
+  rows.forEach((r, i) => {
+    const id = (r['Employee ID']||'').trim();
+    const name = (r['Name']||'').trim();
+    const dept = (r['Department']||'').trim();
+    const grade = (r['Grade Level']||'').trim();
+    const amt = parseFloat(r['Contribution']||'0');
+    const member = memberMap[id];
+    const isDup = idCounts[id] > 1;
+    let status = 'ok', issue = null;
+
+    if (!id) return;
+
+    if (!member) { status = 'no_match'; issue = { type:'no_match', severity:'error', label:'Employee ID not in registry' }; }
+    else if (isDup) {
+      if (seen[id]) { status = 'duplicate'; issue = { type:'dup', severity:'error', label:'Duplicate record' }; }
+      else { status = 'dup_first'; }
+    } else if (Math.abs(amt - member.expected) > 0.01) {
+      status = 'wrong_amt';
+      issue = { type:'wrong_amt', severity:'warning', label: amt < member.expected ? 'Underpayment' : 'Overpayment', expected: member.expected, imported: amt };
+    }
+
+    seen[id] = true;
+    const row = { idx: i+1, id, name: member ? member.name : name, dept: member ? member.dept : dept, grade: member ? member.grade : grade, imported: amt, expected: member ? member.expected : null, status, issue, member };
+    state.results.push(row);
+    if (issue) state.exceptions.push(row);
+  });
+
+  // Missing members
+  missingMembers.forEach(m => {
+    const row = { idx: null, id: m.id, name: m.name, dept: m.dept, grade: m.grade, imported: 0, expected: m.expected, status: 'missing', issue: { type:'missing', severity:'warning', label:'Not in payroll file' }, member: m };
+    state.results.push(row);
+    state.exceptions.push(row);
+  });
+
+  // Compute stats
+  const active = MEMBERS.filter(m => m.status === 'active');
+  const totalExpected = active.reduce((s,m) => s + m.expected, 0);
+  const uniqueImported = state.results.filter(r => r.status !== 'duplicate' && r.status !== 'missing' && r.status !== 'no_match');
+  const totalImported = uniqueImported.reduce((s,r) => s + r.imported, 0);
+  const matched = state.results.filter(r => ['ok','wrong_amt','dup_first'].includes(r.status)).length;
+  const unmatched = state.results.filter(r => r.status === 'no_match').length;
+  const missing = state.results.filter(r => r.status === 'missing').length;
+  const dups = state.results.filter(r => r.status === 'duplicate').length;
+  const wrong = state.results.filter(r => r.status === 'wrong_amt').length;
+  const clean = state.results.filter(r => r.status === 'ok').length;
+
+  state.stats = { totalExpected, totalImported, matched, unmatched, missing, dups, wrong, clean, rows: rows.length };
+}
+
+function renderReconcile() {
+  const s = state.stats;
+  const diff = s.totalImported - s.totalExpected;
+  el('k-expected').innerHTML = fmt(s.totalExpected);
+  el('k-imported').innerHTML = fmt(s.totalImported);
+  el('k-exp2').innerHTML = fmt(s.totalExpected);
+  el('k-diff').innerHTML = fmt(Math.abs(diff));
+  el('k-matched').textContent = s.matched;
+  el('k-matched-ft').textContent = s.matched + ' of ' + MEMBERS.filter(m=>m.status==='active').length + ' registered';
+  el('k-unmatched').textContent = s.unmatched;
+  el('k-missing').textContent = s.missing;
+  el('k-missing-ft').textContent = s.missing + ' active members absent';
+  el('k-dups').textContent = s.dups;
+  el('k-wrong').textContent = s.wrong;
+  el('k-rows').textContent = s.rows;
+  el('k-clean').textContent = s.clean;
+  el('rec-period-label').textContent = 'Import period: August 2026 · File: ' + state.fileName;
+
+  const ds = el('diff-side');
+  if (Math.abs(diff) < 1) { el('k-diff-ft').textContent = 'Balanced'; ds.classList.add('diff-ok'); ds.classList.remove('diff-bad'); }
+  else { el('k-diff-ft').textContent = (diff > 0 ? 'Surplus' : 'Shortfall'); ds.classList.add('diff-bad'); }
+
+  const totalEx = state.exceptions.length;
+  if (totalEx > 0) { el('warn-banner').style.display='flex'; el('warn-text').textContent = totalEx + ' exception(s) require your attention before this import can be verified. Review and resolve them below.'; }
+
+  // Tab counts
+  el('tc-all').textContent = state.results.length;
+  el('tc-ok').textContent = s.clean;
+  el('tc-wrong').textContent = s.wrong;
+  el('tc-dup').textContent = s.dups;
+  el('tc-nomatch').textContent = s.unmatched;
+  el('tc-missing').textContent = s.missing;
+
+  renderTable('all');
+}
+
+// ── TABLE ─────────────────────────────────────────────────────
+let currentFilter = 'all', searchTerm = '';
+function showRecTab(f, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on'); currentFilter = f; renderTable(f);
+}
+function filterTable(q) { searchTerm = q.toLowerCase(); renderTable(currentFilter); }
+
+const statusBadge = s => ({
+  ok: '<span class="badge b-ok"><span class="bd"></span>Matched</span>',
+  dup_first: '<span class="badge b-g"><span class="bd"></span>Dup (1st)</span>',
+  duplicate: '<span class="badge b-r"><span class="bd"></span>Duplicate</span>',
+  no_match: '<span class="badge b-r"><span class="bd"></span>No Match</span>',
+  wrong_amt: '<span class="badge b-w"><span class="bd"></span>Wrong Amount</span>',
+  missing: '<span class="badge b-w"><span class="bd"></span>Missing</span>',
+}[s] || '<span class="badge b-z">Unknown</span>');
+
+const rowClass = s => ({ ok:'tr-ok', wrong_amt:'tr-w', duplicate:'tr-r', no_match:'tr-r', missing:'tr-w', dup_first:'tr-dup' }[s] || '');
+
+function renderTable(f) {
+  const filterMap = { all: () => true, ok: r => r.status==='ok', wrong: r => r.status==='wrong_amt', dup: r => r.status==='duplicate'||r.status==='dup_first', nomatch: r => r.status==='no_match', missing: r => r.status==='missing' };
+  let rows = state.results.filter(filterMap[f] || (() => true));
+  if (searchTerm) rows = rows.filter(r => (r.id+r.name+r.dept).toLowerCase().includes(searchTerm));
+
+  const fmtDiff = (imp, exp) => {
+    if (exp === null) return '<span class="ts">N/A</span>';
+    const d = imp - exp;
+    if (Math.abs(d) < 1) return '<span class="diff-zero">—</span>';
+    return d > 0 ? '<span class="diff-pos">+'+fmt(d)+'</span>' : '<span class="diff-neg">'+fmt(d)+'</span>';
+  };
+
+  el('rec-tbody').innerHTML = rows.length ? rows.map(r => `
+    <tr class="${rowClass(r.status)}">
+      <td class="ts">${r.idx || '—'}</td>
+      <td class="tm tp">${r.id}</td>
+      <td class="tp">${r.name}</td>
+      <td class="ts">${r.dept}</td>
+      <td class="tm ts">${r.grade}</td>
+      <td class="tm" style="font-weight:700">${r.imported > 0 ? fmt(r.imported) : '<span class="ts">0</span>'}</td>
+      <td class="tm ts">${r.expected !== null ? fmt(r.expected) : 'N/A'}</td>
+      <td>${fmtDiff(r.imported, r.expected)}</td>
+      <td>${statusBadge(r.status)}</td>
+    </tr>`).join('') : '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--q4)">No records match this filter</td></tr>';
+}
+
+// ── EXCEPTIONS ────────────────────────────────────────────────
+function goToExceptions() { switchStep('exceptions'); renderExceptions(); }
+
+const exIcon = type => ({
+  no_match: '<div class="ex-type-ico r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>',
+  wrong_amt: '<div class="ex-type-ico w"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>',
+  dup: '<div class="ex-type-ico g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>',
+  missing: '<div class="ex-type-ico n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/></svg></div>',
+}[type] || '');
+
+function renderExceptions() {
+  const list = el('exceptions-list');
+  if (!state.exceptions.length) {
+    list.innerHTML = '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><p>No exceptions found</p><span>All records matched and amounts verified.</span></div>';
+    return;
+  }
+
+  list.innerHTML = state.exceptions.map((r, idx) => {
+    const type = r.issue.type;
+    const resolved = state.corrections[r.id + '_' + idx] ? 'resolved' : '';
+    const corrField = type === 'wrong_amt' ? `
+      <div class="ex-corr">
+        <div class="ec-title">Authorised Correction</div>
+        <div class="ec-row">
+          <span style="font-size:13px;color:var(--n6)">Corrected Amount:</span>
+          <input class="ec-inp" type="number" id="corr-${idx}" value="${r.member ? r.member.expected : r.imported}" placeholder="Enter correct amount">
+          <button class="btn btn-sm btn-primary" onclick="applyCorrection(${idx}, '${r.id}')">Apply</button>
+        </div>
+        <textarea class="ec-note" id="note-${idx}" placeholder="Reason for correction (required)..."></textarea>
+      </div>` : type === 'no_match' ? `
+      <div class="ex-corr">
+        <div class="ec-title">Action Required</div>
+        <div style="font-size:13.5px;color:var(--n7);margin-bottom:8px">This employee ID is not registered. Options:</div>
+        <div class="btn-grp">
+          <button class="btn btn-xs btn-danger" onclick="excludeRecord(${idx}, '${r.id}')">Exclude this record</button>
+          <button class="btn btn-xs btn-out" onclick="markForRegistration(${idx})">Flag for registration</button>
+        </div>
+      </div>` : type === 'dup' ? `
+      <div class="ex-corr">
+        <div class="ec-title">Action Required</div>
+        <div style="font-size:13.5px;color:var(--n7);margin-bottom:8px">Duplicate record will be excluded automatically. The first occurrence will be retained.</div>
+        <button class="btn btn-xs btn-primary" onclick="confirmExclude(${idx}, '${r.id}')">Confirm Exclusion</button>
+      </div>` : type === 'missing' ? `
+      <div class="ex-corr">
+        <div class="ec-title">Action Required</div>
+        <div style="font-size:13.5px;color:var(--n7);margin-bottom:8px">This member was not in the payroll file. Options:</div>
+        <div class="btn-grp">
+          <button class="btn btn-xs btn-danger" onclick="markMissing(${idx}, '${r.id}')">Mark as not paid this month</button>
+          <button class="btn btn-xs btn-out">Record manual payment</button>
+        </div>
+      </div>` : '';
+
+    return `<div class="ex-item ${resolved}" id="ex-item-${idx}">
+      <div class="ex-head" onclick="toggleEx(${idx})">
+        <div class="ex-head-l">
+          ${exIcon(type)}
+          <div>
+            <div class="ex-member">${r.name} &mdash; ${r.id}</div>
+            <div class="ex-ref">${r.dept} &middot; ${r.grade} &middot; ${r.issue.label}</div>
+          </div>
+        </div>
+        <div class="ex-head-r">
+          ${resolved ? '<span class="badge b-ok"><span class="bd"></span>Resolved</span>' : '<span class="badge b-' + (type==='wrong_amt'||type==='missing'?'w':'r') + '"><span class="bd"></span>' + r.issue.label + '</span>'}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="ex-body" id="ex-body-${idx}">
+        <div class="ex-grid">
+          <div class="ex-field"><div class="ef-lbl">Employee ID</div><div class="ef-val mono">${r.id}</div></div>
+          <div class="ex-field"><div class="ef-lbl">Department</div><div class="ef-val">${r.dept}</div></div>
+          <div class="ex-field"><div class="ef-lbl">Grade Level</div><div class="ef-val mono">${r.grade}</div></div>
+          ${r.imported > 0 ? '<div class="ex-field"><div class="ef-lbl">Imported Amount</div><div class="ef-val mono ' + (type==='wrong_amt' ? 'err' : '') + '">' + fmt(r.imported) + '</div></div>' : '<div class="ex-field"><div class="ef-lbl">Imported Amount</div><div class="ef-val" style="color:var(--q4)">None (missing)</div></div>'}
+          ${r.expected ? '<div class="ex-field"><div class="ef-lbl">Expected Amount</div><div class="ef-val mono ok2">' + fmt(r.expected) + '</div></div>' : ''}
+          ${type==='wrong_amt' ? '<div class="ex-field"><div class="ef-lbl">Difference</div><div class="ef-val mono err">' + fmt(r.imported - r.expected) + '</div></div>' : ''}
+        </div>
+        ${corrField}
+      </div>
+    </div>`;
+  }).join('');
+
+  updateExceptionCount();
+}
+
+function toggleEx(idx) {
+  const b = el('ex-body-' + idx);
+  b.classList.toggle('open');
+}
+
+function applyCorrection(idx, id) {
+  const inp = el('corr-' + idx);
+  const note = el('note-' + idx);
+  if (!note.value.trim()) { note.style.borderColor = 'var(--r5)'; note.placeholder = 'Reason is required!'; return; }
+  const corrected = parseFloat(inp.value);
+  if (isNaN(corrected) || corrected <= 0) { alert('Please enter a valid amount.'); return; }
+  state.corrections[id + '_' + idx] = { amount: corrected, note: note.value, time: new Date().toISOString() };
+  el('ex-item-' + idx).classList.add('resolved');
+  addAudit('ok', 'Correction applied for <strong>' + id + '</strong>: ' + fmt(corrected), 'Reason: ' + note.value);
+  updateExceptionCount();
+}
+
+function excludeRecord(idx, id) {
+  state.corrections[id + '_' + idx] = { action: 'exclude', time: new Date().toISOString() };
+  el('ex-item-' + idx).classList.add('resolved');
+  addAudit('w', 'Record excluded: <strong>' + id + '</strong>', 'Not a registered member');
+  updateExceptionCount();
+}
+
+function markForRegistration(idx) { alert('The member has been flagged for registration. Please register them separately and re-import next month.'); }
+function confirmExclude(idx, id) { excludeRecord(idx, id); }
+function markMissing(idx, id) {
+  state.corrections[id + '_' + idx] = { action: 'mark_missing', time: new Date().toISOString() };
+  el('ex-item-' + idx).classList.add('resolved');
+  addAudit('w', 'Marked as not paid: <strong>' + id + '</strong>', 'Contribution not received this month');
+  updateExceptionCount();
+}
+
+function updateExceptionCount() {
+  const total = state.exceptions.length;
+  const resolved = Object.keys(state.corrections).length;
+  const remaining = total - resolved;
+  el('ex-remaining-badge').textContent = remaining + ' unresolved';
+  el('ex-remaining-badge').className = 'badge ' + (remaining === 0 ? 'b-ok' : 'b-w');
+}
+
+// ── VERIFY ────────────────────────────────────────────────────
+function goToVerify() {
+  switchStep('verify');
+  const clean = state.results.filter(r => r.status === 'ok').length;
+  const corrected = Object.values(state.corrections).filter(c => c.amount).length;
+  const excluded = Object.values(state.corrections).filter(c => c.action === 'exclude').length;
+  const totalAmt = state.results
+    .filter(r => r.status === 'ok')
+    .reduce((s,r) => s + r.imported, 0)
+    + corrected * 0; // simplified
+
+  el('vk-records').textContent = clean + corrected;
+  el('vk-amount').textContent = fmt(state.stats.totalImported);
+  el('vk-exceptions').textContent = Object.keys(state.corrections).length;
+  el('vk-excluded').textContent = excluded;
+  addAudit('n', 'Moved to verification stage. <strong>' + Object.keys(state.corrections).length + ' exceptions</strong> addressed.');
+}
+
+function submitVerification() {
+  const pin = el('ver-pin').value;
+  const chk = el('ver-chk1').checked;
+  if (!pin) { alert('Please enter your authentication PIN.'); return; }
+  if (!chk) { alert('Please confirm the declaration before submitting.'); return; }
+  state.importRef = 'PAY-2026-08-' + String(Math.floor(Math.random()*900)+100).padStart(3,'0');
+  addAudit('ok', 'Import submitted for verification. Reference: <strong>' + state.importRef + '</strong>', 'Authenticated by Finance Officer');
+  switchStep('post');
+  renderPost();
+}
+
+function renderPost() {
+  el('import-ref-display').textContent = 'Import Reference: ' + state.importRef;
+  el('p-records').textContent = state.results.filter(r => r.status === 'ok').length;
+  el('p-amount').textContent = fmt(state.stats.totalImported);
+  el('p-exc').textContent = state.exceptions.length;
+
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'}) + ', ' + now.toLocaleDateString('en-NG',{day:'numeric',month:'long',year:'numeric'});
+
+  // Add final audit entries
+  addAudit('ok', 'Import reference <strong>' + state.importRef + '</strong> generated');
+  addAudit('n', 'Awaiting independent verification by Approving Officer');
+  addAudit('n', 'Member accounts will be updated only after verification is completed');
+
+  const iconMap = {ok:'ok',n:'n',w:'w'};
+  const iconSvg = {
+    ok:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+    n:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+    w:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+  };
+
+  el('audit-list').innerHTML = state.auditLog.map(a => `
+    <div class="audit-row">
+      <div class="aud-ico ${a.icon}">${iconSvg[a.icon]||iconSvg.n}</div>
+      <div class="aud-b"><div class="aud-t">${a.text}</div>${a.detail ? '<div class="aud-m">' + a.detail + '</div>' : ''}<div class="aud-m">${a.time} &middot; Finance Officer</div></div>
+    </div>`).join('');
+}
+
+// ── UTILITIES ─────────────────────────────────────────────────
+function downloadTemplate() {
+  const csv = 'Employee ID,Name,Department,Grade Level,Contribution,Month\nMF-0001,Sample Name,Department,GL-10,15000,2026-08';
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'payroll_template.csv'; a.click();
+}
+
+function exportReport() {
+  const lines = ['CoopFund Payroll Import Report','Period: August 2026','File: ' + state.fileName,'','Employee ID,Name,Department,Grade,Imported,Expected,Difference,Status'];
+  state.results.forEach(r => lines.push([r.id,r.name,r.dept,r.grade,r.imported,r.expected||'',r.expected?(r.imported-r.expected):'',r.status].join(',')));
+  const blob = new Blob([lines.join('\n')], {type:'text/csv'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'reconciliation_report_aug2026.csv'; a.click();
+}
+
+function startFresh() { location.reload(); }
+</script>
+</body>
+</html>

@@ -40,6 +40,7 @@ interface AppState {
 
   // Actions — Wallet
   fetchWallet: () => Promise<void>;
+  topUpWallet: (amount: number) => Promise<boolean>;
   toggleBalanceVisibility: () => void;
 
   // Actions — UI
@@ -125,6 +126,21 @@ export const useStore = create<AppState>((set, get) => ({
     if (res.success && res.data) {
       set({ wallet: res.data as WalletData });
     }
+  },
+
+  // ─── Top-Up Wallet (Demo / Test & Instant Funding) ─────────────────────────
+  topUpWallet: async (amount) => {
+    const { user } = get();
+    if (!user) return false;
+    set({ isLoading: true, error: null });
+    const res = await walletApi.creditWallet(user.id, amount);
+    if (res.success) {
+      await get().fetchWallet();
+      set({ isLoading: false });
+      return true;
+    }
+    set({ isLoading: false, error: res.error ?? res.message ?? 'Top-up failed.' });
+    return false;
   },
 
   toggleBalanceVisibility: () =>

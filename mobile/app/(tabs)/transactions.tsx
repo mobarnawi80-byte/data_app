@@ -62,30 +62,37 @@ export default function TransactionsScreen() {
 
   useEffect(() => { fetchTransactions(); }, []);
 
-  const renderItem = ({ item }: { item: Transaction }) => (
-    <View style={styles.txCard}>
-      <View style={styles.txLeft}>
-        <StatusIcon status={item.status} />
-        <View style={styles.txInfo}>
-          <Text style={styles.txDesc} numberOfLines={1}>{item.description}</Text>
-          <Text style={styles.txDate}>
-            {new Date(item.createdAt).toLocaleDateString('en-NG', {
-              day: '2-digit', month: 'short', year: 'numeric',
-              hour: '2-digit', minute: '2-digit',
-            })}
+  const renderItem = ({ item }: { item: any }) => {
+    const isCredit = item.type === 'CREDIT';
+    const txDate = item.created_at || item.createdAt || new Date().toISOString();
+    const status = item.status || 'COMPLETED';
+    const amountVal = Number(item.amount || 0);
+
+    return (
+      <View style={styles.txCard}>
+        <View style={styles.txLeft}>
+          <StatusIcon status={status} />
+          <View style={styles.txInfo}>
+            <Text style={styles.txDesc} numberOfLines={1}>{item.description || 'VTU Transaction'}</Text>
+            <Text style={styles.txDate}>
+              {new Date(txDate).toLocaleDateString('en-NG', {
+                day: '2-digit', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit',
+              })}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.txRight}>
+          <Text style={[styles.txAmount, { color: isCredit ? '#22C55E' : '#EF4444' }]}>
+            {isCredit ? '+' : '-'}₦{amountVal.toLocaleString('en-NG', { minimumFractionDigits: 2 })}
+          </Text>
+          <Text style={[styles.txStatus, { color: STATUS_COLORS[status as keyof typeof STATUS_COLORS] || '#22C55E' }]}>
+            {status}
           </Text>
         </View>
       </View>
-      <View style={styles.txRight}>
-        <Text style={[styles.txAmount, { color: item.type === 'CREDIT' ? '#22C55E' : '#EF4444' }]}>
-          {item.type === 'CREDIT' ? '+' : '-'}₦{item.amount.toLocaleString('en-NG')}
-        </Text>
-        <Text style={[styles.txStatus, { color: STATUS_COLORS[item.status] }]}>
-          {item.status}
-        </Text>
-      </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>

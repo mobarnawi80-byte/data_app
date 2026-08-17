@@ -64,10 +64,11 @@ export interface DataPlan {
 }
 
 export interface VtuPurchasePayload {
+  user_id: string;
   network: 'MTN' | 'AIRTEL' | 'GLO' | 'NINE_MOBILE';
   phone_number: string;
   plan_id?: string;
-  amount?: number;
+  amount: number;
   service_type: 'DATA' | 'AIRTIME';
   category?: 'SME' | 'CG' | 'DIRECT';
   transaction_pin: string;
@@ -145,6 +146,17 @@ export const walletApi = {
       {},
       token
     ),
+
+  creditWallet: (userId: string, amount: number, reference?: string, description?: string) =>
+    request<WalletBalance>('/api/wallets/credit', {
+      method: 'POST',
+      body: JSON.stringify({
+        user_id: userId,
+        amount,
+        reference: reference || `TOPUP-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`,
+        description: description || 'Instant Wallet Top-Up',
+      }),
+    }),
 };
 
 // ─── VTU API ───────────────────────────────────────────────────────────────────

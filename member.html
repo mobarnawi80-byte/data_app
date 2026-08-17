@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>CoopFund Member Portal</title>
+<meta name="description" content="Ministry Cooperative Society - Secure Member Portal">
+<meta name="theme-color" content="#1e3a5f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --n9:#071526;--n8:#0f2240;--n7:#1e3a5f;--n6:#264d7a;--n5:#3465a0;--n4:#5480b8;--n3:#7da0cc;--n1:#d6e4f3;--n0:#eef4fa;
+  --g5:#c9a227;--g1:#f5ecd0;--g0:#faf5e8;
+  --ok7:#14532d;--ok6:#166534;--ok5:#16a34a;--ok1:#dcfce7;--ok0:#f0fdf4;
+  --w7:#92400e;--w6:#b45309;--w5:#d97706;--w1:#fef3c7;--w0:#fffbeb;
+  --r7:#991b1b;--r6:#b91c1c;--r5:#dc2626;--r1:#fee2e2;--r0:#fff5f5;
+  --q9:#111827;--q8:#1f2937;--q7:#374151;--q6:#4b5563;--q5:#6b7280;--q4:#9ca3af;--q3:#d1d5db;--q2:#e5e7eb;--q1:#f3f4f6;--q0:#f9fafb;
+  --ff:'Inter',-apple-system,sans-serif;--nav-h:68px;--hdr-h:60px;
+}
+html{font-size:16px;height:100%}
+body{font-family:var(--ff);background:#f2f5f9;color:var(--q8);min-height:100vh;padding-bottom:calc(var(--nav-h) + 8px);-webkit-font-smoothing:antialiased}
+
+/* HEADER */
+.hdr{background:var(--n7);color:#fff;padding:0 16px;height:var(--hdr-h);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+.hdr-logo{font-size:20px;font-weight:800;color:var(--g5);letter-spacing:-.03em}
+.hdr-r{display:flex;align-items:center;gap:8px}
+.icon-btn{background:rgba(255,255,255,.12);border:none;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,.9);position:relative;transition:background .15s}
+.icon-btn:hover{background:rgba(255,255,255,.2)}
+.icon-btn svg{width:20px;height:20px}
+.notif-dot{position:absolute;top:7px;right:7px;width:8px;height:8px;background:#ef4444;border-radius:50%;border:1.5px solid var(--n7)}
+.avt{width:38px;height:38px;background:linear-gradient(135deg,var(--n5),var(--n3));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;border:2px solid rgba(255,255,255,.25);cursor:pointer;flex-shrink:0}
+
+/* HERO */
+.hero{background:linear-gradient(150deg,var(--n7) 0%,var(--n9) 100%);color:#fff;padding:20px 16px 0}
+.hero-toprow{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.hero-id{font-size:11px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase}
+.hero-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(22,163,74,.18);border:1px solid rgba(22,163,74,.3);color:#86efac;border-radius:20px;padding:3px 10px;font-size:11.5px;font-weight:600}
+.pulse{width:6px;height:6px;background:#4ade80;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.hero-name{font-size:21px;font-weight:700;letter-spacing:-.02em;margin-bottom:2px}
+.hero-dept{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px}
+.balance-strip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:16px 16px 0 0;padding:18px;display:flex;gap:0;overflow:hidden}
+.bs-item{flex:1;text-align:center;padding:0 8px;position:relative}
+.bs-item:not(:last-child)::after{content:'';position:absolute;right:0;top:10%;bottom:10%;width:1px;background:rgba(255,255,255,.12)}
+.bs-label{font-size:10px;font-weight:600;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.bs-value{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.02em;line-height:1}
+.bs-value.gold{color:var(--g5)}
+.bs-sub{font-size:10.5px;color:rgba(255,255,255,.35);margin-top:3px}
+
+/* QUICK ACTIONS */
+.qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:#fff;border-bottom:1px solid var(--q1);padding:4px 0 12px}
+.qa-btn{display:flex;flex-direction:column;align-items:center;gap:7px;padding:12px 4px 4px;cursor:pointer;background:none;border:none;font-family:var(--ff);transition:all .15s}
+.qa-btn:hover .qa-ico{transform:scale(1.05)}
+.qa-ico{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center}
+.qa-ico svg{width:20px;height:20px}
+.qi-navy{background:var(--n0);color:var(--n7)}
+.qi-green{background:var(--ok0);color:var(--ok6)}
+.qi-gold{background:var(--g0);color:#7c5a0a}
+.qi-gray{background:var(--q1);color:var(--q6)}
+.qa-lbl{font-size:11px;font-weight:600;color:var(--q6);text-align:center;line-height:1.3}
+
+/* SECTION LABELS */
+.sec-head{padding:20px 16px 10px;display:flex;align-items:center;justify-content:space-between}
+.sec-title{font-size:16px;font-weight:700;color:var(--q9)}
+.sec-link{font-size:13.5px;font-weight:600;color:var(--n5);text-decoration:none;padding:4px 0}
+
+/* CARDS */
+.card{background:#fff;border-radius:16px;margin:0 16px 12px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden;border:1px solid rgba(0,0,0,.05)}
+.card-pad{padding:18px}
+.row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--q1)}
+.row:last-child{border-bottom:none}
+.rl{font-size:14px;color:var(--q5);font-weight:500}
+.rv{font-size:14px;font-weight:700;color:var(--q9)}
+.rv.big{font-size:18px}
+.rv.ok{color:var(--ok6)}.rv.warn{color:var(--w6)}.rv.red{color:var(--r6)}.rv.mono{letter-spacing:-.01em}
+
+/* LOAN HERO CARD */
+.loan-hero{background:linear-gradient(135deg,var(--n7),var(--n9));border-radius:16px;margin:0 16px 12px;padding:20px}
+.lh-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);border-radius:20px;padding:4px 10px;font-size:11.5px;font-weight:600;margin-bottom:10px}
+.lh-amount{font-size:30px;font-weight:800;color:#fff;letter-spacing:-.03em;margin-bottom:16px}
+.lh-bar-wrap{background:rgba(255,255,255,.12);border-radius:20px;height:8px;overflow:hidden;margin-bottom:7px}
+.lh-bar-fill{height:100%;background:linear-gradient(90deg,#4ade80,#22c55e);border-radius:20px}
+.lh-bar-labels{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.45)}
+.lh-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1)}
+.lhs-item{text-align:center}
+.lhs-val{font-size:17px;font-weight:700;color:#fff;line-height:1}
+.lhs-lbl{font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap}
+.bd{width:6px;height:6px;border-radius:50%}
+.b-ok{background:var(--ok1);color:var(--ok7)}.b-ok .bd{background:var(--ok5)}
+.b-w{background:var(--w1);color:var(--w7)}.b-w .bd{background:var(--w5)}
+.b-r{background:var(--r1);color:var(--r7)}.b-r .bd{background:var(--r5)}
+.b-n{background:var(--n0);color:var(--n7)}.b-n .bd{background:var(--n5)}
+.b-z{background:var(--q1);color:var(--q6)}.b-z .bd{background:var(--q4)}
+
+/* TIMELINE */
+.tl{padding:4px 0}
+.tl-item{display:flex;gap:14px;padding:14px 18px;border-bottom:1px solid var(--q1)}
+.tl-item:last-child{border-bottom:none}
+.tl-ico{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tl-ico.ok{background:var(--ok0);color:var(--ok6)}.tl-ico.w{background:var(--w0);color:var(--w6)}.tl-ico.z{background:var(--q1);color:var(--q5)}.tl-ico.n{background:var(--n0);color:var(--n6)}.tl-ico svg{width:16px;height:16px}
+.tl-body{flex:1;min-width:0}
+.tl-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+.tl-t{font-size:14px;font-weight:600;color:var(--q9)}
+.tl-a{font-size:15px;font-weight:700}
+.tl-a.cr{color:var(--ok6)}.tl-a.db{color:var(--r6)}.tl-a.neu{color:var(--q7)}
+.tl-s{font-size:12px;color:var(--q4)}
+
+/* WITHDRAWAL ITEMS */
+.wd-item{padding:18px;border-bottom:1px solid var(--q1)}
+.wd-item:last-child{border-bottom:none}
+.wd-ref{font-size:12px;color:var(--q4);margin-bottom:4px}
+.wd-amount{font-size:22px;font-weight:800;color:var(--q9);letter-spacing:-.02em;margin-bottom:10px}
+.wd-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.wd-reason{font-size:12.5px;color:var(--q5)}
+
+/* BENEFICIARY */
+.ben-top{display:flex;align-items:center;gap:14px;padding:18px;border-bottom:1px solid var(--q1)}
+.ben-avt{width:56px;height:56px;background:linear-gradient(135deg,var(--ok5),var(--ok6));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:#fff;flex-shrink:0}
+.ben-name{font-size:17px;font-weight:700;color:var(--q9)}
+.ben-rel{font-size:13px;color:var(--q5);margin-top:2px}
+
+/* PROFILE */
+.pf-head{text-align:center;padding:28px 20px 20px}
+.pf-avt{width:80px;height:80px;background:linear-gradient(135deg,var(--n7),var(--n5));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;color:#fff;margin:0 auto 12px;border:3px solid rgba(30,58,95,.08)}
+.pf-name{font-size:20px;font-weight:700;color:var(--q9);letter-spacing:-.01em}
+.pf-id{font-size:13px;color:var(--q4);margin-top:3px}
+
+/* BUTTONS */
+.btn-p{display:block;width:100%;background:var(--n7);color:#fff;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:600;cursor:pointer;font-family:var(--ff);text-align:center;transition:all .15s}
+.btn-p:hover{background:var(--n6)}.btn-p:active{transform:scale(.99)}
+.btn-o{display:block;width:100%;background:#fff;color:var(--n7);border:1.5px solid var(--n7);border-radius:14px;padding:15px;font-size:16px;font-weight:600;cursor:pointer;font-family:var(--ff);text-align:center;transition:all .15s}
+.btn-o:hover{background:var(--n0)}
+.btn-g{display:block;width:100%;background:var(--ok6);color:#fff;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:600;cursor:pointer;font-family:var(--ff);text-align:center;transition:all .15s}
+.btn-g:hover{background:var(--ok7)}
+.btn-stack{display:flex;flex-direction:column;gap:10px;padding:16px}
+.btn-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 16px}
+.btn-sm-p{background:var(--n7);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ff);white-space:nowrap}
+.btn-sm-o{background:#fff;color:var(--n7);border:1.5px solid var(--n7);border-radius:10px;padding:9px 18px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ff);white-space:nowrap}
+.btn-sm-d{background:var(--r0);color:var(--r6);border:1px solid var(--r1);border-radius:10px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ff)}
+
+/* BOTTOM NAV */
+.bot-nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav-h);background:#fff;border-top:1px solid var(--q2);display:flex;z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.07)}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;padding:6px 4px 4px;font-family:var(--ff);transition:all .15s}
+.bn svg{width:22px;height:22px;color:var(--q4);transition:color .2s}
+.bn span{font-size:10px;font-weight:500;color:var(--q4);transition:color .2s}
+.bn-pip{width:20px;height:3px;background:var(--n7);border-radius:20px;opacity:0;margin-top:2px;transition:opacity .2s}
+.bn.on svg{color:var(--n7)}
+.bn.on span{color:var(--n7);font-weight:700}
+.bn.on .bn-pip{opacity:1}
+
+/* TABS */
+.tab{display:none;animation:fadeUp .2s ease}
+.tab.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* SHEET (MODAL) */
+.sov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.52);z-index:200;backdrop-filter:blur(2px);align-items:flex-end;justify-content:center}
+.sov.open{display:flex}
+.sheet{background:#fff;border-radius:24px 24px 0 0;width:100%;max-height:92dvh;overflow-y:auto;animation:sheetUp .28s cubic-bezier(.32,1,.27,1)}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:none}}
+.sh-handle{width:40px;height:4px;background:var(--q3);border-radius:4px;margin:12px auto 0}
+.sh-title{font-size:19px;font-weight:700;color:var(--q9);padding:16px 20px 4px;letter-spacing:-.01em}
+.sh-sub{font-size:14px;color:var(--q5);padding:0 20px 16px;line-height:1.4}
+.sh-body{padding:0 20px 24px}
+.fg{margin-bottom:16px}
+.fl{display:block;font-size:13.5px;font-weight:600;color:var(--q6);margin-bottom:7px}
+.fi{width:100%;border:1.5px solid var(--q2);border-radius:12px;padding:14px 16px;font-size:16px;font-family:var(--ff);color:var(--q9);outline:none;transition:border-color .15s;background:#fff}
+.fi:focus{border-color:var(--n4);box-shadow:0 0 0 3px rgba(84,128,184,.15)}
+.fsel{width:100%;border:1.5px solid var(--q2);border-radius:12px;padding:14px 16px;font-size:16px;font-family:var(--ff);color:var(--q9);outline:none;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 14px center;transition:border-color .15s}
+.fsel:focus{border-color:var(--n4);box-shadow:0 0 0 3px rgba(84,128,184,.15)}
+.fta{width:100%;border:1.5px solid var(--q2);border-radius:12px;padding:14px 16px;font-size:16px;font-family:var(--ff);color:var(--q9);outline:none;resize:none;min-height:90px;transition:border-color .15s}
+.fta:focus{border-color:var(--n4);box-shadow:0 0 0 3px rgba(84,128,184,.15)}
+.calc{background:var(--n0);border:1px solid var(--n1);border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.calc-r{display:flex;justify-content:space-between;margin-bottom:6px}
+.calc-r:last-child{margin-bottom:0}
+.calc-l{font-size:13.5px;color:var(--n6)}
+.calc-v{font-size:14px;font-weight:700;color:var(--n7)}
+.info-box{background:var(--w0);border:1px solid var(--w1);border-radius:12px;padding:13px 14px;margin-bottom:16px;font-size:13.5px;color:var(--w7);display:flex;gap:8px;line-height:1.4}
+.info-box svg{width:18px;height:18px;flex-shrink:0;margin-top:1px}
+.sh-actions{padding:0 20px 20px;display:flex;flex-direction:column;gap:10px}
+.success-box{text-align:center;padding:36px 20px 20px}
+.succ-ico{width:76px;height:76px;background:var(--ok0);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+.succ-ico svg{width:38px;height:38px;color:var(--ok6)}
+.succ-t{font-size:21px;font-weight:700;color:var(--q9);margin-bottom:8px}
+.succ-s{font-size:14px;color:var(--q5);line-height:1.5;max-width:280px;margin:0 auto 24px}
+
+/* NOTIF PANEL */
+.np{position:fixed;top:var(--hdr-h);right:0;width:300px;max-width:100vw;background:#fff;border-radius:0 0 0 16px;box-shadow:-6px 6px 24px rgba(0,0,0,.14);z-index:150;display:none;max-height:70vh;overflow-y:auto}
+.np.open{display:block;animation:slideIn .2s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:none}}
+.np-hd{padding:14px 16px;border-bottom:1px solid var(--q1);display:flex;align-items:center;justify-content:space-between}
+.np-ti{font-size:14px;font-weight:700;color:var(--q9)}
+.np-close{background:none;border:none;cursor:pointer;color:var(--q4);display:flex;align-items:center}
+.np-close svg{width:18px;height:18px}
+.np-item{padding:12px 16px;border-bottom:1px solid var(--q1);display:flex;gap:10px}
+.np-item:last-child{border-bottom:none}.np-item.unr{background:var(--n0)}
+.np-ico{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.np-ico.ok{background:var(--ok0);color:var(--ok6)}.np-ico.w{background:var(--w0);color:var(--w6)}.np-ico.n{background:var(--n0);color:var(--n6)}.np-ico svg{width:14px;height:14px}
+.np-txt{font-size:13px;color:var(--q7);line-height:1.4;margin-bottom:2px}
+.np-time{font-size:11px;color:var(--q4)}
+
+/* HISTORY MODAL */
+.hist-month{padding:12px 18px 4px;font-size:12px;font-weight:700;color:var(--q4);text-transform:uppercase;letter-spacing:.08em}
+
+/* MISC */
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--q3);border-radius:4px}
+.empty{text-align:center;padding:40px 20px}
+.empty svg{width:48px;height:48px;color:var(--q3);margin:0 auto 12px;display:block}
+.empty-t{font-size:16px;font-weight:600;color:var(--q6);margin-bottom:5px}
+.empty-s{font-size:13.5px;color:var(--q4)}
+.divider{height:1px;background:var(--q1);margin:4px 0}
+@media(min-width:480px){
+  .sov{align-items:center}
+  .sheet{border-radius:20px;max-width:440px;max-height:88dvh}
+  .bot-nav,.hdr{max-width:480px;left:50%;transform:translateX(-50%);width:480px;right:auto}
+  body{max-width:480px;margin:0 auto}
+  .np{right:calc(50% - 240px);border-radius:0 0 16px 16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ─────────────────────────────── -->
+<header class="hdr">
+  <span class="hdr-logo">CoopFund</span>
+  <div class="hdr-r">
+    <button class="icon-btn" id="notif-btn" aria-label="Notifications">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="notif-dot" id="ndot"></span>
+    </button>
+    <div class="avt">AO</div>
+  </div>
+</header>
+
+<!-- ── NOTIFICATIONS PANEL ────────────────── -->
+<div class="np" id="np">
+  <div class="np-hd"><span class="np-ti">Notifications</span><button class="np-close" id="np-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+  <div class="np-item unr"><div class="np-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="np-txt">Your <strong>August 2026</strong> contribution of &#8358;18,000 has been verified.</div><div class="np-time">13 Aug 2026</div></div></div>
+  <div class="np-item unr"><div class="np-ico n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div><div><div class="np-txt">Loan repayment of <strong>&#8358;10,000</strong> deducted via payroll for August.</div><div class="np-time">1 Aug 2026</div></div></div>
+  <div class="np-item"><div class="np-ico w"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div><div class="np-txt">Please update your emergency contact information in your profile.</div><div class="np-time">28 Jul 2026</div></div></div>
+</div>
+
+<!-- ══════════════════════════════════════════ HOME TAB -->
+<div class="tab on" id="tab-home">
+
+  <!-- HERO BANNER -->
+  <div class="hero">
+    <div class="hero-toprow">
+      <span class="hero-id">CF-2024-00043 &middot; GL-08</span>
+      <span class="hero-badge"><span class="pulse"></span>Active</span>
+    </div>
+    <div class="hero-name">Adaeze Okonkwo</div>
+    <div class="hero-dept">Accounts Department &middot; Joined March 2024</div>
+    <div class="balance-strip">
+      <div class="bs-item">
+        <div class="bs-label">Savings Balance</div>
+        <div class="bs-value">&#8358;216K</div>
+        <div class="bs-sub">18 months</div>
+      </div>
+      <div class="bs-item">
+        <div class="bs-label">Monthly</div>
+        <div class="bs-value gold">&#8358;18K</div>
+        <div class="bs-sub">contribution</div>
+      </div>
+      <div class="bs-item">
+        <div class="bs-label">Loan Balance</div>
+        <div class="bs-value">&#8358;60K</div>
+        <div class="bs-sub">remaining</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="qa-grid">
+    <button class="qa-btn" onclick="openSheet('sheet-loan')">
+      <div class="qa-ico qi-navy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+      <span class="qa-lbl">Apply for Loan</span>
+    </button>
+    <button class="qa-btn" onclick="openSheet('sheet-wd')">
+      <div class="qa-ico qi-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></div>
+      <span class="qa-lbl">Request Withdrawal</span>
+    </button>
+    <button class="qa-btn" onclick="openSheet('sheet-hist')">
+      <div class="qa-ico qi-gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+      <span class="qa-lbl">Contribution History</span>
+    </button>
+    <button class="qa-btn" onclick="switchTab('profile')">
+      <div class="qa-ico qi-gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <span class="qa-lbl">My Profile</span>
+    </button>
+  </div>
+
+  <!-- MY FUND SUMMARY -->
+  <div class="sec-head"><span class="sec-title">My Fund</span><a class="sec-link" href="#" onclick="openSheet('sheet-hist');return false">View History</a></div>
+  <div class="card">
+    <div class="row"><span class="rl">Total Contributions Made</span><span class="rv big ok mono">&#8358;216,000</span></div>
+    <div class="row"><span class="rl">Current Savings Balance</span><span class="rv big mono">&#8358;216,000</span></div>
+    <div class="row"><span class="rl">Monthly Contribution</span><span class="rv mono">&#8358;18,000</span></div>
+    <div class="row"><span class="rl">August 2026 Status</span><span class="badge b-ok"><span class="bd"></span>Verified</span></div>
+    <div class="row"><span class="rl">Months Contributing</span><span class="rv">18 months</span></div>
+    <div class="row"><span class="rl">Member Since</span><span class="rv">March 2024</span></div>
+  </div>
+
+  <!-- RECENT CONTRIBUTIONS -->
+  <div class="sec-head"><span class="sec-title">Recent Contributions</span></div>
+  <div class="card">
+    <div class="tl">
+      <div class="tl-item">
+        <div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="tl-body"><div class="tl-top"><span class="tl-t">August 2026</span><span class="tl-a cr">+&#8358;18,000</span></div><div class="tl-s">Payroll deduction &middot; 1 Aug 2026 &middot; <span class="badge b-ok" style="font-size:10.5px;padding:2px 7px">Verified</span></div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="tl-body"><div class="tl-top"><span class="tl-t">July 2026</span><span class="tl-a cr">+&#8358;18,000</span></div><div class="tl-s">Payroll deduction &middot; 1 Jul 2026 &middot; <span class="badge b-ok" style="font-size:10.5px;padding:2px 7px">Verified</span></div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="tl-body"><div class="tl-top"><span class="tl-t">June 2026</span><span class="tl-a cr">+&#8358;18,000</span></div><div class="tl-s">Payroll deduction &middot; 1 Jun 2026 &middot; <span class="badge b-ok" style="font-size:10.5px;padding:2px 7px">Verified</span></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════ LOANS TAB -->
+<div class="tab" id="tab-loans">
+
+  <div class="sec-head" style="padding-top:24px"><span class="sec-title">My Loan</span><button class="btn-sm-p" onclick="openSheet('sheet-loan')">Apply for Loan</button></div>
+
+  <div class="loan-hero">
+    <div class="lh-chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> Salary Advance Loan</div>
+    <div class="lh-amount">&#8358;60,000 remaining</div>
+    <div class="lh-bar-wrap"><div class="lh-bar-fill" style="width:50%"></div></div>
+    <div class="lh-bar-labels"><span>&#8358;0</span><span>50% repaid</span><span>&#8358;120,000</span></div>
+    <div class="lh-stats">
+      <div class="lhs-item"><div class="lhs-val">&#8358;60K</div><div class="lhs-lbl">Amount Repaid</div></div>
+      <div class="lhs-item"><div class="lhs-val">6</div><div class="lhs-lbl">Installments Left</div></div>
+      <div class="lhs-item"><div class="lhs-val">Feb 2027</div><div class="lhs-lbl">End Date</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row"><span class="rl">Original Loan Amount</span><span class="rv mono">&#8358;120,000</span></div>
+    <div class="row"><span class="rl">Amount Already Repaid</span><span class="rv ok mono">&#8358;60,000</span></div>
+    <div class="row"><span class="rl">Remaining Balance</span><span class="rv warn mono">&#8358;60,000</span></div>
+    <div class="row"><span class="rl">Monthly Repayment</span><span class="rv mono">&#8358;10,000</span></div>
+    <div class="row"><span class="rl">Installments Remaining</span><span class="rv">6 of 12</span></div>
+    <div class="row"><span class="rl">Loan Type</span><span class="rv">Salary Advance</span></div>
+    <div class="row"><span class="rl">Disbursement Date</span><span class="rv">1 Mar 2026</span></div>
+    <div class="row"><span class="rl">Expected Completion</span><span class="rv">Feb 2027</span></div>
+    <div class="row"><span class="rl">Repayment Method</span><span class="rv">Payroll Deduction</span></div>
+    <div class="row"><span class="rl">Loan Status</span><span class="badge b-ok"><span class="bd"></span>Active</span></div>
+  </div>
+
+  <!-- Repayment history -->
+  <div class="sec-head"><span class="sec-title">Repayment History</span></div>
+  <div class="card">
+    <div class="tl">
+      <div class="tl-item">
+        <div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="tl-body"><div class="tl-top"><span class="tl-t">August 2026 &middot; Instalment 6</span><span class="tl-a cr">&#8358;10,000</span></div><div class="tl-s">Payroll deduction &middot; 1 Aug 2026</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="tl-body"><div class="tl-top"><span class="tl-t">July 2026 &middot; Instalment 5</span><span class="tl-a cr">&#8358;10,000</span></div><div class="tl-s">Payroll deduction &middot; 1 Jul 2026</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="tl-body"><div class="tl-top"><span class="tl-t">June 2026 &middot; Instalment 4</span><span class="tl-a cr">&#8358;10,000</span></div><div class="tl-s">Payroll deduction &middot; 1 Jun 2026</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="tl-body"><div class="tl-top"><span class="tl-t">May 2026 &middot; Instalment 3</span><span class="tl-a cr">&#8358;10,000</span></div><div class="tl-s">Payroll deduction &middot; 1 May 2026</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="tl-body"><div class="tl-top"><span class="tl-t">April 2026 &middot; Instalment 2</span><span class="tl-a cr">&#8358;10,000</span></div><div class="tl-s">Payroll deduction &middot; 1 Apr 2026</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="tl-body"><div class="tl-top"><span class="tl-t">March 2026 &middot; Instalment 1</span><span class="tl-a cr">&#8358;10,000</span></div><div class="tl-s">Payroll deduction &middot; 1 Mar 2026</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════ WITHDRAWALS TAB -->
+<div class="tab" id="tab-wd">
+
+  <div class="sec-head" style="padding-top:24px"><span class="sec-title">Withdrawals</span><button class="btn-sm-p" onclick="openSheet('sheet-wd')">New Request</button></div>
+
+  <div class="card">
+    <div class="wd-item">
+      <div class="wd-ref">WD-2025-03-0041 &middot; Requested 15 Mar 2025</div>
+      <div class="wd-amount">&#8358;50,000</div>
+      <div class="wd-meta">
+        <span class="badge b-ok"><span class="bd"></span>Approved</span>
+        <span class="badge b-ok"><span class="bd"></span>Paid</span>
+        <span class="wd-reason">Medical emergency</span>
+      </div>
+      <div class="tl-s" style="margin-top:8px;font-size:12px;color:var(--q4)">Approved: 17 Mar 2025 &middot; Paid: 19 Mar 2025</div>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="sec-title" style="font-size:14px;color:var(--q5)">About Withdrawals</span></div>
+  <div class="card">
+    <div class="card-pad">
+      <p style="font-size:14px;color:var(--q6);line-height:1.7;margin-bottom:12px">You may withdraw part of your savings balance subject to fund rules and committee approval. Withdrawals are processed within <strong>5 working days</strong> of approval.</p>
+      <p style="font-size:13px;color:var(--q4);line-height:1.6">Your savings balance must remain above your outstanding loan balance after any withdrawal. Minimum withdrawal: <strong>&#8358;10,000</strong>.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════ PROFILE TAB -->
+<div class="tab" id="tab-profile">
+
+  <div class="pf-head">
+    <div class="pf-avt">AO</div>
+    <div class="pf-name">Adaeze Okonkwo</div>
+    <div class="pf-id">CF-2024-00043 &middot; Active Member</div>
+  </div>
+
+  <div class="sec-head" style="padding-top:4px"><span class="sec-title">Personal Details</span><button class="btn-sm-o" onclick="openSheet('sheet-profile')">Edit</button></div>
+  <div class="card">
+    <div class="row"><span class="rl">Full Name</span><span class="rv">Adaeze Okonkwo</span></div>
+    <div class="row"><span class="rl">Employee ID</span><span class="rv mono">MF-0043</span></div>
+    <div class="row"><span class="rl">Department</span><span class="rv">Accounts</span></div>
+    <div class="row"><span class="rl">Grade Level</span><span class="rv">GL-08</span></div>
+    <div class="row"><span class="rl">Phone Number</span><span class="rv mono">0803 *** 4567</span></div>
+    <div class="row"><span class="rl">Email Address</span><span class="rv" style="font-size:13px">a.okonkwo@***.gov.ng</span></div>
+    <div class="row"><span class="rl">Date Joined Fund</span><span class="rv">15 March 2024</span></div>
+  </div>
+
+  <!-- BENEFICIARY -->
+  <div class="sec-head"><span class="sec-title">Registered Beneficiary</span><button class="btn-sm-o" onclick="openSheet('sheet-ben')">Update</button></div>
+  <div class="card">
+    <div class="ben-top">
+      <div class="ben-avt">EO</div>
+      <div>
+        <div class="ben-name">Emmanuel Okonkwo</div>
+        <div class="ben-rel">Spouse &middot; 100% Allocation</div>
+      </div>
+    </div>
+    <div class="row"><span class="rl">Relationship</span><span class="rv">Spouse</span></div>
+    <div class="row"><span class="rl">Phone Number</span><span class="rv mono">0802 *** 1234</span></div>
+    <div class="row"><span class="rl">Address</span><span class="rv" style="font-size:13px;text-align:right;max-width:60%">14 Orile Close, Abuja</span></div>
+    <div class="row"><span class="rl">Allocation</span><span class="rv">100%</span></div>
+  </div>
+
+  <!-- BANK DETAILS -->
+  <div class="sec-head"><span class="sec-title">Bank Details</span><button class="btn-sm-o" onclick="openSheet('sheet-bank')">Update</button></div>
+  <div class="card">
+    <div class="row"><span class="rl">Bank Name</span><span class="rv">Zenith Bank Plc</span></div>
+    <div class="row"><span class="rl">Account Name</span><span class="rv">Adaeze Okonkwo</span></div>
+    <div class="row"><span class="rl">Account Number</span><span class="rv mono">**** **** 7823</span></div>
+  </div>
+
+  <!-- SECURITY -->
+  <div class="sec-head"><span class="sec-title">Security</span></div>
+  <div class="card">
+    <div class="row"><span class="rl">Password</span><button class="btn-sm-o" onclick="openSheet('sheet-pwd')" style="font-size:13px;padding:7px 14px">Change</button></div>
+    <div class="row"><span class="rl">Last Login</span><span class="rv" style="font-size:13px">Today, 11:24 AM</span></div>
+  </div>
+
+  <div class="btn-stack" style="padding-top:8px">
+    <button class="btn-sm-d" style="width:100%;padding:13px" onclick="confirmLogout()">Sign Out</button>
+  </div>
+
+</div>
+
+<!-- ── BOTTOM NAV ─────────────────────────── -->
+<nav class="bot-nav">
+  <button class="bn on" id="bn-home" onclick="switchTab('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Home</span>
+    <div class="bn-pip"></div>
+  </button>
+  <button class="bn" id="bn-loans" onclick="switchTab('loans')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+    <span>Loans</span>
+    <div class="bn-pip"></div>
+  </button>
+  <button class="bn" id="bn-wd" onclick="switchTab('wd')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+    <span>Withdrawals</span>
+    <div class="bn-pip"></div>
+  </button>
+  <button class="bn" id="bn-profile" onclick="switchTab('profile')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>Profile</span>
+    <div class="bn-pip"></div>
+  </button>
+</nav>
+
+<!-- ══════════════════════════════════════════ MODALS -->
+
+<!-- LOAN APPLICATION SHEET -->
+<div class="sov" id="sov-sheet-loan" onclick="ovClose(event,'sheet-loan')">
+<div class="sheet" id="sheet-loan">
+  <div class="sh-handle"></div>
+  <div id="loan-form-view">
+    <div class="sh-title">Apply for a Loan</div>
+    <div class="sh-sub">Loans are subject to committee approval. You will be notified within 3 working days.</div>
+    <div class="sh-body">
+      <div class="fg"><label class="fl">Loan Type</label>
+        <select class="fsel" id="loan-type" onchange="calcLoan()">
+          <option value="">Select loan type...</option>
+          <option value="salary">Salary Advance</option>
+          <option value="emergency">Emergency Loan</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Amount Requested (&#8358;)</label>
+        <input type="number" class="fi" id="loan-amount" placeholder="e.g. 100000" min="10000" max="500000" step="5000" oninput="calcLoan()">
+      </div>
+      <div class="fg"><label class="fl">Repayment Period</label>
+        <select class="fsel" id="loan-period" onchange="calcLoan()">
+          <option value="">Select period...</option>
+          <option value="6">6 months</option>
+          <option value="12">12 months</option>
+          <option value="18">18 months (Emergency only)</option>
+          <option value="24">24 months (Emergency only)</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Purpose / Reason</label>
+        <textarea class="fta" id="loan-reason" placeholder="Briefly state the purpose of this loan..." rows="3"></textarea>
+      </div>
+      <div class="calc" id="loan-calc" style="display:none">
+        <div class="calc-r"><span class="calc-l">Loan Amount</span><span class="calc-v" id="c-amount">&#8358;0</span></div>
+        <div class="calc-r"><span class="calc-l">Interest Rate</span><span class="calc-v">2% per month</span></div>
+        <div class="calc-r"><span class="calc-l">Monthly Repayment</span><span class="calc-v" id="c-monthly">&#8358;0</span></div>
+        <div class="calc-r"><span class="calc-l">Total Repayable</span><span class="calc-v" id="c-total">&#8358;0</span></div>
+      </div>
+      <div class="info-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>Your existing loan of &#8358;60,000 must be cleared before a new loan can be approved. This application will be queued.</div>
+    </div>
+    <div class="sh-actions">
+      <button class="btn-p" onclick="submitLoan()">Submit Application</button>
+      <button class="btn-o" onclick="closeSheet('sheet-loan')">Cancel</button>
+    </div>
+  </div>
+  <div class="success-box" id="loan-success-view" style="display:none">
+    <div class="succ-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="succ-t">Application Submitted</div>
+    <div class="succ-s">Your loan application has been received and is pending committee review. You will be notified within 3 working days.</div>
+    <button class="btn-p" onclick="closeSheet('sheet-loan');resetForms()">Done</button>
+  </div>
+</div>
+</div>
+
+<!-- WITHDRAWAL REQUEST SHEET -->
+<div class="sov" id="sov-sheet-wd" onclick="ovClose(event,'sheet-wd')">
+<div class="sheet" id="sheet-wd">
+  <div class="sh-handle"></div>
+  <div id="wd-form-view">
+    <div class="sh-title">Request Withdrawal</div>
+    <div class="sh-sub">Available balance: <strong>&#8358;216,000</strong>. Your loan balance of &#8358;60,000 must remain covered.</div>
+    <div class="sh-body">
+      <div class="fg"><label class="fl">Withdrawal Amount (&#8358;)</label>
+        <input type="number" class="fi" id="wd-amount" placeholder="e.g. 50000" min="10000" max="156000" step="5000" oninput="calcWd()">
+        <p style="font-size:12px;color:var(--q4);margin-top:5px">Maximum available: &#8358;156,000 (balance minus loan)</p>
+      </div>
+      <div class="fg"><label class="fl">Reason for Withdrawal</label>
+        <select class="fsel" id="wd-reason">
+          <option value="">Select reason...</option>
+          <option>Medical emergency</option>
+          <option>School fees</option>
+          <option>Housing</option>
+          <option>Personal</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Additional Notes (optional)</label>
+        <textarea class="fta" id="wd-notes" placeholder="Any additional information for the committee..." rows="3"></textarea>
+      </div>
+      <div class="calc" id="wd-calc" style="display:none">
+        <div class="calc-r"><span class="calc-l">Withdrawal Amount</span><span class="calc-v" id="wc-amount">&#8358;0</span></div>
+        <div class="calc-r"><span class="calc-l">Remaining Balance After</span><span class="calc-v" id="wc-rem">&#8358;216,000</span></div>
+      </div>
+      <div class="info-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Withdrawals require committee approval. Payment is made to your registered bank account.</div>
+    </div>
+    <div class="sh-actions">
+      <button class="btn-g" onclick="submitWd()">Submit Request</button>
+      <button class="btn-o" onclick="closeSheet('sheet-wd')">Cancel</button>
+    </div>
+  </div>
+  <div class="success-box" id="wd-success-view" style="display:none">
+    <div class="succ-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="succ-t">Request Submitted</div>
+    <div class="succ-s">Your withdrawal request has been submitted. The finance committee will review it within 3–5 working days.</div>
+    <button class="btn-g" onclick="closeSheet('sheet-wd');resetForms()">Done</button>
+  </div>
+</div>
+</div>
+
+<!-- CONTRIBUTION HISTORY SHEET -->
+<div class="sov" id="sov-sheet-hist" onclick="ovClose(event,'sheet-hist')">
+<div class="sheet" id="sheet-hist">
+  <div class="sh-handle"></div>
+  <div class="sh-title">Contribution History</div>
+  <div class="sh-sub">All 18 contributions &middot; March 2024 – August 2026</div>
+  <div class="tl" style="padding:0 0 24px">
+    <div class="hist-month">2026</div>
+    <div class="tl-item"><div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="tl-body"><div class="tl-top"><span class="tl-t">August 2026</span><span class="tl-a cr">+&#8358;18,000</span></div><div class="tl-s">Payroll &middot; 1 Aug &middot; <span class="badge b-ok" style="font-size:10px;padding:2px 6px">Verified</span></div></div></div>
+    <div class="tl-item"><div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="tl-body"><div class="tl-top"><span class="tl-t">July 2026</span><span class="tl-a cr">+&#8358;18,000</span></div><div class="tl-s">Payroll &middot; 1 Jul &middot; <span class="badge b-ok" style="font-size:10px;padding:2px 6px">Verified</span></div></div></div>
+    <div class="tl-item"><div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="tl-body"><div class="tl-top"><span class="tl-t">June 2026</span><span class="tl-a cr">+&#8358;18,000</span></div><div class="tl-s">Payroll &middot; 1 Jun &middot; <span class="badge b-ok" style="font-size:10px;padding:2px 6px">Verified</span></div></div></div>
+    <div class="tl-item"><div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="tl-body"><div class="tl-top"><span class="tl-t">May 2026</span><span class="tl-a cr">+&#8358;18,000</span></div><div class="tl-s">Payroll &middot; 1 May &middot; <span class="badge b-ok" style="font-size:10px;padding:2px 6px">Verified</span></div></div></div>
+    <div class="tl-item"><div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="tl-body"><div class="tl-top"><span class="tl-t">April 2026</span><span class="tl-a cr">+&#8358;18,000</span></div><div class="tl-s">Payroll &middot; 1 Apr &middot; <span class="badge b-ok" style="font-size:10px;padding:2px 6px">Verified</span></div></div></div>
+    <div class="tl-item"><div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="tl-body"><div class="tl-top"><span class="tl-t">March 2026</span><span class="tl-a cr">+&#8358;18,000</span></div><div class="tl-s">Payroll &middot; 1 Mar &middot; <span class="badge b-ok" style="font-size:10px;padding:2px 6px">Verified</span></div></div></div>
+    <div class="tl-item"><div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="tl-body"><div class="tl-top"><span class="tl-t">February 2026</span><span class="tl-a cr">+&#8358;18,000</span></div><div class="tl-s">Payroll &middot; 1 Feb &middot; <span class="badge b-ok" style="font-size:10px;padding:2px 6px">Verified</span></div></div></div>
+    <div class="tl-item"><div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="tl-body"><div class="tl-top"><span class="tl-t">January 2026</span><span class="tl-a cr">+&#8358;18,000</span></div><div class="tl-s">Payroll &middot; 1 Jan &middot; <span class="badge b-ok" style="font-size:10px;padding:2px 6px">Verified</span></div></div></div>
+    <div class="hist-month">2025</div>
+    <div class="tl-item"><div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="tl-body"><div class="tl-top"><span class="tl-t">Dec 2025 – Apr 2025</span><span class="tl-a cr" style="font-size:13px">8 &times; &#8358;18,000</span></div><div class="tl-s">8 contributions &middot; All verified</div></div></div>
+    <div class="hist-month">2024</div>
+    <div class="tl-item"><div class="tl-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="tl-body"><div class="tl-top"><span class="tl-t">Mar 2024 – Dec 2024</span><span class="tl-a cr" style="font-size:13px">2 &times; &#8358;18,000</span></div><div class="tl-s">2 contributions &middot; All verified</div></div></div>
+    <div style="padding:16px 18px;border-top:1px solid var(--q1);display:flex;justify-content:space-between"><span style="font-size:14px;font-weight:700;color:var(--q9)">Total</span><span style="font-size:15px;font-weight:800;color:var(--ok6)">&#8358;216,000</span></div>
+  </div>
+</div>
+</div>
+
+<!-- EDIT PROFILE SHEET -->
+<div class="sov" id="sov-sheet-profile" onclick="ovClose(event,'sheet-profile')">
+<div class="sheet" id="sheet-profile">
+  <div class="sh-handle"></div>
+  <div class="sh-title">Update Profile</div>
+  <div class="sh-sub">Only permitted fields can be edited. Contact the finance officer for other changes.</div>
+  <div class="sh-body">
+    <div class="fg"><label class="fl">Phone Number</label><input type="tel" class="fi" value="0803 *** 4567" placeholder="e.g. 08012345678"></div>
+    <div class="fg"><label class="fl">Email Address</label><input type="email" class="fi" value="a.okonkwo@ministry.gov.ng" placeholder="your email"></div>
+    <div class="fg"><label class="fl">Home Address</label><textarea class="fta" rows="2" placeholder="Your home address...">24 Maitama Crescent, Abuja</textarea></div>
+    <div class="info-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>Name, department, grade level, and employee ID can only be changed by the Finance Officer.</div>
+  </div>
+  <div class="sh-actions">
+    <button class="btn-p" onclick="closeSheet('sheet-profile')">Save Changes</button>
+    <button class="btn-o" onclick="closeSheet('sheet-profile')">Cancel</button>
+  </div>
+</div>
+</div>
+
+<!-- BENEFICIARY SHEET -->
+<div class="sov" id="sov-sheet-ben" onclick="ovClose(event,'sheet-ben')">
+<div class="sheet" id="sheet-ben">
+  <div class="sh-handle"></div>
+  <div class="sh-title">Update Beneficiary</div>
+  <div class="sh-sub">Your nominated beneficiary will receive your fund balance in the event of your death or permanent disability.</div>
+  <div class="sh-body">
+    <div class="fg"><label class="fl">Full Name</label><input type="text" class="fi" value="Emmanuel Okonkwo" placeholder="Beneficiary full name"></div>
+    <div class="fg"><label class="fl">Relationship</label>
+      <select class="fsel">
+        <option selected>Spouse</option><option>Child</option><option>Parent</option><option>Sibling</option><option>Other</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">Phone Number</label><input type="tel" class="fi" value="0802 *** 1234" placeholder="Beneficiary phone number"></div>
+    <div class="fg"><label class="fl">Address</label><textarea class="fta" rows="2">14 Orile Close, Abuja</textarea></div>
+    <div class="info-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Beneficiary changes require verification and may take up to 24 hours to reflect.</div>
+  </div>
+  <div class="sh-actions">
+    <button class="btn-p" onclick="closeSheet('sheet-ben')">Save Beneficiary</button>
+    <button class="btn-o" onclick="closeSheet('sheet-ben')">Cancel</button>
+  </div>
+</div>
+</div>
+
+<!-- CHANGE PASSWORD SHEET -->
+<div class="sov" id="sov-sheet-pwd" onclick="ovClose(event,'sheet-pwd')">
+<div class="sheet" id="sheet-pwd">
+  <div class="sh-handle"></div>
+  <div class="sh-title">Change Password</div>
+  <div class="sh-body">
+    <div class="fg"><label class="fl">Current Password</label><input type="password" class="fi" placeholder="Enter current password"></div>
+    <div class="fg"><label class="fl">New Password</label><input type="password" class="fi" id="np2" placeholder="At least 8 characters" oninput="checkPwd()"></div>
+    <div class="fg"><label class="fl">Confirm New Password</label><input type="password" class="fi" id="cp2" placeholder="Repeat new password" oninput="checkPwd()"></div>
+    <div id="pwd-match" style="font-size:13px;margin-top:-8px;margin-bottom:12px;display:none"></div>
+  </div>
+  <div class="sh-actions">
+    <button class="btn-p" onclick="closeSheet('sheet-pwd')">Update Password</button>
+    <button class="btn-o" onclick="closeSheet('sheet-pwd')">Cancel</button>
+  </div>
+</div>
+</div>
+
+<!-- BANK DETAILS SHEET -->
+<div class="sov" id="sov-sheet-bank" onclick="ovClose(event,'sheet-bank')">
+<div class="sheet" id="sheet-bank">
+  <div class="sh-handle"></div>
+  <div class="sh-title">Update Bank Details</div>
+  <div class="sh-sub">Withdrawal payments are made to this account only.</div>
+  <div class="sh-body">
+    <div class="fg"><label class="fl">Bank Name</label>
+      <select class="fsel">
+        <option>Zenith Bank Plc</option><option>First Bank of Nigeria</option><option>GTBank Plc</option><option>Access Bank Plc</option><option>UBA Plc</option><option>Polaris Bank</option><option>Sterling Bank</option><option>Other</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">Account Number</label><input type="text" class="fi" placeholder="10-digit account number" maxlength="10"></div>
+    <div class="fg"><label class="fl">Account Name</label><input type="text" class="fi" value="Adaeze Okonkwo" placeholder="As on your bank account"></div>
+    <div class="info-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Bank account changes require approval and will take 24–48 hours to activate.</div>
+  </div>
+  <div class="sh-actions">
+    <button class="btn-p" onclick="closeSheet('sheet-bank')">Save Bank Details</button>
+    <button class="btn-o" onclick="closeSheet('sheet-bank')">Cancel</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ── Tab switching
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.bn').forEach(b => b.classList.remove('on'));
+  document.getElementById('tab-' + tab).classList.add('on');
+  document.getElementById('bn-' + tab).classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Sheet open/close
+function openSheet(id) {
+  document.getElementById('sov-' + id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeSheet(id) {
+  document.getElementById('sov-' + id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+function ovClose(e, id) {
+  if (e.target === document.getElementById('sov-' + id)) closeSheet(id);
+}
+
+// ── Notifications
+const notifBtn = document.getElementById('notif-btn');
+const np = document.getElementById('np');
+notifBtn.addEventListener('click', () => {
+  np.classList.toggle('open');
+  document.getElementById('ndot').style.display = 'none';
+});
+document.getElementById('np-close').addEventListener('click', () => np.classList.remove('open'));
+document.addEventListener('click', e => {
+  if (!np.contains(e.target) && !notifBtn.contains(e.target)) np.classList.remove('open');
+});
+
+// ── Loan calc
+function fmt(n) { return '₦' + n.toLocaleString('en-NG'); }
+function calcLoan() {
+  const type = document.getElementById('loan-type').value;
+  const amount = parseFloat(document.getElementById('loan-amount').value) || 0;
+  const period = parseInt(document.getElementById('loan-period').value) || 0;
+  const box = document.getElementById('loan-calc');
+  if (!amount || !period || !type) { box.style.display='none'; return; }
+  const rate = 0.02;
+  const monthly = Math.ceil(amount * (rate * Math.pow(1+rate,period)) / (Math.pow(1+rate,period)-1));
+  const total = monthly * period;
+  document.getElementById('c-amount').textContent = fmt(amount);
+  document.getElementById('c-monthly').textContent = fmt(monthly) + '/mo';
+  document.getElementById('c-total').textContent = fmt(total);
+  box.style.display = 'block';
+}
+
+// ── Withdrawal calc
+function calcWd() {
+  const amount = parseFloat(document.getElementById('wd-amount').value) || 0;
+  const box = document.getElementById('wd-calc');
+  if (!amount) { box.style.display='none'; return; }
+  const balance = 216000;
+  const remaining = balance - amount;
+  document.getElementById('wc-amount').textContent = fmt(amount);
+  document.getElementById('wc-rem').textContent = fmt(remaining);
+  box.style.display = 'block';
+}
+
+// ── Submit loan
+function submitLoan() {
+  const type = document.getElementById('loan-type').value;
+  const amount = document.getElementById('loan-amount').value;
+  const period = document.getElementById('loan-period').value;
+  const reason = document.getElementById('loan-reason').value.trim();
+  if (!type || !amount || !period || !reason) {
+    alert('Please fill in all fields before submitting.'); return;
+  }
+  document.getElementById('loan-form-view').style.display = 'none';
+  document.getElementById('loan-success-view').style.display = 'block';
+}
+
+// ── Submit withdrawal
+function submitWd() {
+  const amount = document.getElementById('wd-amount').value;
+  const reason = document.getElementById('wd-reason').value;
+  if (!amount || !reason) { alert('Please fill in all fields.'); return; }
+  document.getElementById('wd-form-view').style.display = 'none';
+  document.getElementById('wd-success-view').style.display = 'block';
+}
+
+// ── Reset forms
+function resetForms() {
+  document.getElementById('loan-form-view').style.display='block';
+  document.getElementById('loan-success-view').style.display='none';
+  document.getElementById('wd-form-view').style.display='block';
+  document.getElementById('wd-success-view').style.display='none';
+  document.getElementById('loan-calc').style.display='none';
+  document.getElementById('wd-calc').style.display='none';
+}
+
+// ── Password match
+function checkPwd() {
+  const np2 = document.getElementById('np2').value;
+  const cp2 = document.getElementById('cp2').value;
+  const el = document.getElementById('pwd-match');
+  if (!cp2) { el.style.display='none'; return; }
+  el.style.display = 'block';
+  if (np2 === cp2) { el.textContent = '✓ Passwords match'; el.style.color = '#166534'; }
+  else { el.textContent = '✗ Passwords do not match'; el.style.color = '#b91c1c'; }
+}
+
+// ── Logout confirm
+function confirmLogout() {
+  if (confirm('Are you sure you want to sign out?')) {
+    document.body.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:Inter,sans-serif;gap:12px;background:#f2f5f9"><div style="font-size:24px;font-weight:800;color:#c9a227">CoopFund</div><p style="color:#6b7280;font-size:14px">You have been signed out.</p></div>';
+  }
+}
+</script>
+</body>
+</html>

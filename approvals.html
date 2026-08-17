@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Centralized Approvals &mdash; CoopFund Admin</title>
+<meta name="description" content="Centralized financial approval and committee review system for cooperative platform">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --n9:#071526;--n8:#0f2240;--n7:#1e3a5f;--n6:#264d7a;--n5:#3465a0;--n4:#5480b8;--n3:#7da0cc;--n1:#d6e4f3;--n0:#eef4fa;
+  --g6:#b88d13;--g5:#c9a227;--g4:#d4b245;--g1:#f5ecd0;--g0:#faf5e8;
+  --ok7:#14532d;--ok6:#166534;--ok5:#16a34a;--ok2:#bbf7d0;--ok1:#dcfce7;--ok0:#f0fdf4;
+  --w7:#92400e;--w6:#b45309;--w5:#d97706;--w2:#fde68a;--w1:#fef3c7;--w0:#fffbeb;
+  --r7:#991b1b;--r6:#b91c1c;--r5:#dc2626;--r2:#fca5a5;--r1:#fee2e2;--r0:#fff5f5;
+  --p6:#6d28d9;--p5:#7c3aed;--p1:#ede9fe;--p0:#f5f3ff;
+  --c6:#0e7490;--c1:#cffafe;--c0:#ecfeff;
+  --q9:#111827;--q8:#1f2937;--q7:#374151;--q6:#4b5563;--q5:#6b7280;--q4:#9ca3af;--q3:#d1d5db;--q2:#e5e7eb;--q15:#eff0f3;--q1:#f3f4f6;--q0:#f9fafb;
+  --ff:'Inter',-apple-system,sans-serif;--fm:'JetBrains Mono',monospace;
+  --s2:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --s3:0 4px 16px rgba(0,0,0,.09);--s4:0 12px 36px rgba(0,0,0,.15);
+}
+html{font-size:15px}
+body{font-family:var(--ff);background:#eef2f7;color:var(--q8);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* TOPBAR */
+.topbar{background:var(--n7);height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;box-shadow:0 2px 12px rgba(0,0,0,.22);position:sticky;top:0;z-index:90}
+.tb-l{display:flex;align-items:center;gap:14px}
+.tb-logo{font-size:17px;font-weight:800;color:var(--g5)}
+.tb-sep{width:1px;height:20px;background:rgba(255,255,255,.2)}
+.tb-title{font-size:14px;font-weight:600;color:rgba(255,255,255,.88)}
+.tb-bc{font-size:11.5px;color:rgba(255,255,255,.38);margin-top:1px}
+.tb-r{display:flex;align-items:center;gap:12px}
+
+/* SWITCH USER (To test Separation of Duties) */
+.user-switcher{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);padding:4px 10px;border-radius:20px}
+.us-label{font-size:11px;color:rgba(255,255,255,.6);text-transform:uppercase;font-weight:700}
+.us-sel{background:transparent;border:none;color:#fff;font-size:12.5px;font-weight:600;outline:none;cursor:pointer;font-family:var(--ff)}
+.us-sel option{color:var(--q9);background:#fff}
+
+.tb-btn{position:relative;background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;padding:6px;display:flex;border-radius:8px;transition:all .15s}
+.tb-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+.tb-btn svg{width:20px;height:20px}
+.notif-badge{position:absolute;top:3px;right:3px;width:8px;height:8px;background:#ef4444;border-radius:50%;border:2px solid var(--n7)}
+
+/* NAV TABS */
+.nav-tabs{background:#fff;border-bottom:1px solid var(--q2);padding:0 28px;display:flex;gap:0;box-shadow:var(--s2);position:sticky;top:62px;z-index:80;overflow-x:auto}
+.ntab{display:flex;align-items:center;gap:7px;padding:14px 18px;font-size:13.5px;font-weight:600;color:var(--q5);cursor:pointer;border:none;background:none;font-family:var(--ff);border-bottom:2.5px solid transparent;transition:all .15s;white-space:nowrap}
+.ntab:hover{color:var(--q7);background:var(--q0)}
+.ntab.on{color:var(--n7);border-bottom-color:var(--n7)}
+.ntab svg{width:15px;height:15px}
+.nc{background:var(--q1);color:var(--q6);border-radius:20px;font-size:11px;font-weight:700;padding:1px 7px}
+.nc.on{background:var(--n0);color:var(--n7)}
+.nc.alert{background:var(--r1);color:var(--r7)}
+.nc.warn{background:var(--w1);color:var(--w7)}
+
+/* MAIN */
+.main{max-width:1300px;margin:0 auto;padding:24px 28px}
+.view{display:none;animation:fu .2s ease}
+.view.on{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.kpi{background:#fff;border-radius:14px;padding:16px 18px;border:1px solid var(--q15);box-shadow:var(--s2);position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.kpi-n::before{background:linear-gradient(90deg,var(--n7),var(--n4))}
+.kpi-ok::before{background:linear-gradient(90deg,var(--ok6),var(--ok5))}
+.kpi-w::before{background:linear-gradient(90deg,var(--w6),var(--w5))}
+.kpi-r::before{background:linear-gradient(90deg,var(--r6),var(--r5))}
+.kpi-p::before{background:linear-gradient(90deg,var(--p6),#8b5cf6)}
+.kpi-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--q4);margin-bottom:7px}
+.kpi-val{font-size:22px;font-weight:800;color:var(--q9);letter-spacing:-.025em;line-height:1;font-family:var(--fm)}
+.kpi-val.sm{font-size:18px}
+.kpi-sub{font-size:11.5px;color:var(--q4);margin-top:5px}
+
+/* PANEL */
+.panel{background:#fff;border-radius:16px;box-shadow:var(--s2);border:1px solid var(--q15);margin-bottom:16px;overflow:hidden}
+.ph{padding:16px 22px;border-bottom:1px solid var(--q1);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.ph-title{font-size:15px;font-weight:700;color:var(--q9)}
+.ph-sub{font-size:12.5px;color:var(--q5);margin-top:2px}
+
+/* TOOLBAR */
+.tbar{display:flex;align-items:center;gap:10px;padding:12px 22px;border-bottom:1px solid var(--q1);background:var(--q0);flex-wrap:wrap}
+.tsel{border:1.5px solid var(--q2);border-radius:9px;padding:7px 12px;font-size:13px;font-family:var(--ff);color:var(--q8);outline:none;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 9px center;padding-right:28px}
+.srch{flex:1;max-width:280px}
+.srch-inp{width:100%;border:1.5px solid var(--q2);border-radius:9px;padding:7px 12px 7px 32px;font-size:13px;font-family:var(--ff);color:var(--q8);outline:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2.5'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat 10px center}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;transition:all .15s;border:none;font-family:var(--ff);white-space:nowrap}
+.btn svg{width:14px;height:14px;flex-shrink:0}
+.btn-primary{background:var(--n7);color:#fff}.btn-primary:hover{background:var(--n6)}
+.btn-green{background:var(--ok6);color:#fff}.btn-green:hover{background:var(--ok7)}
+.btn-gold{background:var(--g5);color:var(--n9)}.btn-gold:hover{background:var(--g4)}
+.btn-out{background:#fff;color:var(--q7);border:1.5px solid var(--q2)}.btn-out:hover{background:var(--q0)}
+.btn-danger{background:var(--r0);color:var(--r6);border:1.5px solid var(--r1)}.btn-danger:hover{background:var(--r1)}
+.btn-warn{background:var(--w0);color:var(--w7);border:1.5px solid var(--w1)}.btn-warn:hover{background:var(--w1)}
+.btn-sm{padding:6px 12px;font-size:12.5px}
+.btn-xs{padding:4px 10px;font-size:12px;border-radius:7px}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead{background:var(--q0)}
+thead tr{border-bottom:2px solid var(--q2)}
+th{padding:10px 14px;text-align:left;font-size:10.5px;font-weight:700;color:var(--q4);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+td{padding:12px 14px;border-bottom:1px solid var(--q1);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--q0)}
+.mono{font-family:var(--fm);font-size:12.5px}
+.bold{font-weight:700;color:var(--q9)}
+.muted{color:var(--q4);font-size:12px}
+
+/* MEMBER CELL */
+.mc{display:flex;align-items:center;gap:10px}
+.mc-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0}
+.mc-name{font-size:13.5px;font-weight:600;color:var(--q9)}
+.mc-id{font-size:11px;color:var(--q4);font-family:var(--fm)}
+.av0{background:#1e3a5f}.av1{background:#166534}.av2{background:#b45309}.av3{background:#6d28d9}.av4{background:#b91c1c}.av5{background:#0e7490}.av6{background:#9f1239}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap}
+.bd{width:5px;height:5px;border-radius:50%}
+.b-ok{background:var(--ok1);color:var(--ok7)}.b-ok .bd{background:var(--ok5)}
+.b-w{background:var(--w1);color:var(--w7)}.b-w .bd{background:var(--w5)}
+.b-r{background:var(--r1);color:var(--r7)}.b-r .bd{background:var(--r5)}
+.b-g{background:var(--g1);color:#7c5a0a}.b-g .bd{background:var(--g5)}
+.b-p{background:var(--p1);color:var(--p6)}.b-p .bd{background:var(--p5)}
+.b-n{background:var(--n0);color:var(--n7)}.b-n .bd{background:var(--n5)}
+.b-c{background:var(--c0);color:var(--c6)}.b-c .bd{background:#06b6d4}
+.b-z{background:var(--q1);color:var(--q6)}.b-z .bd{background:var(--q4)}
+
+/* TYPE CHIPS */
+.type-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:6px;font-size:11.5px;font-weight:600}
+.tc-loan{background:var(--n0);color:var(--n7)}
+.tc-withdrawal{background:var(--r0);color:var(--r6)}
+.tc-adjustment{background:var(--w0);color:var(--w7)}
+.tc-special{background:var(--p0);color:var(--p6)}
+
+/* CARDS */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px;padding:20px}
+.app-card{border:1px solid var(--q2);border-radius:14px;overflow:hidden;background:#fff;transition:all .2s}
+.app-card:hover{box-shadow:var(--s3);border-color:var(--q3)}
+.ac-head{padding:14px 18px;border-bottom:1px solid var(--q1);display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.ac-ref{font-size:11px;font-family:var(--fm);color:var(--q4);margin-bottom:3px}
+.ac-name{font-size:15px;font-weight:700;color:var(--q9)}
+.ac-body{padding:14px 18px}
+.ac-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.ac-row:last-child{margin-bottom:0}
+.acr-l{font-size:13px;color:var(--q5)}
+.acr-v{font-size:13.5px;font-weight:700;color:var(--q9);font-family:var(--fm)}
+.ac-support{font-size:12.5px;color:var(--q5);background:var(--q0);border-radius:8px;padding:10px;margin-top:10px;line-height:1.5;font-style:italic}
+.ac-foot{padding:12px 18px;border-top:1px solid var(--q1);display:flex;gap:8px;flex-wrap:wrap}
+
+/* SEPARATION OF DUTIES WARNING BOX */
+.sod-block{background:var(--r0);border:1.5px solid var(--r2);border-radius:10px;padding:12px 14px;font-size:12.5px;color:var(--r7);margin-top:10px;display:flex;align-items:center;gap:8px}
+.sod-block svg{width:16px;height:16px;flex-shrink:0}
+
+/* THRESHOLD MATRIX */
+.thresh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;padding:20px}
+.thresh-card{border:1px solid var(--q2);border-radius:12px;padding:16px;background:#fff}
+.tc-badge{font-size:11px;font-weight:700;color:var(--n7);background:var(--n0);padding:3px 8px;border-radius:20px;display:inline-block;margin-bottom:8px}
+.tc-amount{font-size:17px;font-weight:800;color:var(--q9);font-family:var(--fm);margin-bottom:6px}
+.tc-desc{font-size:13px;color:var(--q6);line-height:1.5;margin-bottom:10px}
+.tc-notify{font-size:11.5px;color:var(--q4);background:var(--q0);padding:6px 10px;border-radius:6px}
+
+/* DRAWER */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;backdrop-filter:blur(2px)}
+.overlay.open{display:block}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(600px,100vw);background:#fff;box-shadow:var(--s4);z-index:210;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .28s cubic-bezier(.32,1,.27,1)}
+.drawer.open{transform:none}
+.dr-head{padding:20px 24px;border-bottom:1px solid var(--q1);display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;gap:12px}
+.dr-title{font-size:17px;font-weight:700;color:var(--q9)}
+.dr-sub{font-size:13px;color:var(--q5);margin-top:3px}
+.dr-close{background:none;border:none;cursor:pointer;color:var(--q4);display:flex;padding:4px}
+.dr-close svg{width:20px;height:20px}
+.dr-body{flex:1;overflow-y:auto;padding:22px 24px}
+.dr-foot{padding:16px 24px;border-top:1px solid var(--q1);flex-shrink:0;display:flex;gap:10px;flex-wrap:wrap}
+
+/* AUDIT TIMELINE */
+.timeline{margin-top:16px;border-left:2px solid var(--q2);padding-left:14px;margin-left:8px}
+.tl-item{position:relative;margin-bottom:16px}
+.tl-item:last-child{margin-bottom:0}
+.tl-dot{position:absolute;left:-21px;top:2px;width:12px;height:12px;border-radius:50%;background:var(--n5);border:2px solid #fff}
+.tl-head{display:flex;justify-content:space-between;font-size:12px;color:var(--q4);margin-bottom:2px}
+.tl-action{font-size:13.5px;font-weight:700;color:var(--q9)}
+.tl-comment{font-size:13px;color:var(--q6);margin-top:4px;font-style:italic}
+
+/* NOTIFICATION PANEL */
+.notif-panel{position:fixed;top:66px;right:28px;width:340px;background:#fff;border-radius:14px;box-shadow:var(--s4);border:1px solid var(--q2);z-index:150;display:none;overflow:hidden}
+.notif-panel.open{display:block}
+.np-head{padding:12px 16px;border-bottom:1px solid var(--q1);display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700}
+.np-body{max-height:360px;overflow-y:auto}
+.np-item{padding:12px 16px;border-bottom:1px solid var(--q1);font-size:12.5px;color:var(--q7);line-height:1.4;transition:background .15s}
+.np-item.unread{background:var(--n0)}
+.np-time{font-size:11px;color:var(--q4);margin-top:4px}
+
+/* FORM ELEMENTS */
+.fg{margin-bottom:14px}
+.fl{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--q5);margin-bottom:6px}
+.fi{width:100%;border:1.5px solid var(--q2);border-radius:9px;padding:9px 12px;font-size:13.5px;font-family:var(--ff);color:var(--q9);outline:none;background:#fff}
+.fi:focus{border-color:var(--n4)}
+.fta{width:100%;border:1.5px solid var(--q2);border-radius:9px;padding:9px 12px;font-size:13.5px;font-family:var(--ff);color:var(--q9);outline:none;resize:none;min-height:80px}
+.fta:focus{border-color:var(--n4)}
+.fsel{width:100%;border:1.5px solid var(--q2);border-radius:9px;padding:9px 12px;font-size:13.5px;font-family:var(--ff);color:var(--q9);outline:none}
+
+.sec-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--q4);margin:18px 0 10px;padding-top:14px;border-top:1px solid var(--q1)}
+.sec-title:first-child{border-top:none;padding-top:0;margin-top:0}
+.fr{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--q1)}
+.fr:last-child{border-bottom:none}
+.fr-l{font-size:13px;color:var(--q5)}
+.fr-v{font-size:13.5px;font-weight:700;color:var(--q9);text-align:right;max-width:55%}
+.fr-v.mono2{font-family:var(--fm)}
+
+/* INFO BOX */
+.info-box{display:flex;gap:10px;padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.5;margin-bottom:14px}
+.info-box svg{width:15px;height:15px;flex-shrink:0;margin-top:2px}
+.ib-n{background:var(--n0);border:1px solid var(--n1);color:var(--n7)}.ib-n svg{color:var(--n5)}
+.ib-w{background:var(--w0);border:1px solid var(--w1);color:var(--w7)}.ib-w svg{color:var(--w6)}
+.ib-r{background:var(--r0);border:1px solid var(--r1);color:var(--r7)}.ib-r svg{color:var(--r6)}
+.ib-ok{background:var(--ok0);border:1px solid var(--ok2);color:var(--ok7)}.ib-ok svg{color:var(--ok5)}
+
+@media(max-width:900px){.kpi-row{grid-template-columns:repeat(3,1fr)}.card-grid{grid-template-columns:1fr}.main{padding:16px}}
+@media(max-width:600px){.kpi-row{grid-template-columns:repeat(2,1fr)}.tb-title,.tb-sep{display:none}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="tb-l">
+    <span class="tb-logo">CoopFund</span>
+    <div class="tb-sep"></div>
+    <div><div class="tb-title">Centralized Approvals</div><div class="tb-bc">Committee &rarr; Financial Requests</div></div>
+  </div>
+  <div class="tb-r">
+    <!-- User simulation switcher to test separation of duties -->
+    <div class="user-switcher">
+      <span class="us-label">Logged In As:</span>
+      <select class="us-sel" id="cur-user-sel" onchange="changeCurrentUser()">
+        <option value="Engr. Bello Usman (Chairman)">Engr. Bello Usman (Chairman)</option>
+        <option value="Mrs. Amina Yusuf (Vice Chairman)">Mrs. Amina Yusuf (Vice Chairman)</option>
+        <option value="Mr. Chidi Eze (Secretary)">Mr. Chidi Eze (Secretary)</option>
+        <option value="Dr. Halima Sule (Treasurer)">Dr. Halima Sule (Treasurer)</option>
+        <option value="Alhaji Musa Danlami (Member)">Alhaji Musa Danlami (Member)</option>
+        <option value="Finance Officer (Adedayo S.)">Finance Officer (Adedayo S.)</option>
+      </select>
+    </div>
+
+    <!-- Notification trigger -->
+    <button class="tb-btn" onclick="toggleNotifs()" title="Notifications">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="notif-badge" id="notif-dot"></span>
+    </button>
+  </div>
+</header>
+
+<!-- NOTIFICATION PANEL POPUP -->
+<div class="notif-panel" id="notif-panel">
+  <div class="np-head">
+    <span>Audit &amp; System Notifications</span>
+    <button class="btn btn-xs btn-out" onclick="markAllRead()">Mark Read</button>
+  </div>
+  <div class="np-body" id="notif-list"></div>
+</div>
+
+<!-- NAV TABS -->
+<nav class="nav-tabs">
+  <button class="ntab on" id="nt-pending" onclick="setView('pending',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Pending Committee Review <span class="nc alert" id="nc-pend">0</span>
+  </button>
+  <button class="ntab" id="nt-all" onclick="setView('all',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+    All Requests Register <span class="nc" id="nc-all">0</span>
+  </button>
+  <button class="ntab" id="nt-thresholds" onclick="setView('thresholds',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    Approval Thresholds &amp; Matrix
+  </button>
+  <button class="ntab" id="nt-new" onclick="setView('new',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Submit Request (Initiator)
+  </button>
+</nav>
+
+<div class="main">
+
+<!-- ═══ VIEW: PENDING REVIEW CARDS ═══ -->
+<div class="view on" id="view-pending">
+  <div class="kpi-row">
+    <div class="kpi kpi-w"><div class="kpi-label">Pending Action</div><div class="kpi-val" id="k-pend-ct">0</div><div class="kpi-sub">Awaiting decision</div></div>
+    <div class="kpi kpi-n"><div class="kpi-label">Pending Value</div><div class="kpi-val sm" id="k-pend-val">&mdash;</div><div class="kpi-sub">Under review</div></div>
+    <div class="kpi kpi-p"><div class="kpi-label">Needs Clarification</div><div class="kpi-val" id="k-clar-ct">0</div><div class="kpi-sub">Info requested</div></div>
+    <div class="kpi kpi-ok"><div class="kpi-label">Approved YTD</div><div class="kpi-val sm" id="k-app-val">&mdash;</div><div class="kpi-sub" id="k-app-ct">0 approvals</div></div>
+    <div class="kpi kpi-r"><div class="kpi-label">Rejected YTD</div><div class="kpi-val" id="k-rej-ct">0</div><div class="kpi-sub">Declined requests</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="ph">
+      <div>
+        <div class="ph-title">Committee Review Queue</div>
+        <div class="ph-sub">Comprehensive multi-type review dashboard with separation-of-duties protection.</div>
+      </div>
+    </div>
+    <div class="card-grid" id="pend-card-list"></div>
+  </div>
+</div>
+
+<!-- ═══ VIEW: ALL REQUESTS REGISTER ═══ -->
+<div class="view" id="view-all">
+  <div class="panel">
+    <div class="ph">
+      <div><div class="ph-title">Centralized Financial Approval Register</div><div class="ph-sub">Complete audit record across loans, withdrawals, adjustments, and special authorizations.</div></div>
+      <button class="btn btn-out btn-sm" onclick="exportApprovals()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export CSV
+      </button>
+    </div>
+    <div class="tbar">
+      <select class="tsel" id="tbl-type" onchange="renderRegister()">
+        <option value="">All Types</option>
+        <option value="loan">Loans</option>
+        <option value="withdrawal">Withdrawals</option>
+        <option value="adjustment">Financial Adjustments</option>
+        <option value="special">Special Approvals</option>
+      </select>
+      <select class="tsel" id="tbl-status" onchange="renderRegister()">
+        <option value="">All Statuses</option>
+        <option value="pending">Pending</option>
+        <option value="under_review">Under Review</option>
+        <option value="clarification_requested">Clarification Requested</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+      </select>
+      <div class="srch"><input class="srch-inp" type="text" id="tbl-srch" placeholder="Search applicant, ID, ref..." oninput="renderRegister()"></div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Ref</th><th>Applicant</th><th>Type / Category</th><th>Amount (&#8358;)</th>
+          <th>Savings Balance</th><th>Loan History</th><th>Initiator</th>
+          <th>Status</th><th style="text-align:center">Actions</th>
+        </tr></thead>
+        <tbody id="tbl-tbody"></tbody>
+      </table>
+    </div>
+    <div style="padding:12px 22px;border-top:1px solid var(--q1);font-size:12.5px;color:var(--q5)" id="tbl-foot"></div>
+  </div>
+</div>
+
+<!-- ═══ VIEW: THRESHOLDS & MATRIX ═══ -->
+<div class="view" id="view-thresholds">
+  <div class="panel">
+    <div class="ph">
+      <div><div class="ph-title">Configurable Financial Approval Thresholds</div><div class="ph-sub">Tier-based delegation of authority rules for multi-level committee approvals.</div></div>
+    </div>
+    <div class="thresh-grid" id="thresh-grid"></div>
+  </div>
+  <div class="panel">
+    <div class="ph"><div class="ph-title">System Policy &amp; Security Controls</div></div>
+    <div style="padding:20px 22px">
+      <div class="info-box ib-r">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span><strong>Mandatory Separation of Duties (Dual-Control Policy):</strong> Under cooperative financial regulations, the officer who initiates or prepares a financial transaction (loan application, withdrawal request, or payroll adjustment) is <strong>strictly prohibited</strong> from approving the same transaction.</span>
+      </div>
+      <div class="info-box ib-n">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span><strong>Notification Dispatch Rule:</strong> Automated push notifications and audit event logs are triggered immediately whenever a request is Submitted, Clarification is Requested, or a Final Decision (Approved/Rejected) is logged.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VIEW: NEW REQUEST (INITIATOR) ═══ -->
+<div class="view" id="view-new">
+  <div style="max-width:680px;margin:0 auto">
+    <div class="panel">
+      <div class="ph"><div class="ph-title">Initiate New Financial Request</div><div class="ph-sub">Prepare request for committee submission. Your name will be recorded as the Initiator.</div></div>
+      <div style="padding:22px">
+        <div id="new-req-form">
+          <div class="fg">
+            <label class="fl">Applicant (Member) *</label>
+            <select class="fsel" id="nf-member" onchange="onNewReqMember()"><option value="">Select member...</option></select>
+          </div>
+
+          <div id="nf-member-info" style="display:none;background:var(--q0);border:1px solid var(--q2);border-radius:10px;padding:14px;margin-bottom:16px">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:13px">
+              <div><span style="color:var(--q5)">Savings: </span><span id="nmi-bal" style="font-weight:700;color:var(--ok6);font-family:var(--fm)"></span></div>
+              <div><span style="color:var(--q5)">Active Loan: </span><span id="nmi-loan" style="font-weight:700;color:var(--r6);font-family:var(--fm)"></span></div>
+              <div><span style="color:var(--q5)">Prev Loans: </span><span id="nmi-prev" style="font-weight:700;color:var(--n7)"></span></div>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="fg">
+              <label class="fl">Request Type *</label>
+              <select class="fsel" id="nf-type">
+                <option value="loan">Loan Application</option>
+                <option value="withdrawal">Withdrawal Request</option>
+                <option value="adjustment">Financial Adjustment</option>
+                <option value="special">Special Approval</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label class="fl">Amount (&#8358;) *</label>
+              <input type="number" class="fi mono" id="nf-amount" placeholder="e.g. 150000">
+            </div>
+          </div>
+
+          <div class="fg">
+            <label class="fl">Title / Subject *</label>
+            <input type="text" class="fi" id="nf-title" placeholder="e.g. Emergency Medical Support Loan">
+          </div>
+
+          <div class="fg">
+            <label class="fl">Supporting Information &amp; Justification *</label>
+            <textarea class="fta" id="nf-support" rows="3" placeholder="Provide complete justification and mention supporting documents..."></textarea>
+          </div>
+
+          <div class="info-box ib-w">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>Notice: As the logged-in user (<strong id="initiator-display"></strong>), you will be recorded as the Initiator and will be blocked from approving this request under Separation of Duties rules.</span>
+          </div>
+
+          <button class="btn btn-primary" onclick="submitNewRequest()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Submit for Committee Review
+          </button>
+        </div>
+
+        <div id="new-req-success" style="display:none;text-align:center;padding:30px">
+          <div style="width:60px;height:60px;background:var(--ok0);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;border:2px solid var(--ok2)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--ok6)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div style="font-size:18px;font-weight:800;color:var(--q9);margin-bottom:6px">Request Dispatched to Committee</div>
+          <div style="font-size:13px;color:var(--q5);margin-bottom:18px">The approval request has been entered into the committee review queue. Notifications have been dispatched.</div>
+          <button class="btn btn-primary" onclick="resetNewReqForm();setView('pending',document.getElementById('nt-pending'))">View Queue</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- DRAWER: REVIEW & ACTION -->
+<div class="overlay" id="ov-action" onclick="closeAction()"></div>
+<div class="drawer" id="dr-action">
+  <div class="dr-head">
+    <div><div class="dr-title" id="act-title">Committee Review</div><div class="dr-sub" id="act-sub"></div></div>
+    <button class="dr-close" onclick="closeAction()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="dr-body" id="act-body"></div>
+  <div class="dr-foot" id="act-foot"></div>
+</div>
+
+<script>
+// DATA
+const MEMBERS = [{"id":"MF-0001","name":"Akin Adebayo","dept":"Treasury","grade":"GL-14","balance":450000,"prevLoans":2,"currentLoan":0,"initials":"AA"},{"id":"MF-0002","name":"Fatima Al-Hassan","dept":"Administration","grade":"GL-12","balance":405000,"prevLoans":1,"currentLoan":0,"initials":"FA"},{"id":"MF-0003","name":"Chiamaka Osei","dept":"Accounts","grade":"GL-10","balance":432000,"prevLoans":1,"currentLoan":0,"initials":"CO"},{"id":"MF-0004","name":"Babatunde Fadahunsi","dept":"Budget","grade":"GL-13","balance":300000,"prevLoans":0,"currentLoan":0,"initials":"BF"},{"id":"MF-0005","name":"Ngozi Eze-Williams","dept":"Accounts","grade":"GL-09","balance":144000,"prevLoans":2,"currentLoan":50000,"initials":"NE"},{"id":"MF-0006","name":"Chukwuemeka Obi","dept":"Treasury","grade":"GL-11","balance":216000,"prevLoans":1,"currentLoan":0,"initials":"CO"},{"id":"MF-0007","name":"Ifeoma Uchenna","dept":"Procurement","grade":"GL-10","balance":198000,"prevLoans":0,"currentLoan":0,"initials":"IU"},{"id":"MF-0008","name":"Sunday Olawale","dept":"ICT","grade":"GL-09","balance":108000,"prevLoans":1,"currentLoan":0,"initials":"SO"},{"id":"MF-0009","name":"Blessing Nwosu","dept":"HR","grade":"GL-08","balance":96000,"prevLoans":0,"currentLoan":0,"initials":"BN"},{"id":"MF-0010","name":"Emmanuel Dare","dept":"Legal","grade":"GL-15","balance":900000,"prevLoans":3,"currentLoan":100000,"initials":"ED"},{"id":"MF-0012","name":"Samson Afolabi","dept":"Treasury","grade":"GL-12","balance":540000,"prevLoans":2,"currentLoan":75000,"initials":"SA"},{"id":"MF-0013","name":"Adaeze Okonkwo","dept":"Accounts","grade":"GL-08","balance":216000,"prevLoans":1,"currentLoan":60000,"initials":"AO"},{"id":"MF-0016","name":"Tunde Bakare","dept":"Procurement","grade":"GL-09","balance":144000,"prevLoans":0,"currentLoan":0,"initials":"TB"},{"id":"MF-0019","name":"Yetunde Adegbite","dept":"HR","grade":"GL-08","balance":120000,"prevLoans":1,"currentLoan":0,"initials":"YA"},{"id":"MF-0021","name":"Kola Adeyemi","dept":"Legal","grade":"GL-13","balance":600000,"prevLoans":2,"currentLoan":150000,"initials":"KA"},{"id":"MF-0022","name":"Amaka Nwachukwu","dept":"Budget","grade":"GL-12","balance":270000,"prevLoans":1,"currentLoan":0,"initials":"AN"},{"id":"MF-0024","name":"Nkechi Okafor","dept":"Accounts","grade":"GL-09","balance":108000,"prevLoans":0,"currentLoan":0,"initials":"NO"},{"id":"MF-0030","name":"Hauwa Garba","dept":"Legal","grade":"GL-11","balance":90000,"prevLoans":1,"currentLoan":0,"initials":"HG"}];
+let REQUESTS = [{"id":"REQ-2026-081","type":"loan","title":"Emergency Medical Loan","memberId":"MF-0021","amount":150000,"requestDate":"2026-08-10","status":"under_review","initiator":"Mr. Chidi Eze (Secretary)","category":"Loan / Emergency","supportingInfo":"Emergency hospital admission for dependent parent. Medical bills and diagnosis report attached.","thresholdTier":"Tier 2 (₦100k – ₦500k: Committee Majority)","approvalsRequired":2,"approvalsGiven":1,"approversList":["Dr. Halima Sule (Treasurer) - Approved 2026-08-11 14:10"],"clarifications":[],"history":[{"action":"Submitted","by":"Mr. Chidi Eze (Secretary)","time":"2026-08-10 09:30","comment":"Application forwarded with attached medical estimates."},{"action":"Approved (1/2)","by":"Dr. Halima Sule (Treasurer)","time":"2026-08-11 14:10","comment":"Balance is ₦600k, comfortably covers the loan. Approved."}]},{"id":"REQ-2026-082","type":"withdrawal","title":"Resignation Full Withdrawal","memberId":"MF-0030","amount":90000,"requestDate":"2026-08-10","status":"pending","initiator":"Mrs. Amina Yusuf (Vice Chairman)","category":"Withdrawal / Resignation","supportingInfo":"Formal resignation letter from the Ministry accepted on August 1, 2026. Member requesting full savings liquidation.","thresholdTier":"Tier 1 (Up to ₦100k: Single Approver)","approvalsRequired":1,"approvalsGiven":0,"approversList":[],"clarifications":[],"history":[{"action":"Submitted","by":"Mrs. Amina Yusuf (Vice Chairman)","time":"2026-08-10 11:15","comment":"Resignation confirmation letter verified with HR department."}]},{"id":"REQ-2026-083","type":"adjustment","title":"Payroll Contribution Deduction Correction","memberId":"MF-0005","amount":6000,"requestDate":"2026-08-12","status":"pending","initiator":"Finance Officer (Adedayo S.)","category":"Financial Adjustment / Payroll Shortfall","supportingInfo":"July 2026 payroll deducted ₦9,000 instead of ₦12,000 expected. Adjustment to reconcile ₦3,000 retrospective deduction for Aug cycle.","thresholdTier":"Tier 1 (Up to ₦100k: Single Approver)","approvalsRequired":1,"approvalsGiven":0,"approversList":[],"clarifications":[],"history":[{"action":"Submitted","by":"Finance Officer (Adedayo S.)","time":"2026-08-12 16:45","comment":"Audit reconciliation detected July deduction discrepancy."}]},{"id":"REQ-2026-084","type":"loan","title":"Salary Advance (Education Support)","memberId":"MF-0016","amount":60000,"requestDate":"2026-08-12","status":"clarification_requested","initiator":"Finance Officer (Adedayo S.)","category":"Loan / Salary Advance","supportingInfo":"Request for school tuition advance. 6 months repayment plan requested.","thresholdTier":"Tier 1 (Up to ₦100k: Single Approver)","approvalsRequired":1,"approvalsGiven":0,"approversList":[],"clarifications":[{"by":"Engr. Bello Usman (Chairman)","time":"2026-08-13 10:20","question":"Please attach the official school fee invoice or admission letter for verification."}],"history":[{"action":"Submitted","by":"Finance Officer (Adedayo S.)","time":"2026-08-12 10:00","comment":"Application form received via member mobile portal."},{"action":"Clarification Requested","by":"Engr. Bello Usman (Chairman)","time":"2026-08-13 10:20","comment":"Invoice required per cooperative loan guidelines."}]},{"id":"REQ-2026-085","type":"special","title":"Cooperative IT Equipment Refresh Grant","memberId":"MF-0008","amount":250000,"requestDate":"2026-08-13","status":"pending","initiator":"Engr. Bello Usman (Chairman)","category":"Special Financial Approval / Cooperative Asset","supportingInfo":"Server upgrade and automated backup hardware for cooperative secretariat office.","thresholdTier":"Tier 2 (₦100k – ₦500k: Committee Majority)","approvalsRequired":2,"approvalsGiven":0,"approversList":[],"clarifications":[],"history":[{"action":"Submitted","by":"Engr. Bello Usman (Chairman)","time":"2026-08-13 13:00","comment":"Three competitive vendor quotations attached. Lowest compliant bid selected."}]},{"id":"REQ-2026-086","type":"withdrawal","title":"Retirement Savings Dissolution","memberId":"MF-0024","amount":108000,"requestDate":"2026-08-01","status":"approved","initiator":"Mrs. Amina Yusuf (Vice Chairman)","category":"Withdrawal / Retirement","supportingInfo":"Statutory retirement from service after 35 years. Zero outstanding loan liability.","thresholdTier":"Tier 2 (₦100k – ₦500k: Committee Majority)","approvalsRequired":2,"approvalsGiven":2,"approversList":["Dr. Halima Sule (Treasurer) - Approved 2026-08-03 11:00","Engr. Bello Usman (Chairman) - Approved 2026-08-05 14:45"],"clarifications":[],"history":[{"action":"Submitted","by":"Mrs. Amina Yusuf (Vice Chairman)","time":"2026-08-01 09:00","comment":"Retirement gazette notice verified."},{"action":"Approved (1/2)","by":"Dr. Halima Sule (Treasurer)","time":"2026-08-03 11:00","comment":"Audit ledger clear. No liabilities."},{"action":"Approved (2/2 - Final)","by":"Engr. Bello Usman (Chairman)","time":"2026-08-05 14:45","comment":"Approved for final disbursement to registered bank account."}]},{"id":"REQ-2026-087","type":"loan","title":"High-Volume Commercial Advance","memberId":"MF-0022","amount":300000,"requestDate":"2026-07-20","status":"rejected","initiator":"Finance Officer (Adedayo S.)","category":"Loan / Salary Advance","supportingInfo":"Commercial trading capital request.","thresholdTier":"Tier 2 (₦100k – ₦500k: Committee Majority)","approvalsRequired":2,"approvalsGiven":0,"approversList":[],"clarifications":[],"history":[{"action":"Submitted","by":"Finance Officer (Adedayo S.)","time":"2026-07-20 14:30","comment":"Submitted on behalf of member."},{"action":"Rejected","by":"Engr. Bello Usman (Chairman)","time":"2026-07-24 09:15","comment":"Requested amount ₦300,000 exceeds member contribution balance of ₦270,000. Ineligible per cooperative bylaws."}]}];
+const THRESHOLDS = [{"tier":"Tier 1","range":"₦0 – ₦100,000","approvers":1,"label":"Single Approver (Executive / Finance Head)","autoNotify":"Approving Officer"},{"tier":"Tier 2","range":"₦100,001 – ₦500,000","approvers":2,"label":"Committee Majority (2 Committee Members)","autoNotify":"All Committee Members"},{"tier":"Tier 3","range":"₦500,001 – ₦2,000,000","approvers":3,"label":"Full Executive Committee (Chairman + Treasurer + Secretary)","autoNotify":"Full Executive Board"},{"tier":"Tier 4","range":"> ₦2,000,000","approvers":4,"label":"General Meeting / Board Resolution Required","autoNotify":"Board of Trustees & AGM"}];
+let NOTIFICATIONS = [{"id":"NT-1","time":"10 mins ago","text":"New Request REQ-2026-085 (₦250,000) submitted by Engr. Bello Usman.","read":false,"type":"submitted"},{"id":"NT-2","time":"1 hour ago","text":"Clarification requested on REQ-2026-084 by Engr. Bello Usman.","read":false,"type":"clarification"},{"id":"NT-3","time":"2 days ago","text":"REQ-2026-086 (₦108,000) successfully approved by Committee.","read":true,"type":"approved"},{"id":"NT-4","time":"3 weeks ago","text":"REQ-2026-087 (₦300,000) rejected by Engr. Bello Usman.","read":true,"type":"rejected"}];
+
+const memberMap = {};
+MEMBERS.forEach(m => memberMap[m.id] = m);
+
+const FMT = n => '₦' + Number(n||0).toLocaleString('en-NG');
+
+let currentUser = 'Engr. Bello Usman (Chairman)';
+
+function changeCurrentUser() {
+  currentUser = document.getElementById('cur-user-sel').value;
+  document.getElementById('initiator-display').textContent = currentUser;
+  renderAll();
+}
+
+const STATUS_META = {
+  pending:                 { label:'Pending',                cls:'b-w' },
+  under_review:            { label:'Under Review',           cls:'b-p' },
+  clarification_requested: { label:'Clarification Requested',cls:'b-c' },
+  approved:                { label:'Approved',               cls:'b-ok' },
+  rejected:                { label:'Rejected',               cls:'b-r' },
+};
+const badge = s => { const m=STATUS_META[s]||{label:s,cls:'b-z'}; return `<span class="badge ${m.cls}"><span class="bd"></span>${m.label}</span>`; };
+
+const typeChip = t => ({
+  loan:       '<span class="type-chip tc-loan">Loan</span>',
+  withdrawal: '<span class="type-chip tc-withdrawal">Withdrawal</span>',
+  adjustment: '<span class="type-chip tc-adjustment">Adjustment</span>',
+  special:    '<span class="type-chip tc-special">Special</span>',
+}[t]||'<span class="type-chip tc-loan">'+t+'</span>');
+
+const avColors = ['av0','av1','av2','av3','av4','av5','av6'];
+const avC = id => avColors[parseInt(id.replace(/\D/g,''))%7];
+
+// View switching
+function setView(v, btn) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('on'));
+  document.querySelectorAll('.ntab').forEach(b => b.classList.remove('on'));
+  document.getElementById('view-' + v).classList.add('on');
+  btn.classList.add('on');
+}
+
+// Notifications
+function toggleNotifs() {
+  document.getElementById('notif-panel').classList.toggle('open');
+}
+function markAllRead() {
+  NOTIFICATIONS.forEach(n => n.read = true);
+  renderNotifs();
+}
+function renderNotifs() {
+  const list = document.getElementById('notif-list');
+  const unread = NOTIFICATIONS.filter(n => !n.read).length;
+  document.getElementById('notif-dot').style.display = unread > 0 ? 'block' : 'none';
+
+  list.innerHTML = NOTIFICATIONS.map(n => `
+    <div class="np-item ${n.read?'':'unread'}">
+      <div>${n.text}</div>
+      <div class="np-time">${n.time}</div>
+    </div>
+  `).join('') || '<div style="padding:20px;text-align:center;color:var(--q4)">No notifications</div>';
+}
+function pushNotification(text, type) {
+  NOTIFICATIONS.unshift({ id: 'NT-' + (NOTIFICATIONS.length+1), time: 'Just now', text, read: false, type });
+  renderNotifs();
+}
+
+// KPIs
+function renderKPIs() {
+  const pending = REQUESTS.filter(r => ['pending','under_review','clarification_requested'].includes(r.status));
+  const pendVal = pending.reduce((s,r) => s + r.amount, 0);
+  const clarCt = REQUESTS.filter(r => r.status === 'clarification_requested').length;
+  const approved = REQUESTS.filter(r => r.status === 'approved');
+  const appVal = approved.reduce((s,r) => s + r.amount, 0);
+  const rejCt = REQUESTS.filter(r => r.status === 'rejected').length;
+
+  document.getElementById('k-pend-ct').textContent = pending.length;
+  document.getElementById('k-pend-val').textContent = FMT(pendVal);
+  document.getElementById('k-clar-ct').textContent = clarCt;
+  document.getElementById('k-app-val').textContent = FMT(appVal);
+  document.getElementById('k-app-ct').textContent = approved.length + ' approved';
+  document.getElementById('k-rej-ct').textContent = rejCt;
+
+  document.getElementById('nc-pend').textContent = pending.length;
+  document.getElementById('nc-all').textContent = REQUESTS.length;
+}
+
+// PENDING CARDS
+function renderPendingCards() {
+  const pending = REQUESTS.filter(r => ['pending','under_review','clarification_requested'].includes(r.status));
+  const container = document.getElementById('pend-card-list');
+
+  if (!pending.length) {
+    container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--q4)">No pending requests requiring committee action.</div>';
+    return;
+  }
+
+  container.innerHTML = pending.map(r => {
+    const m = memberMap[r.memberId];
+    const isSelfInitiated = r.initiator === currentUser;
+
+    return `
+      <div class="app-card">
+        <div class="ac-head">
+          <div>
+            <div class="ac-ref">${r.id} &middot; ${r.requestDate}</div>
+            <div class="ac-name">${r.title}</div>
+            <div style="font-size:12px;color:var(--q5);margin-top:2px">${m ? m.name + ' (' + r.memberId + ')' : 'Unknown'} &middot; ${m?m.dept:''}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+            ${badge(r.status)}
+            ${typeChip(r.type)}
+          </div>
+        </div>
+        <div class="ac-body">
+          <div class="ac-row"><span class="acr-l">Requested Amount</span><span class="acr-v" style="font-size:16px;color:var(--n7)">${FMT(r.amount)}</span></div>
+          <div class="ac-row"><span class="acr-l">Savings Balance</span><span class="acr-v" style="color:var(--ok6)">${FMT(m?m.balance:0)}</span></div>
+          <div class="ac-row"><span class="acr-l">Current Loan Liability</span><span class="acr-v" style="color:${(m&&m.currentLoan>0)?'var(--r6)':'var(--q4)'}">${FMT(m?m.currentLoan:0)}</span></div>
+          <div class="ac-row"><span class="acr-l">Previous Loans Count</span><span class="acr-v">${m?m.prevLoans:0}</span></div>
+          <div class="ac-row"><span class="acr-l">Threshold / Rule</span><span style="font-size:11.5px;color:var(--q6);font-weight:600">${r.thresholdTier}</span></div>
+          <div class="ac-row"><span class="acr-l">Initiated By</span><span style="font-size:12px;color:var(--q6)">${r.initiator}</span></div>
+          <div class="ac-support">&ldquo;${r.supportingInfo}&rdquo;</div>
+
+          ${isSelfInitiated ? `
+            <div class="sod-block">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+              <span><strong>Separation of Duties:</strong> You initiated this request. You are prohibited from approving it.</span>
+            </div>` : ''}
+        </div>
+        <div class="ac-foot">
+          <button class="btn btn-primary" onclick="openAction('${r.id}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Review &amp; Decide
+          </button>
+          <button class="btn btn-out" onclick="openAction('${r.id}')">Audit Trail</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ALL REGISTER
+function renderRegister() {
+  const tf = document.getElementById('tbl-type').value;
+  const sf = document.getElementById('tbl-status').value;
+  const q = document.getElementById('tbl-srch').value.toLowerCase();
+
+  let rows = [...REQUESTS];
+  if (tf) rows = rows.filter(r => r.type === tf);
+  if (sf) rows = rows.filter(r => r.status === sf);
+  if (q) rows = rows.filter(r => {
+    const m = memberMap[r.memberId];
+    return (r.id + r.title + (m?m.name:'') + r.memberId).toLowerCase().includes(q);
+  });
+
+  const tbody = document.getElementById('tbl-tbody');
+  tbody.innerHTML = rows.map(r => {
+    const m = memberMap[r.memberId];
+    return `
+      <tr>
+        <td class="mono bold">${r.id}</td>
+        <td><div class="mc"><div class="mc-av ${avC(r.memberId)}">${m?m.initials:'??'}</div><div><div class="mc-name">${m?m.name:'Unknown'}</div><div class="mc-id">${r.memberId}</div></div></div></td>
+        <td><div>${typeChip(r.type)}</div><div style="font-size:11.5px;color:var(--q5);margin-top:2px">${r.title}</div></td>
+        <td class="mono bold">${FMT(r.amount)}</td>
+        <td class="mono" style="color:var(--ok6)">${FMT(m?m.balance:0)}</td>
+        <td class="muted"><span class="mono" style="color:${(m&&m.currentLoan>0)?'var(--r6)':'var(--q6)'}">${FMT(m?m.currentLoan:0)}</span> (${m?m.prevLoans:0} prev)</td>
+        <td style="font-size:12px;color:var(--q6)">${r.initiator}</td>
+        <td>${badge(r.status)}</td>
+        <td style="text-align:center">
+          <button class="btn btn-xs btn-out" onclick="openAction('${r.id}')">Inspect</button>
+        </td>
+      </tr>
+    `;
+  }).join('') || '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--q4)">No records found</td></tr>';
+
+  document.getElementById('tbl-foot').textContent = rows.length + ' requests recorded';
+}
+
+// THRESHOLDS
+function renderThresholds() {
+  const container = document.getElementById('thresh-grid');
+  container.innerHTML = THRESHOLDS.map(t => `
+    <div class="thresh-card">
+      <span class="tc-badge">${t.tier}</span>
+      <div class="tc-amount">${t.range}</div>
+      <div class="tc-desc">${t.label}</div>
+      <div class="tc-notify"><strong>Auto Notification:</strong> ${t.autoNotify}</div>
+    </div>
+  `).join('');
+}
+
+// REVIEW DRAWER & ACTIONS
+function openAction(id) {
+  const r = REQUESTS.find(x => x.id === id);
+  const m = memberMap[r.memberId];
+  const isSelfInitiated = r.initiator === currentUser;
+
+  document.getElementById('act-title').textContent = r.id + ' — ' + r.title;
+  document.getElementById('act-sub').textContent = 'Applicant: ' + (m?m.name:'') + ' (' + r.memberId + ')';
+
+  let clarHtml = '';
+  if (r.clarifications && r.clarifications.length) {
+    clarHtml = `
+      <div class="sec-title">Clarification History</div>
+      ${r.clarifications.map(c => `
+        <div style="background:var(--c0);border:1px solid var(--c1);border-radius:10px;padding:12px;margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--c6);font-weight:700">
+            <span>${c.by}</span><span>${c.time}</span>
+          </div>
+          <div style="font-size:13px;color:var(--q8);margin-top:4px">&ldquo;${c.question}&rdquo;</div>
+        </div>
+      `).join('')}
+    `;
+  }
+
+  document.getElementById('act-body').innerHTML = `
+    <div style="background:var(--q0);border:1px solid var(--q2);border-radius:12px;padding:16px;margin-bottom:16px">
+      <div class="fr"><span class="fr-l">Request Type</span><span>${typeChip(r.type)}</span></div>
+      <div class="fr"><span class="fr-l">Amount Requested</span><span class="fr-v mono2" style="font-size:18px;color:var(--n7)">${FMT(r.amount)}</span></div>
+      <div class="fr"><span class="fr-l">Member Contribution Balance</span><span class="fr-v mono2" style="color:var(--ok6)">${FMT(m?m.balance:0)}</span></div>
+      <div class="fr"><span class="fr-l">Current Active Loan</span><span class="fr-v mono2" style="color:${(m&&m.currentLoan>0)?'var(--r6)':'var(--q4)'}">${FMT(m?m.currentLoan:0)}</span></div>
+      <div class="fr"><span class="fr-l">Previous Loans Count</span><span class="fr-v">${m?m.prevLoans:0} completed loans</span></div>
+      <div class="fr"><span class="fr-l">Threshold Delegation Tier</span><span class="fr-v">${r.thresholdTier}</span></div>
+      <div class="fr"><span class="fr-l">Initiated By</span><span class="fr-v">${r.initiator}</span></div>
+      <div class="fr"><span class="fr-l">Supporting Information</span><span class="fr-v" style="font-style:italic;font-size:12.5px">${r.supportingInfo}</span></div>
+    </div>
+
+    ${clarHtml}
+
+    <div class="sec-title">Decision Audit Trail</div>
+    <div class="timeline">
+      ${r.history.map(h => `
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-head"><span>${h.by}</span><span>${h.time}</span></div>
+          <div class="tl-action">${h.action}</div>
+          <div class="tl-comment">&ldquo;${h.comment}&rdquo;</div>
+        </div>
+      `).join('')}
+    </div>
+
+    ${['pending','under_review','clarification_requested'].includes(r.status) ? `
+      <div class="sec-title">Record Committee Decision</div>
+
+      ${isSelfInitiated ? `
+        <div class="sod-block">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+          <span><strong>Action Locked (Separation of Duties):</strong> You are the registered initiator of this transaction. You cannot participate in approving it. Another committee member must perform this review.</span>
+        </div>
+      ` : `
+        <div style="background:#fff;border:1px solid var(--q2);border-radius:12px;padding:16px;margin-top:10px">
+          <div class="fg">
+            <label class="fl">Action Decision *</label>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+              <button class="btn btn-green" id="btn-dec-app" onclick="setDecisionChoice('approve')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Approve</button>
+              <button class="btn btn-warn" id="btn-dec-clar" onclick="setDecisionChoice('clarify')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Clarify</button>
+              <button class="btn btn-danger" id="btn-dec-rej" onclick="setDecisionChoice('reject')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Reject</button>
+            </div>
+          </div>
+          <div class="fg">
+            <label class="fl">Decision Comment / Clarification Query *</label>
+            <textarea class="fta" id="dec-comment" rows="3" placeholder="Provide mandatory justification or specific clarification question..."></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="submitCommitteeDecision('${r.id}')">Submit Permanent Decision</button>
+        </div>
+      `}
+    ` : ''}
+  `;
+
+  document.getElementById('act-foot').innerHTML = '<button class="btn btn-out" onclick="closeAction()">Close Drawer</button>';
+
+  document.getElementById('ov-action').classList.add('open');
+  setTimeout(() => document.getElementById('dr-action').classList.add('open'), 10);
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAction() {
+  document.getElementById('ov-action').classList.remove('open');
+  document.getElementById('dr-action').classList.remove('open');
+  document.body.style.overflow = '';
+  currentDecChoice = '';
+}
+
+let currentDecChoice = '';
+function setDecisionChoice(c) {
+  currentDecChoice = c;
+  const a = document.getElementById('btn-dec-app');
+  const cl = document.getElementById('btn-dec-clar');
+  const r = document.getElementById('btn-dec-rej');
+  if(a) a.style.outline = c==='approve'?'2.5px solid var(--ok6)':'';
+  if(cl) cl.style.outline = c==='clarify'?'2.5px solid var(--w6)':'';
+  if(r) r.style.outline = c==='reject'?'2.5px solid var(--r6)':'';
+}
+
+function submitCommitteeDecision(id) {
+  if (!currentDecChoice) { alert('Please select a decision: Approve, Clarify, or Reject.'); return; }
+  const comment = document.getElementById('dec-comment').value.trim();
+  if (!comment) { alert('A comment is mandatory for all committee decisions.'); return; }
+
+  const r = REQUESTS.find(x => x.id === id);
+  const now = new Date().toISOString().replace('T',' ').substring(0,16);
+
+  if (currentDecChoice === 'approve') {
+    r.approvalsGiven += 1;
+    r.approversList.push(currentUser + ' - Approved ' + now);
+    if (r.approvalsGiven >= r.approvalsRequired) {
+      r.status = 'approved';
+      r.history.push({ action: 'Approved (Final)', by: currentUser, time: now, comment });
+      pushNotification('Request ' + r.id + ' (' + FMT(r.amount) + ') approved by ' + currentUser + '.', 'approved');
+    } else {
+      r.status = 'under_review';
+      r.history.push({ action: 'Approved (' + r.approvalsGiven + '/' + r.approvalsRequired + ')', by: currentUser, time: now, comment });
+      pushNotification('Request ' + r.id + ' received approval (' + r.approvalsGiven + '/' + r.approvalsRequired + ') from ' + currentUser + '.', 'approved');
+    }
+  } else if (currentDecChoice === 'clarify') {
+    r.status = 'clarification_requested';
+    r.clarifications.push({ by: currentUser, time: now, question: comment });
+    r.history.push({ action: 'Clarification Requested', by: currentUser, time: now, comment });
+    pushNotification('Clarification requested on ' + r.id + ' by ' + currentUser + ': "' + comment + '"', 'clarification');
+  } else if (currentDecChoice === 'reject') {
+    r.status = 'rejected';
+    r.history.push({ action: 'Rejected', by: currentUser, time: now, comment });
+    pushNotification('Request ' + r.id + ' rejected by ' + currentUser + '.', 'rejected');
+  }
+
+  closeAction();
+  renderAll();
+  setTimeout(() => alert('Decision recorded successfully: ' + currentDecChoice.toUpperCase()), 50);
+}
+
+// INITIATOR FORM
+function populateInitiatorMembers() {
+  const sel = document.getElementById('nf-member');
+  sel.innerHTML = '<option value="">Select member...</option>' +
+    MEMBERS.map(m => `<option value="${m.id}">${m.name} (${m.id} · ${m.dept})</option>`).join('');
+  document.getElementById('initiator-display').textContent = currentUser;
+}
+
+function onNewReqMember() {
+  const id = document.getElementById('nf-member').value;
+  if (!id) { document.getElementById('nf-member-info').style.display='none'; return; }
+  const m = memberMap[id];
+  document.getElementById('nf-member-info').style.display = 'block';
+  document.getElementById('nmi-bal').textContent = FMT(m.balance);
+  document.getElementById('nmi-loan').textContent = m.currentLoan > 0 ? FMT(m.currentLoan) : '₦0';
+  document.getElementById('nmi-prev').textContent = m.prevLoans;
+}
+
+function submitNewRequest() {
+  const memberId = document.getElementById('nf-member').value;
+  const type = document.getElementById('nf-type').value;
+  const amount = parseFloat(document.getElementById('nf-amount').value)||0;
+  const title = document.getElementById('nf-title').value.trim();
+  const support = document.getElementById('nf-support').value.trim();
+
+  if (!memberId) { alert('Please select a member.'); return; }
+  if (!amount) { alert('Please enter an amount.'); return; }
+  if (!title) { alert('Please enter a title.'); return; }
+  if (!support) { alert('Please provide supporting information.'); return; }
+
+  const tier = amount <= 100000 ? 'Tier 1 (Up to ₦100k: Single Approver)' : amount <= 500000 ? 'Tier 2 (₦100k – ₦500k: Committee Majority)' : 'Tier 3 (> ₦500k: Executive Board)';
+  const reqs = amount <= 100000 ? 1 : amount <= 500000 ? 2 : 3;
+  const newId = 'REQ-2026-0' + (REQUESTS.length + 85);
+  const now = new Date().toISOString().replace('T',' ').substring(0,16);
+
+  REQUESTS.unshift({
+    id: newId,
+    type,
+    title,
+    memberId,
+    amount,
+    requestDate: now.substring(0,10),
+    status: 'pending',
+    initiator: currentUser,
+    category: type === 'loan' ? 'Loan Application' : type === 'withdrawal' ? 'Withdrawal' : type === 'adjustment' ? 'Financial Adjustment' : 'Special Financial Approval',
+    supportingInfo: support,
+    thresholdTier: tier,
+    approvalsRequired: reqs,
+    approvalsGiven: 0,
+    approversList: [],
+    clarifications: [],
+    history: [
+      { action: 'Submitted', by: currentUser, time: now, comment: support }
+    ]
+  });
+
+  pushNotification('New Request ' + newId + ' (' + FMT(amount) + ') submitted by ' + currentUser + '.', 'submitted');
+
+  document.getElementById('new-req-form').style.display = 'none';
+  document.getElementById('new-req-success').style.display = 'block';
+  renderAll();
+}
+
+function resetNewReqForm() {
+  document.getElementById('new-req-form').style.display = 'block';
+  document.getElementById('new-req-success').style.display = 'none';
+  document.getElementById('nf-member').value = '';
+  document.getElementById('nf-amount').value = '';
+  document.getElementById('nf-title').value = '';
+  document.getElementById('nf-support').value = '';
+  document.getElementById('nf-member-info').style.display = 'none';
+}
+
+function exportApprovals() {
+  const lines = ['CoopFund Centralized Financial Approvals','','ID,Applicant,Type,Amount,Status,Initiator,Date,Threshold'];
+  REQUESTS.forEach(r => {
+    const m = memberMap[r.memberId];
+    lines.push([r.id,m?m.name:'',r.type,r.amount,r.status,r.initiator,r.requestDate,r.thresholdTier].join(','));
+  });
+  const blob = new Blob([lines.join('\n')],{type:'text/csv'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='approvals.csv'; a.click();
+}
+
+function renderAll() {
+  renderKPIs();
+  renderPendingCards();
+  renderRegister();
+  renderThresholds();
+  renderNotifs();
+}
+
+// INIT
+populateInitiatorMembers();
+renderAll();
+</script>
+</body>
+</html>
