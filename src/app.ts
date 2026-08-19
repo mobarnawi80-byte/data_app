@@ -17,6 +17,38 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Root Route — Welcome & API Directory
+app.get('/', (req: Request, res: Response) => {
+  if (req.accepts('html')) {
+    return res.redirect('/admin');
+  }
+  res.status(200).json({
+    status: 'online',
+    service: 'Nigerian VTU & Data Platform Backend API',
+    version: '1.0.0',
+    endpoints: {
+      health: '/health',
+      admin_dashboard: '/admin',
+      auth: {
+        register: 'POST /api/users/register',
+        login: 'POST /api/users/login',
+        profile: 'GET /api/users/:id',
+      },
+      wallet: {
+        balance: 'GET /api/wallets/:userId',
+        ledger: 'GET /api/wallets/:userId/ledger',
+        credit: 'POST /api/wallets/credit',
+      },
+      vtu: {
+        purchase: 'POST /api/vtu/purchase',
+        history: 'GET /api/vtu/history/:userId',
+        provider_balances: 'GET /api/vtu/balances',
+      },
+    },
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // Health Check Endpoint
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({
