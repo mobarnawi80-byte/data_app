@@ -62,7 +62,7 @@ export const PinKeypadModal: React.FC<PinKeypadModalProps> = ({
   const handleBiometricAuth = async () => {
     try {
       const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: 'Authorize VTU Purchase',
+        promptMessage: 'Authorize Sublyte Purchase',
         fallbackLabel: 'Use 4-digit PIN',
         disableDeviceFallback: false,
       });

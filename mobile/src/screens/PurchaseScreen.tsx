@@ -61,6 +61,22 @@ export const PurchaseScreen: React.FC<PurchaseScreenProps> = ({ onBack, serviceT
   const [isPinModalVisible, setIsPinModalVisible] = useState<boolean>(false);
   const [isPurchasing, setIsPurchasing] = useState<boolean>(false);
   const [detectedBadge, setDetectedBadge] = useState<string | null>(null);
+  const [livePlans, setLivePlans] = useState<PlanOption[]>([]);
+
+  useEffect(() => {
+    if (serviceType !== 'DATA' || !token) return;
+    vtuApi.getDataPlans(token, network, category).then((response) => {
+      if (response.success && response.data?.length) {
+        const plans = response.data.map((plan) => ({
+          id: plan.variation_code,
+          name: plan.name,
+          price: plan.amount,
+        }));
+        setLivePlans(plans);
+        setSelectedPlan(plans[0]);
+      }
+    });
+  }, [category, network, serviceType, token]);
 
   // Auto-detect network operator when user types phone number
   const handlePhoneChange = (input: string) => {
@@ -101,7 +117,7 @@ export const PurchaseScreen: React.FC<PurchaseScreenProps> = ({ onBack, serviceT
     }
   };
 
-  const currentPlans = SAMPLE_PLANS[network] || [];
+  const currentPlans = livePlans.length ? livePlans : SAMPLE_PLANS[network] || [];
   const totalPrice = serviceType === 'DATA' ? selectedPlan.price : Number(airtimeAmount || 0);
 
   const handleProceedClick = () => {

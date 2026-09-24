@@ -58,7 +58,7 @@ export default function ProfileScreen() {
           <View style={styles.avatar}>
             <User color="#6C63FF" size={40} />
           </View>
-          <Text style={styles.userName}>{user?.full_name ?? 'VTU User'}</Text>
+          <Text style={styles.userName}>{user?.full_name ?? 'Sublyte User'}</Text>
           <View style={styles.verifiedBadge}>
             <Text style={styles.verifiedText}>✓ Verified Account</Text>
           </View>
@@ -103,7 +103,7 @@ export default function ProfileScreen() {
           <Text style={styles.logoutText}>Log Out</Text>
         </TouchableOpacity>
 
-        <Text style={styles.version}>VTU App v1.0.0 · SDK 54</Text>
+        <Text style={styles.version}>Sublyte v1.0.0 · SDK 57</Text>
       </ScrollView>
     </SafeAreaView>
   );

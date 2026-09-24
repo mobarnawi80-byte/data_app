@@ -26,9 +26,13 @@ export interface DebitWalletDTO {
 export interface PurchaseVTUDTO {
   user_id: string;
   service_type: ServiceType;
-  network: Network;
+  network?: Network;
   phone_number: string;
   plan_id?: string; // Required for DATA
+  service_id?: string;
+  variation_code?: string;
+  customer_id?: string;
+  service_name?: string;
   amount: number;
   transaction_pin: string;
   preferred_provider?: Provider;

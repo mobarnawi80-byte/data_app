@@ -1,7 +1,7 @@
 {
-  "name": "vtu-platform-backend",
+  "name": "sublyte-backend",
   "version": "1.0.0",
-  "description": "Backend database schema and service layer for a Nigerian Data & Airtime VTU platform using Express, Prisma, and PostgreSQL.",
+  "description": "Sublyte backend service for Nigerian data, airtime, cable TV, wallets, and payments using Express, Prisma, and PostgreSQL.",
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc",

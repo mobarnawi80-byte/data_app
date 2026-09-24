@@ -1,29 +1,23 @@
 {
   "expo": {
-    "name": "VTU Mobile App",
-    "slug": "vtu-mobile-app",
+    "name": "Sublyte",
+    "slug": "sublyte",
     "version": "1.0.0",
-    "sdkVersion": "54.0.0",
-    "scheme": "vtu-app",
+    "sdkVersion": "57.0.0",
+    "scheme": "sublyte",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
-    "newArchEnabled": false,
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#090D16"
-    },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.vtu.mobileapp"
+      "bundleIdentifier": "com.sublyte.mobileapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#090D16"
       },
-      "package": "com.vtu.mobileapp"
+      "package": "com.sublyte.mobileapp"
     },
     "web": {
       "bundler": "metro",
@@ -36,7 +30,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/splash.png",
+          "image": "./assets/sublyte-logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#090D16"
@@ -45,13 +39,13 @@
       [
         "expo-local-authentication",
         {
-          "faceIDPermission": "Allow VTU App to use Face ID for secure authentication."
+          "faceIDPermission": "Allow Sublyte to use Face ID for secure authentication."
         }
       ],
       [
         "expo-contacts",
         {
-          "contactsPermission": "Allow VTU App to access your contacts to auto-fill phone numbers."
+          "contactsPermission": "Allow Sublyte to access your contacts to auto-fill phone numbers."
         }
       ]
     ],

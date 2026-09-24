@@ -103,7 +103,7 @@ export class HusmodataProvider implements IVtuProvider {
     }
   }
 
-  async purchaseData(network: Network, phone: string, planId: string): Promise<ProviderPurchaseResponse> {
+  async purchaseData(network: Network, phone: string, planId: string, _amount?: number): Promise<ProviderPurchaseResponse> {
     try {
       if (this.apiKey && this.apiKey !== 'mock_husmodata_key') {
         const response = await fetch(`${this.baseUrl}/data`, {

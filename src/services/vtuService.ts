@@ -6,11 +6,13 @@ import { WalletService } from './walletService';
 import { IVtuProvider, ProviderPurchaseResponse } from './providers/vtuProvider.interface';
 import { InlomaxProvider } from './providers/inlomaxProvider';
 import { HusmodataProvider } from './providers/husmodataProvider';
+import { StrowalletProvider } from './providers/strowalletProvider';
 
 export class VtuService {
-  private static providers: Map<Provider, IVtuProvider> = new Map([
+  private static providers: Map<Provider, IVtuProvider> = new Map<Provider, IVtuProvider>([
     [Provider.INLOMAX, new InlomaxProvider()],
     [Provider.HUSMODATA, new HusmodataProvider()],
+    [Provider.STROWALLET, new StrowalletProvider()],
   ]);
 
   /**
@@ -27,8 +29,16 @@ export class VtuService {
     // -------------------------------------------------------------
     // STEP 1: Input Validation & Transaction PIN Verification
     // -------------------------------------------------------------
-    if (dto.service_type === ServiceType.DATA && !dto.plan_id) {
+    if (dto.service_type === ServiceType.DATA && (!dto.plan_id || !dto.network)) {
       throw new Error('Data plan_id is required for DATA service requests.');
+    }
+
+    if (dto.service_type === ServiceType.AIRTIME && !dto.network) {
+      throw new Error('Network is required for AIRTIME service requests.');
+    }
+
+    if (dto.service_type === ServiceType.CABLE_TV && (!dto.service_id || !dto.variation_code || !dto.customer_id)) {
+      throw new Error('Cable TV service_id, variation_code, and customer_id are required.');
     }
 
     if (dto.amount <= 0) {
@@ -46,7 +56,9 @@ export class VtuService {
     const debitReference = `DEBIT-${txReference}`;
 
     // Primary & Fallback Provider setup
-    const primaryProviderType = dto.preferred_provider || Provider.INLOMAX;
+    const primaryProviderType = dto.service_type === ServiceType.CABLE_TV
+      ? Provider.STROWALLET
+      : dto.preferred_provider || (process.env.STROWALLET_PUBLIC_KEY ? Provider.STROWALLET : Provider.INLOMAX);
     const fallbackProviderType = primaryProviderType === Provider.INLOMAX ? Provider.HUSMODATA : Provider.INLOMAX;
 
     // -------------------------------------------------------------
@@ -59,7 +71,7 @@ export class VtuService {
           user_id: dto.user_id,
           amount: dto.amount,
           reference: debitReference,
-          description: `${dto.service_type} purchase for ${dto.phone_number} (${dto.network})`,
+          description: `${dto.service_type} purchase for ${dto.customer_id || dto.phone_number}${dto.network ? ` (${dto.network})` : ''}`,
         },
         tx
       );
@@ -70,9 +82,12 @@ export class VtuService {
           user_id: dto.user_id,
           reference: txReference,
           service_type: dto.service_type,
-          network: dto.network,
+          network: dto.network || null,
           phone_number: dto.phone_number,
           plan_id: dto.plan_id || null,
+          service_id: dto.service_id || null,
+          variation_code: dto.variation_code || null,
+          customer_id: dto.customer_id || null,
           amount: new Prisma.Decimal(dto.amount),
           provider_used: primaryProviderType,
           status: TransactionStatus.PENDING,
@@ -87,10 +102,29 @@ export class VtuService {
     const executeProviderCall = async (providerType: Provider): Promise<ProviderPurchaseResponse> => {
       const provider = this.providers.get(providerType)!;
       if (dto.service_type === ServiceType.AIRTIME) {
-        return await provider.purchaseAirtime(dto.network, dto.phone_number, dto.amount);
-      } else {
-        return await provider.purchaseData(dto.network, dto.phone_number, dto.plan_id!);
+        return await provider.purchaseAirtime(dto.network!, dto.phone_number, dto.amount);
       }
+      if (dto.service_type === ServiceType.DATA) {
+        return await provider.purchaseData(dto.network!, dto.phone_number, dto.plan_id!, dto.amount);
+      }
+
+      if (!provider.purchaseCable) {
+        return {
+          success: false,
+          status: 'FAILED',
+          provider: providerType,
+          message: `${providerType} does not support cable TV purchases.`,
+        };
+      }
+
+      return provider.purchaseCable({
+        phone: dto.phone_number,
+        amount: dto.amount,
+        serviceId: dto.service_id!,
+        variationCode: dto.variation_code!,
+        customerId: dto.customer_id!,
+        serviceName: dto.service_name,
+      });
     };
 
     // -------------------------------------------------------------
@@ -220,11 +254,27 @@ export class VtuService {
     const balances = await Promise.all([
       this.providers.get(Provider.INLOMAX)!.checkBalance(),
       this.providers.get(Provider.HUSMODATA)!.checkBalance(),
+      this.providers.get(Provider.STROWALLET)!.checkBalance(),
     ]);
 
     return {
       providers: balances,
     };
+  }
+
+  static async getDataPlans(network: Network) {
+    const provider = this.providers.get(Provider.STROWALLET) as StrowalletProvider;
+    return provider.getDataPlans(network);
+  }
+
+  static async getCableTvPlans(serviceId: string) {
+    const provider = this.providers.get(Provider.STROWALLET) as StrowalletProvider;
+    return provider.getCableTvPlans(serviceId);
+  }
+
+  static async verifySmartCard(serviceId: string, customerId: string) {
+    const provider = this.providers.get(Provider.STROWALLET) as StrowalletProvider;
+    return provider.verifySmartCard(serviceId, customerId);
   }
 
   /**

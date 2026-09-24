@@ -1,6 +1,6 @@
-# 🇳🇬 Nigerian Data & Airtime VTU Platform - Backend Service Layer & Database Schema
+# Sublyte
 
-A production-grade Node.js (Express) database schema and service layer using Prisma ORM targeting PostgreSQL/MySQL for a Nigerian Virtual Top-Up (VTU) Airtime and Data platform.
+A Node.js (Express) service layer using Prisma ORM for Nigerian airtime, data, cable TV, wallet funding, and transaction history.
 
 ---
 
@@ -10,14 +10,14 @@ A production-grade Node.js (Express) database schema and service layer using Pri
    - `Users`: Full user lifecycle with encrypted passwords (bcrypt) and 4-digit transaction PIN hashing, biometric toggle, and account status control (`ACTIVE` / `SUSPENDED`).
    - `Wallets`: 1-to-1 strict relation with Users. Stores balances using fixed `Decimal(12,2)` precision to eliminate floating-point representation bugs. Includes virtual bank account placeholders (Monnify / Wema Bank).
    - `LedgerEntries`: Double-entry accounting system recording every balance modification (`CREDIT` / `DEBIT`) with `balance_before`, `balance_after`, unique reference string, and description.
-   - `Transactions`: Complete audit trail of VTU purchases (Airtime & Data) with network operator (`MTN`, `AIRTEL`, `GLO`, `NINE_MOBILE`), provider attribution (`INLOMAX`, `HUSMODATA`), provider references, status lifecycle (`PENDING`, `SUCCESS`, `FAILED`), and retry metrics.
+   - `Transactions`: Complete audit trail of VTU purchases (Airtime, Data, and Cable TV) with provider references, status lifecycle (`PENDING`, `SUCCESS`, `FAILED`), and retry metrics.
 
 2. **Atomic Financial Transactions**:
    - All balance updates run inside PostgreSQL interactive transactions (`prisma.$transaction`).
    - Concurrency control with `gte` balance constraints prevents negative balances and double spending.
 
 3. **Resilient VTU Provider Integration & Auto-Refund**:
-   - Polling/dispatching to third-party VTU gateways (`InlomaxProvider` and `HusmodataProvider`) implemented under a unified `IVTUProvider` interface.
+   - Polling/dispatching to StroWallet, Inlomax, and Husmodata under a unified `IVTUProvider` interface.
    - Intelligent fallback switching: if the primary provider encounters a network outage, request automatically retries via the secondary provider.
    - **Automatic Refund Guarantee**: If all VTU provider retries fail, the system automatically updates transaction status to `FAILED` and credits the user's wallet with an auto-refund `LedgerEntry` inside a database transaction.
 
@@ -26,7 +26,7 @@ A production-grade Node.js (Express) database schema and service layer using Pri
 ## 📂 Project Structure
 
 ```
-data_app/
+sublyte/
 ├── .env.example
 ├── .env
 ├── package.json
@@ -73,7 +73,10 @@ data_app/
 - `GET /api/wallets/:userId/ledger` - Fetch paginated audit ledger history.
 
 ### 📱 VTU Endpoints (`/api/vtu`)
-- `POST /api/vtu/purchase` - Execute Airtime or Data VTU purchase (requires transaction PIN).
+- `GET /api/vtu/plans?network=MTN` - Fetch live StroWallet data plans.
+- `GET /api/vtu/cable/plans?service_id=dstv` - Fetch live cable TV plans.
+- `POST /api/vtu/cable/verify` - Verify a cable smartcard/customer number.
+- `POST /api/vtu/purchase` - Execute Airtime, Data, or Cable TV purchase (requires transaction PIN).
 - `GET /api/vtu/history/:userId` - Fetch user's VTU transaction history.
 - `GET /api/vtu/transaction/:reference` - Fetch detailed VTU transaction by unique reference.
 

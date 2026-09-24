@@ -30,7 +30,16 @@ export interface IVtuProvider {
   /**
    * Purchase Data Plan from VTU provider
    */
-  purchaseData(network: Network, phone: string, planId: string): Promise<ProviderPurchaseResponse>;
+  purchaseData(network: Network, phone: string, planId: string, amount?: number): Promise<ProviderPurchaseResponse>;
+
+  purchaseCable?: (request: {
+    phone: string;
+    amount: number;
+    serviceId: string;
+    variationCode: string;
+    customerId: string;
+    serviceName?: string;
+  }) => Promise<ProviderPurchaseResponse>;
 
   /**
    * Check Provider API Wallet/Float Balance

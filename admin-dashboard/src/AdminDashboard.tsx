@@ -106,7 +106,7 @@ export const AdminDashboard: React.FC = () => {
       {/* Top Header Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, paddingBottom: 16, borderBottom: '1px solid #1E293B' }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: '#10B981' }}>🇳🇬 VTU Admin Control Center</h1>
+          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: '#10B981' }}>Sublyte Admin Control Center</h1>
           <p style={{ margin: '4px 0 0', fontSize: 13, color: '#94A3B8' }}>System management, live API balances, pricing, and transaction monitor</p>
         </div>
 

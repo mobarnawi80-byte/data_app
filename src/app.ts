@@ -1,4 +1,5 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
+import path from 'path';
 import cors from 'cors';
 import helmet from 'helmet';
 import userRoutes from './routes/userRoutes';
@@ -16,6 +17,7 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/assets', express.static(path.join(process.cwd(), 'mobile', 'assets')));
 
 // Root Route — Welcome & API Directory
 app.get('/', (req: Request, res: Response) => {
@@ -24,7 +26,7 @@ app.get('/', (req: Request, res: Response) => {
   }
   res.status(200).json({
     status: 'online',
-    service: 'Nigerian VTU & Data Platform Backend API',
+    service: 'Sublyte Platform Backend API',
     version: '1.0.0',
     endpoints: {
       health: '/health',
@@ -53,7 +55,7 @@ app.get('/', (req: Request, res: Response) => {
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({
     status: 'online',
-    service: 'Nigerian VTU & Data Platform Backend API',
+    service: 'Sublyte Platform Backend API',
     timestamp: new Date().toISOString(),
   });
 });

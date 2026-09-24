@@ -13,7 +13,7 @@ import * as Clipboard from 'expo-clipboard';
 import { useStore } from '../store/useStore';
 
 interface DashboardScreenProps {
-  onNavigateToPurchase: (service: 'DATA' | 'AIRTIME') => void;
+  onNavigateToPurchase: (service: 'DATA' | 'AIRTIME' | 'CABLE_TV') => void;
 }
 
 export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateToPurchase }) => {
@@ -57,7 +57,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateToPu
             <Text style={styles.greeting}>
               Welcome, {user?.full_name?.split(' ')[0] ?? 'User'} 👋
             </Text>
-            <Text style={styles.greetingSub}>Your VTU Dashboard</Text>
+            <Text style={styles.greetingSub}>Your Sublyte Dashboard</Text>
           </View>
           <TouchableOpacity onPress={logout} style={styles.logoutBtn}>
             <Text style={styles.logoutText}>Logout</Text>
@@ -135,6 +135,16 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigateToPu
             <Text style={styles.actionIcon}>📞</Text>
             <Text style={styles.actionLabel}>Buy Airtime</Text>
             <Text style={styles.actionSub}>All networks supported</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.actionCard, { backgroundColor: '#2B1B0D' }]}
+            onPress={() => onNavigateToPurchase('CABLE_TV')}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.actionIcon}>TV</Text>
+            <Text style={styles.actionLabel}>Cable TV</Text>
+            <Text style={styles.actionSub}>DStv, GOtv, StarTimes</Text>
           </TouchableOpacity>
         </View>
 

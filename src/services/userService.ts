@@ -118,7 +118,7 @@ export class UserService {
         data: {
           virtual_account_number: `89${Math.floor(10000000 + Math.random() * 90000000)}`,
           virtual_bank_name: 'Sterling Bank (Strowallet)',
-          virtual_account_name: `${user.full_name} / VTU App`,
+          virtual_account_name: `${user.full_name} / Sublyte`,
         },
       });
 

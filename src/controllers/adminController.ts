@@ -6,7 +6,7 @@ import { WalletService } from '../services/walletService';
 
 export class AdminController {
   // Global config store in-memory / DB for provider mode
-  private static providerMode: 'INLOMAX' | 'HUSMODATA' | 'AUTO_FAILOVER' = 'AUTO_FAILOVER';
+  private static providerMode: 'INLOMAX' | 'HUSMODATA' | 'STROWALLET' | 'AUTO_FAILOVER' = 'AUTO_FAILOVER';
 
   /**
    * GET /api/admin/dashboard-stats
@@ -48,7 +48,7 @@ export class AdminController {
           daily_sales_volume: dailyVolume,
           daily_sales_count: dailySales._count.id,
           daily_estimated_profit: estimatedProfit,
-          provider_mode: this.providerMode,
+          provider_mode: AdminController.providerMode,
           providers_health: providerBalances.providers,
         },
       });
@@ -65,7 +65,7 @@ export class AdminController {
     try {
       const { mode } = req.body;
 
-      if (!['INLOMAX', 'HUSMODATA', 'AUTO_FAILOVER'].includes(mode)) {
+      if (!['INLOMAX', 'HUSMODATA', 'STROWALLET', 'AUTO_FAILOVER'].includes(mode)) {
         return res.status(400).json({ success: false, message: 'Invalid provider mode selection.' });
       }
 

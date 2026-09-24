@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   Alert,
   ActivityIndicator,
+  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -96,8 +97,8 @@ export const AuthScreen: React.FC = () => {
         >
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.logo}>⚡</Text>
-            <Text style={styles.title}>VTU App</Text>
+            <Image source={require('../../assets/sublyte-logo.png')} style={styles.logoImage} resizeMode="contain" />
+            <Text style={styles.title}>Sublyte</Text>
             <Text style={styles.subtitle}>
               {mode === 'LOGIN' ? 'Welcome back' : 'Create your account'}
             </Text>
@@ -227,6 +228,7 @@ const styles = StyleSheet.create({
   scrollContent: { flexGrow: 1, justifyContent: 'center', padding: 24 },
   header: { alignItems: 'center', marginBottom: 40 },
   logo: { fontSize: 48, marginBottom: 8 },
+  logoImage: { width: 250, height: 115, marginBottom: 8 },
   title: { fontSize: 28, fontWeight: '800', color: '#FFFFFF', letterSpacing: -0.5 },
   subtitle: { fontSize: 15, color: '#718096', marginTop: 6 },
   form: { gap: 16 },

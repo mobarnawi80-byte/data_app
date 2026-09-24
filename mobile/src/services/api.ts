@@ -1,5 +1,5 @@
 /**
- * Central API service for VTU Mobile App.
+ * Central API service for the Sublyte mobile app.
  * All HTTP calls to the Node.js backend go through here.
  */
 
@@ -55,21 +55,36 @@ export interface Transaction {
 }
 
 export interface DataPlan {
-  plan_id: string;
-  network: string;
-  type: string;
-  size: string;
-  validity: string;
-  price: number;
+  variation_code: string;
+  name: string;
+  amount: number;
+  service_id: string;
+  service_name: string;
+  fixed_price?: boolean;
+}
+
+export type CableService = 'dstv' | 'gotv' | 'startimes' | 'showmax';
+
+export interface CablePlan extends DataPlan {}
+
+export interface CableCustomer {
+  customer_id: string;
+  name?: string;
+  address?: string;
+  service_id?: string;
 }
 
 export interface VtuPurchasePayload {
   user_id: string;
-  network: 'MTN' | 'AIRTEL' | 'GLO' | 'NINE_MOBILE';
+  network?: 'MTN' | 'AIRTEL' | 'GLO' | 'NINE_MOBILE';
   phone_number: string;
   plan_id?: string;
+  service_id?: string;
+  variation_code?: string;
+  customer_id?: string;
+  service_name?: string;
   amount: number;
-  service_type: 'DATA' | 'AIRTIME';
+  service_type: 'DATA' | 'AIRTIME' | 'CABLE_TV';
   category?: 'SME' | 'CG' | 'DIRECT';
   transaction_pin: string;
 }
@@ -167,6 +182,15 @@ export const vtuApi = {
     if (category) params.append('category', category);
     return request<DataPlan[]>(`/api/vtu/plans?${params}`, {}, token);
   },
+
+  getCablePlans: (token: string, serviceId: CableService) =>
+    request<CablePlan[]>(`/api/vtu/cable/plans?service_id=${serviceId}`, {}, token),
+
+  verifyCableCustomer: (token: string, serviceId: CableService, customerId: string) =>
+    request<CableCustomer>('/api/vtu/cable/verify', {
+      method: 'POST',
+      body: JSON.stringify({ service_id: serviceId, customer_id: customerId }),
+    }, token),
 
   purchase: (token: string, payload: VtuPurchasePayload) =>
     request<{ transaction_id: string; reference: string; message: string }>(

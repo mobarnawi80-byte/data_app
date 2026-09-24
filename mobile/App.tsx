@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { StatusBar, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { useStore } from './src/store/useStore';
 import { AuthScreen } from './src/screens/AuthScreen';
 import { DashboardScreen } from './src/screens/DashboardScreen';
 import { PurchaseScreen } from './src/screens/PurchaseScreen';
 
+import { CableTvScreen } from './src/screens/CableTvScreen';
+
 export default function App() {
   const isAuthenticated = useStore((state) => state.isAuthenticated);
-  const [currentScreen, setCurrentScreen] = useState<'DASHBOARD' | 'PURCHASE'>('DASHBOARD');
+  const [currentScreen, setCurrentScreen] = useState<'DASHBOARD' | 'PURCHASE' | 'CABLE_TV'>('DASHBOARD');
   const [activeService, setActiveService] = useState<'DATA' | 'AIRTIME'>('DATA');
 
   if (!isAuthenticated) {
@@ -25,10 +28,16 @@ export default function App() {
       {currentScreen === 'DASHBOARD' ? (
         <DashboardScreen
           onNavigateToPurchase={(service) => {
-            setActiveService(service);
-            setCurrentScreen('PURCHASE');
+            if (service === 'CABLE_TV') {
+              setCurrentScreen('CABLE_TV');
+            } else {
+              setActiveService(service);
+              setCurrentScreen('PURCHASE');
+            }
           }}
         />
+      ) : currentScreen === 'CABLE_TV' ? (
+        <CableTvScreen onBack={() => setCurrentScreen('DASHBOARD')} />
       ) : (
         <PurchaseScreen
           serviceType={activeService}
@@ -42,6 +51,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#090D16',
+    backgroundColor: '#090b16',
   },
 });

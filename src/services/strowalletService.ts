@@ -34,41 +34,47 @@ export interface StrowalletWebhookPayload {
 }
 
 export class StrowalletService {
-  private static readonly BASE_URL = process.env.STROWALLET_BASE_URL || 'https://api.strowallet.com/v1';
+  private static readonly BASE_URL = (process.env.STROWALLET_BASE_URL || 'https://strowallet.com/api').replace(/\/$/, '');
   private static readonly SECRET_KEY = process.env.STROWALLET_SECRET_KEY || '';
   private static readonly PUBLIC_KEY = process.env.STROWALLET_PUBLIC_KEY || '';
   private static readonly WEBHOOK_SECRET = process.env.STROWALLET_WEBHOOK_SECRET || '';
+  private static readonly WEBHOOK_URL = process.env.STROWALLET_WEBHOOK_URL || '';
 
   /**
    * Create dedicated NGN virtual bank account via Strowallet API on user signup.
    */
   static async createVirtualAccount(user: StrowalletUserPayload): Promise<StrowalletVirtualAccountResponse> {
     try {
-      if (this.SECRET_KEY && this.SECRET_KEY !== 'mock_secret_key') {
-        const response = await fetch(`${this.BASE_URL}/virtual-accounts`, {
+      if (this.PUBLIC_KEY && this.WEBHOOK_URL) {
+        const response = await fetch(`${this.BASE_URL}/virtual-bank/new-customer`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.SECRET_KEY}`,
-            'X-Public-Key': this.PUBLIC_KEY,
           },
           body: JSON.stringify({
+            public_key: this.PUBLIC_KEY,
             email: user.email,
-            name: user.full_name,
-            phoneNumber: user.phone,
-            currency: 'NGN',
+            account_name: user.full_name,
+            phone: user.phone,
+            webhook_url: this.WEBHOOK_URL,
+            mode: process.env.STROWALLET_MODE || 'live',
           }),
         });
 
         const data = await response.json();
-        if (!response.ok || !data.success) {
+        if (!response.ok || data.success === false) {
           throw new Error(data.message || 'Failed to generate Strowallet virtual account');
         }
 
+        const accountNumber = data.data?.account_number || data.data?.accountNumber || data.accountNumber;
+        if (!accountNumber) {
+          throw new Error('StroWallet did not return a virtual account number.');
+        }
+
         return {
-          account_number: data.data.account_number,
-          bank_name: data.data.bank_name || 'Sterling Bank (Strowallet)',
-          account_name: data.data.account_name || `${user.full_name} / VTU App`,
+          account_number: accountNumber,
+          bank_name: data.data?.bank_name || data.data?.bankName || 'StroWallet Virtual Account',
+          account_name: data.data?.account_name || data.data?.accountName || `${user.full_name} / Sublyte`,
         };
       }
 
@@ -80,7 +86,7 @@ export class StrowalletService {
       return {
         account_number: generatedAccountNumber,
         bank_name: selectedBank,
-        account_name: `${user.full_name} / VTU App`,
+        account_name: `${user.full_name} / Sublyte`,
       };
     } catch (error: any) {
       console.error('[StrowalletService] Virtual Account Creation Error:', error);

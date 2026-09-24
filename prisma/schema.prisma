@@ -1,4 +1,4 @@
-// Prisma Schema for Nigerian Data & Airtime VTU Platform
+// Prisma Schema for the Sublyte platform
 // Supports PostgreSQL / MySQL (configured for PostgreSQL by default)
 
 generator client {
@@ -27,6 +27,7 @@ enum LedgerType {
 enum ServiceType {
   AIRTIME
   DATA
+  CABLE_TV
 }
 
 enum Network {
@@ -39,6 +40,7 @@ enum Network {
 enum Provider {
   INLOMAX
   HUSMODATA
+  STROWALLET
 }
 
 enum TransactionStatus {
@@ -108,9 +110,12 @@ model Transaction {
   user               User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
   reference          String            @unique
   service_type       ServiceType
-  network            Network
+  network            Network?
   phone_number       String
   plan_id            String?
+  service_id         String?
+  variation_code     String?
+  customer_id        String?
   amount             Decimal           @db.Decimal(12, 2)
   provider_used      Provider?
   provider_reference String?
